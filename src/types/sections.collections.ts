@@ -1034,3 +1034,125 @@ export const howItWorksOutcomesSection = defineCollection({
     }),
   }),
 });
+
+export const problemStatementSection = defineCollection({
+  loader: glob({
+    pattern: "problem-statement.{md,mdx}",
+    base: "src/content/sections",
+  }),
+  schema: z.object({
+    subtitle: z.string(),
+    title: z.string(),
+    description: z.string(),
+    list: z.array(
+      z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    ),
+  }),
+});
+
+export const solutionOverviewSection = defineCollection({
+  loader: glob({
+    pattern: "solution-overview.{md,mdx}",
+    base: "src/content/sections",
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+  }),
+});
+
+export const diagnosticLensSection = defineCollection({
+  loader: glob({
+    pattern: "diagnostic-lens.{md,mdx}",
+    base: "src/content/sections",
+  }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string(),
+    table: z.object({
+      headers: z.array(z.string()),
+      rows: z.array(
+        z.object({
+          problem: z.string(),
+          impact: z.string(),
+          solution: z.string(),
+        }),
+      ),
+    }),
+  }),
+});
+
+export const strategicLayerSection = defineCollection({
+  loader: glob({
+    pattern: "strategic-layer.{md,mdx}",
+    base: "src/content/sections",
+  }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string(),
+    description: z.string(),
+  }),
+});
+
+export const pathToExcellenceSection = defineCollection({
+  loader: glob({
+    pattern: "path-to-excellence.{md,mdx}",
+    base: "src/content/sections",
+  }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string(),
+    table: z.object({
+      headers: z.array(z.string()),
+      rows: z.array(
+        z.object({
+          area: z.string(),
+          before: z.string(),
+          after: z.string(),
+        }),
+      ),
+    }),
+  }),
+});
+
+export const scienceFoundationSection = defineCollection({
+  loader: glob({
+    pattern: "science-foundation.{md,mdx}",
+    base: "src/content/sections",
+  }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string(),
+    description: z.string(),
+    pillars: z.array(
+      z.object({
+        title: z.string(),
+        tagline: z.string(),
+        list: z.array(z.string()),
+      }),
+    ),
+  }),
+});
+
+export const socialProofSection = defineCollection({
+  loader: glob({
+    pattern: "social-proof.{md,mdx}",
+    base: "src/content/sections",
+  }),
+  schema: z.object({
+    quote: z.string(),
+    table: z.object({
+      headers: z.array(z.string()),
+      rows: z.array(
+        z.object({
+          traditional: z.string(),
+          gestalty: z.string(),
+        }),
+      ),
+    }),
+    supporting_quote: z.string(),
+  }),
+});

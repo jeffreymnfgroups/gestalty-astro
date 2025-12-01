@@ -1,0 +1,36 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const { title, subtitle, description } = (
+  (await getEntry(
+    "strategicLayerSection",
+    "strategic-layer"
+  )) as CollectionEntry<"strategicLayerSection">
+).data;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-8" data-aos="fade-up-sm">
+        {title && <h2 class="mb-4" set:html={markdownify(title)} />}
+        {
+          subtitle && (
+            <p
+              class="mb-6 font-medium text-tertiary"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
+        {
+          description && (
+            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+

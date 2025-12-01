@@ -1,0 +1,25 @@
+---
+title: "Why Traditional Preparation Fails"
+subtitle: "The Hidden Enemies of Exam Success"
+description: "Most aspirants struggle not from lack of effort, but from fighting invisible cognitive barriers that traditional methods can't address."
+list:
+  - title: "Illusion of Fluency"
+    description: "Mistaking familiarity for mastery — \"I read it, so I know it\""
+  - title: "Recency Bias"
+    description: "Assuming recently reviewed topics are strong without true recall testing"
+  - title: "Planning Fallacy"
+    description: "Underestimating effort and time needed — \"I'll finish this chapter in 1 hour\" (actually takes 4)"
+  - title: "Overconfidence Bias"
+    description: "Overrating ability and preparedness, leading to skipped revisions"
+  - title: "Illusion of Progress"
+    description: "Feeling 100% complete after only partial work"
+  - title: "Overestimation"
+    description: "Believing more is accomplished than reality reflects"
+  - title: "Availability Bias"
+    description: "Practicing only familiar or easy questions while ignoring difficult areas"
+  - title: "Consistency Gap"
+    description: "Distractions and procrastination causing intermittent effort and knowledge gaps"
+  - title: "Strategic Misalignment"
+    description: "Logging many study hours but seeing little actual improvement due to poor alignment between effort and effective strategies"
+---
+

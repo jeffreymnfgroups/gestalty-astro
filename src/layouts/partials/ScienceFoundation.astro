@@ -1,0 +1,70 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const { title, subtitle, description, pillars } = (
+  (await getEntry(
+    "scienceFoundationSection",
+    "science-foundation"
+  )) as CollectionEntry<"scienceFoundationSection">
+).data;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+        {title && <h2 class="mb-4" set:html={markdownify(title)} />}
+        {
+          subtitle && (
+            <p
+              class="mb-6 font-medium text-tertiary"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
+        {
+          description && (
+            <p
+              class="mb-12 text-lg/[inherit]"
+              set:html={markdownify(description)}
+            />
+          )
+        }
+      </div>
+      <div class="col-12 pt-8">
+        <div class="row g-5">
+          {
+            pillars?.map((pillar, index) => (
+              <div
+                class="md:col-6 lg:col-6"
+                data-aos="fade-up-sm"
+                data-aos-delay={index * 150}>
+                <div class="min-h-full rounded-xl bg-light p-8 md:rounded-3xl">
+                  {pillar.title && (
+                    <h3 class="h5 mb-2" set:html={markdownify(pillar.title)} />
+                  )}
+                  {pillar.tagline && (
+                    <p
+                      class="mb-6 text-sm font-medium text-tertiary italic"
+                      set:html={markdownify(pillar.tagline)}
+                    />
+                  )}
+                  {pillar.list && (
+                    <ul class="list list-dark flex flex-col gap-3">
+                      {pillar.list.map((item) => (
+                        <li class="text-sm">{item}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

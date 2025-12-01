@@ -1,0 +1,28 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const { title, description } = (
+  (await getEntry(
+    "solutionOverviewSection",
+    "solution-overview"
+  )) as CollectionEntry<"solutionOverviewSection">
+).data;
+---
+
+<section class="section pt-0">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+        {
+          description && (
+            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
