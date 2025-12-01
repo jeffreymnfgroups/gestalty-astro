@@ -1,0 +1,41 @@
+---
+import Base from "@/layouts/Base.astro";
+import AboutBanner from "@/partials/AboutBanner.astro";
+import CallToAction from "@/partials/CallToAction.astro";
+import CompanyEvolution from "@/partials/CompanyEvolution.astro";
+import Expertise from "@/partials/Expertise.astro";
+import HiddenCrisis from "@/partials/HiddenCrisis.astro";
+import JoinRevolution from "@/partials/JoinRevolution.astro";
+import OriginStory from "@/partials/OriginStory.astro";
+import OurTeam from "@/partials/OurTeam.astro";
+import OurValues from "@/partials/OurValues.astro";
+import TheQuestion from "@/partials/TheQuestion.astro";
+import TheSolution from "@/partials/TheSolution.astro";
+import VisionMission from "@/partials/VisionMission.astro";
+import WhatWeBuiltFor from "@/partials/WhatWeBuiltFor.astro";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const about = (await getEntry("about", "-index")) as CollectionEntry<"about">;
+const { title, description, meta_title, image } = about.data;
+---
+
+<Base
+  title={title}
+  meta_title={meta_title}
+  description={description}
+  image={image}>
+  <AboutBanner />
+  <OriginStory />
+  <HiddenCrisis />
+  <TheQuestion />
+  <TheSolution />
+  <WhatWeBuiltFor />
+  <VisionMission />
+  <OurValues />
+  <CompanyEvolution />
+  <Expertise />
+  <OurTeam />
+  <JoinRevolution />
+  <CallToAction />
+</Base>

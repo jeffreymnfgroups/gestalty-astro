@@ -1,0 +1,39 @@
+---
+import Base from "@/layouts/Base.astro";
+import CallToAction from "@/partials/CallToAction.astro";
+import ExpertGuidance from "@/partials/ExpertGuidance.astro";
+import MentorshipBanner from "@/partials/MentorshipBanner.astro";
+import MentorshipFeatures from "@/partials/MentorshipFeatures.astro";
+import MentorshipHowItWorks from "@/partials/MentorshipHowItWorks.astro";
+import MentorshipOutcomes from "@/partials/MentorshipOutcomes.astro";
+import MentorTools from "@/partials/MentorTools.astro";
+import OurMentors from "@/partials/OurMentors.astro";
+import ParentalPartnership from "@/partials/ParentalPartnership.astro";
+import ScienceBackedMentorship from "@/partials/ScienceBackedMentorship.astro";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const mentorship = (await getEntry(
+  "mentorship",
+  "-index"
+)) as CollectionEntry<"mentorship">;
+const { title, description, meta_title, image } = mentorship.data;
+---
+
+<Base
+  title={title}
+  meta_title={meta_title}
+  description={description}
+  image={image}>
+  <MentorshipBanner />
+  <ExpertGuidance />
+  <ScienceBackedMentorship />
+  <MentorshipFeatures />
+  <OurMentors />
+  <MentorTools />
+  <MentorshipHowItWorks />
+  <ParentalPartnership />
+  <MentorshipOutcomes />
+  <CallToAction />
+</Base>
+

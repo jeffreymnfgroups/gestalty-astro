@@ -1,0 +1,164 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const { title, subtitle, description, periods } = (
+  (await getEntry(
+    "howItWorksDailyRoutineSection",
+    "how-it-works-daily-routine"
+  )) as CollectionEntry<"howItWorksDailyRoutineSection">
+).data;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+        {
+          subtitle && (
+            <p
+              class="mb-2 font-medium text-tertiary"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
+        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+        {
+          description && (
+            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+          )
+        }
+      </div>
+      <div class="col-12 pt-16" data-aos="fade-up-sm" data-aos-delay="200">
+        <div class="mx-auto lg:col-10">
+          {/* Tabs */}
+          <div class="daily-routine-tabs">
+            <div class="mb-8 flex flex-wrap justify-center gap-4">
+              {
+                periods?.map((period, index) => (
+                  <button
+                    class={`tab-button rounded-full px-6 py-3 font-medium transition-all duration-300 ${
+                      index === 0
+                        ? "tab-button-active bg-primary text-white shadow-lg"
+                        : "bg-light text-text-dark hover:bg-primary/10"
+                    }`}
+                    data-tab={`period-${index}`}>
+                    {period.period}
+                  </button>
+                ))
+              }
+            </div>
+
+            {/* Tab Content */}
+            <div class="tab-content-wrapper">
+              {
+                periods?.map((period, index) => (
+                  <div
+                    class={`tab-content ${index === 0 ? "tab-content-active" : "hidden"}`}
+                    id={`period-${index}`}>
+                    <div class="rounded-3xl bg-gradient-to-br from-light to-white p-8 shadow-lg md:p-12">
+                      <div class="mb-6 flex items-center gap-4">
+                        {period.icon && (
+                          <div class="flex h-16 w-16 items-center justify-center rounded-full bg-tertiary">
+                            <ImageMod
+                              class="h-8 w-8 object-cover"
+                              src={period.icon}
+                              alt={`icon for ${period.period}`}
+                            />
+                          </div>
+                        )}
+                        <h3 class="text-3xl font-bold text-text-dark">
+                          {period.period}
+                        </h3>
+                      </div>
+                      {period.activities && period.activities.length > 0 && (
+                        <ul class="space-y-4">
+                          {period.activities.map((activity) => (
+                            <li class="flex items-start gap-3">
+                              <div class="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-tertiary/20">
+                                <svg
+                                  class="h-4 w-4 text-tertiary"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24">
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              </div>
+                              <span
+                                class="flex-1 text-lg text-text"
+                                set:html={markdownify(activity)}
+                              />
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Tab functionality
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabContents = document.querySelectorAll(".tab-content");
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetTab = button.getAttribute("data-tab");
+
+        // Remove active class from all buttons and contents
+        tabButtons.forEach((btn) => {
+          btn.classList.remove("tab-button-active", "bg-primary", "text-white", "shadow-lg");
+          btn.classList.add("bg-light", "text-text-dark");
+        });
+        tabContents.forEach((content) => {
+          content.classList.remove("tab-content-active");
+          content.classList.add("hidden");
+        });
+
+        // Add active class to clicked button and corresponding content
+        button.classList.add("tab-button-active", "bg-primary", "text-white", "shadow-lg");
+        button.classList.remove("bg-light", "text-text-dark");
+        
+        const targetContent = document.getElementById(targetTab);
+        if (targetContent) {
+          targetContent.classList.add("tab-content-active");
+          targetContent.classList.remove("hidden");
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .tab-content {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+

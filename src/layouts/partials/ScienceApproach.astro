@@ -1,0 +1,109 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const { title, subtitle, description, foundations } = (
+  (await getEntry(
+    "scienceApproachSection",
+    "science-approach"
+  )) as CollectionEntry<"scienceApproachSection">
+).data;
+---
+
+<section class="section bg-light" id="science-approach">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+        {
+          subtitle && (
+            <p
+              class="mb-2 font-medium text-tertiary"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
+        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+        {
+          description && (
+            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+          )
+        }
+      </div>
+      <div class="col-12 pt-20" data-aos="fade-up-sm" data-aos-delay="100">
+        <div class="row g-4 justify-center">
+          {
+            foundations?.map((foundation, index) => (
+              <div class="lg:col-10">
+                <div class={foundation.active ? "accordion active" : "accordion"}>
+                  {foundation.title && (
+                    <button
+                      class="accordion-header"
+                      aria-label="toggle accordion content">
+                      <span class="text-base" set:html={`${index + 1}.`} />
+                      <div class="flex flex-col items-start gap-1">
+                        <span class="font-bold" set:html={foundation.title} />
+                        {foundation.tagline && (
+                          <span class="text-sm font-normal italic text-tertiary" set:html={foundation.tagline} />
+                        )}
+                      </div>
+                    </button>
+                  )}
+                  <div class="accordion-content">
+                    {foundation.core_principle && (
+                      <div class="mb-6">
+                        <h4 class="h6 mb-2 font-bold">Core Principle</h4>
+                        <p set:html={markdownify(foundation.core_principle)} />
+                      </div>
+                    )}
+                    {foundation.what_it_does && (
+                      <div class="mb-6">
+                        <h4 class="h6 mb-2 font-bold">What Gestalty Does</h4>
+                        <p set:html={markdownify(foundation.what_it_does)} />
+                      </div>
+                    )}
+                    {foundation.pillars && (
+                      <div class="mb-6">
+                        <h4 class="h6 mb-3 font-bold">Key Elements</h4>
+                        <ul class="space-y-3">
+                          {foundation.pillars.map((pillar) => (
+                            <li>
+                              <strong set:html={markdownify(pillar.title)} /> –{" "}
+                              <span set:html={markdownify(pillar.description)} />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {foundation.why_it_matters && (
+                      <div>
+                        <h4 class="h6 mb-2 font-bold">Why It Matters</h4>
+                        <p set:html={markdownify(foundation.why_it_matters)} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function scienceAccordionInit() {
+    const accordionHeaders = document.querySelectorAll(".accordion-header");
+
+    accordionHeaders.forEach((header) => {
+      header.addEventListener("click", () => {
+        const content = header.parentElement;
+        content?.classList.toggle("active");
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", scienceAccordionInit);
+</script>
+

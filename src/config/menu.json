@@ -1,0 +1,60 @@
+{
+  "main": [
+    {
+      "name": "About",
+      "url": "/about/"
+    },
+    {
+      "name": "Philosophy & Science",
+      "url": "/philosophy/"
+    },
+    {
+      "name": "Features",
+      "url": "/features/"
+    },
+    {
+      "name": "How It Works",
+      "url": "/how-it-works/"
+    },
+    {
+      "name": "Mentorship",
+      "url": "/mentorship/"
+    },
+    {
+      "name": "Blog",
+      "url": "/blog/"
+    },
+    {
+      "name": "Log In",
+      "url": "/login/"
+    }
+  ],
+  "footer_menu": [
+    {
+      "name": "Features",
+      "url": "/features/"
+    },
+    {
+      "name": "Pricing",
+      "url": "/pricing/"
+    },
+    {
+      "name": "Blog",
+      "url": "/blog/"
+    }
+  ],
+  "footer_quick_links": [
+    {
+      "name": "Terms",
+      "url": "/terms-conditions/"
+    },
+    {
+      "name": "Privacy Policy",
+      "url": "/privacy-policy/"
+    },
+    {
+      "name": "Contact",
+      "url": "/contact/"
+    }
+  ]
+}

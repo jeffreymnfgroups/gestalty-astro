@@ -1,0 +1,238 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import Logo from "@/components/Logo.astro";
+import config from "@/config/config.json";
+import menu from "@/config/menu.json";
+import DynamicIcon from "@/helpers/DynamicIcon";
+import HomeBanner from "./HomeBanner.astro";
+
+export interface ChildNavigationLink {
+  name: string;
+  url: string;
+}
+
+export interface NavigationLink {
+  name: string;
+  url: string;
+  hasChildren?: boolean;
+  children?: ChildNavigationLink[];
+}
+
+const { banner, errorPage } = Astro.props;
+
+const { main }: { main: NavigationLink[] } = menu;
+const { navigation_button } = config;
+const { pathname } = Astro.url;
+---
+
+<div
+  class={`header-wrapper ${Astro.url.pathname === "/" ? "relative" : !errorPage && "pb-6"}`}>
+  <header class="header-modern fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300">
+    <div class="w-full max-w-[75rem] mx-auto px-5 sm:px-7 py-2">
+      <nav
+        class="navbar-modern flex items-center justify-between transition-all duration-300 rounded-full shadow-sm bg-body/95 backdrop-blur-md px-3 py-2"
+        id="header-nav">
+        <!-- Logo -->
+        <div class="flex items-center">
+          <Logo />
+        </div>
+        
+        <!-- Desktop Navigation Menu - visible from 1024px (lg) and above -->
+        <div class="hidden lg:flex bg-primary/5 rounded-3xl py-2 px-1">
+          <ul class="flex gap-0 2xl:gap-1.5">
+            {
+              main.map((item) => (
+                <li>
+                  <a
+                    href={item.url}
+                    class={`nav-link-modern px-3 py-1.5 font-medium font-primary text-sm transition-all duration-200 whitespace-nowrap ${
+                      pathname === item.url || pathname === `${item.url}/`
+                        ? "nav-link-active"
+                        : "text-text/60 hover:text-text-dark hover:bg-body hover:rounded-3xl hover:shadow-sm"
+                    }`}>
+                    {item.name}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        
+        <div class="flex items-center gap-2 xl:gap-4">
+          <!-- CTA Button - visible from 1024px (lg) and above -->
+          {
+            navigation_button.enable && (
+              <a
+                class="btn btn-dark hidden lg:flex px-4 py-0.5 text-xs shadow-lg"
+                href={navigation_button.link}>
+                {navigation_button.label}
+                <span class="icon-wrapper">
+                  <span class="icon">
+                    <DynamicIcon icon={"FaArrowRight"} />
+                  </span>
+                  <span class="icon" aria-hidden="true">
+                    <DynamicIcon icon={"FaArrowRight"} />
+                  </span>
+                </span>
+              </a>
+            )
+          }
+          
+          <!-- Burger Menu - only visible below 1024px -->
+          <button
+            id="mobile-menu-toggle"
+            class="flex lg:hidden items-center justify-center w-10 h-10 text-text-dark hover:text-secondary transition-colors duration-200 -mr-2"
+            aria-label="Toggle mobile menu">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="flex-shrink-0">
+              <path d="M4.5 12h15M4.5 6.23h15M4.5 17.77h15"></path>
+            </svg>
+          </button>
+        </div>
+      </nav>
+      
+      <!-- Mobile sidebar backdrop -->
+      <div
+        id="mobile-backdrop"
+        class="hidden fixed top-0 left-0 w-full h-full bg-black/50 z-40">
+      </div>
+      
+      <!-- Mobile sidebar - only visible below 1024px -->
+      <div
+        id="mobile-sidebar"
+        class="lg:hidden fixed top-0 right-0 h-full bg-body shadow-xl transform transition-transform duration-300 ease-in-out w-full max-w-xs translate-x-full z-50 flex flex-col">
+        <!-- Mobile Menu Header -->
+        <div class="flex items-center justify-between px-4 py-4 border-b border-border flex-shrink-0">
+          <h2 class="text-lg font-bold font-secondary text-text-dark">Menu</h2>
+          <button
+            id="mobile-menu-close"
+            aria-label="Close mobile menu"
+            class="flex items-center justify-center w-10 h-10 p-2 hover:bg-light rounded-full transition-colors duration-200">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-text-dark">
+              <path d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Mobile Menu Content -->
+        <div class="flex-1 overflow-y-auto px-4 py-4">
+          <ul class="flex flex-col gap-0">
+            {
+              main.map((item) => (
+                <li class="w-full">
+                  <a
+                    href={item.url}
+                    class="nav-link-mobile block text-text-dark hover:text-secondary hover:bg-light rounded-md text-base font-medium font-primary transition-colors duration-200 w-full p-3 px-4">
+                    {item.name}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="flex flex-col items-center gap-3 px-2 mt-6 pb-4">
+            {
+              navigation_button.enable && (
+                <a
+                  class="btn btn-dark w-full justify-center px-4 py-3 text-base shadow-lg"
+                  href={navigation_button.link}>
+                  {navigation_button.label}
+                  <span class="icon-wrapper">
+                    <span class="icon">
+                      <DynamicIcon icon={"FaArrowRight"} />
+                    </span>
+                    <span class="icon" aria-hidden="true">
+                      <DynamicIcon icon={"FaArrowRight"} />
+                    </span>
+                  </span>
+                </a>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {/* Show Only In Home Page */}
+  {banner && <HomeBanner />}
+
+  <div aria-hidden="true">
+    <ImageMod
+      class="pointer-events-none absolute top-0 -z-10 h-full w-full object-cover object-top"
+      src={Astro.url.pathname === "/"
+        ? "/images/banner-bg.png"
+        : "/images/page-header.png"}
+      alt="header image"
+      format="webp"
+    />
+  </div>
+</div>
+
+<script>
+  // Mobile menu toggle functionality
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileMenuClose = document.getElementById('mobile-menu-close');
+  const mobileSidebar = document.getElementById('mobile-sidebar');
+  const mobileBackdrop = document.getElementById('mobile-backdrop');
+  const headerNav = document.getElementById('header-nav');
+
+  function openMobileMenu() {
+    mobileSidebar?.classList.remove('translate-x-full');
+    mobileBackdrop?.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileMenu() {
+    mobileSidebar?.classList.add('translate-x-full');
+    mobileBackdrop?.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  mobileMenuToggle?.addEventListener('click', openMobileMenu);
+  mobileMenuClose?.addEventListener('click', closeMobileMenu);
+  mobileBackdrop?.addEventListener('click', closeMobileMenu);
+
+  // Sticky header on scroll
+  let lastScrollY = window.scrollY;
+  
+  function handleScroll() {
+    const currentScrollY = window.scrollY;
+    const isSticky = currentScrollY >= 80;
+    
+    if (headerNav) {
+      if (isSticky) {
+        headerNav.className = 'navbar-modern flex items-center justify-between transition-all duration-300 rounded-full shadow-sm bg-body/95 backdrop-blur-md px-3 py-2';
+      } else {
+        headerNav.className = 'navbar-modern flex items-center justify-between transition-all duration-300 rounded-full shadow-sm bg-body/95 backdrop-blur-md px-3 py-2';
+      }
+    }
+    
+    lastScrollY = currentScrollY;
+  }
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  // Close mobile menu on route change
+  document.addEventListener('astro:page-load', () => {
+    closeMobileMenu();
+  });
+</script>

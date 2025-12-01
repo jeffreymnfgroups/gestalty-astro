@@ -1,0 +1,61 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const { title, subtitle, description, list, closing } = (
+  (await getEntry(
+    "adultLearnersSection",
+    "adult-learners"
+  )) as CollectionEntry<"adultLearnersSection">
+).data;
+---
+
+<section class="section bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+        {
+          subtitle && (
+            <p
+              class="mb-2 font-medium text-tertiary"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
+        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+        {
+          description && (
+            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+          )
+        }
+      </div>
+      <div class="col-12 pt-16">
+        <div class="row justify-center">
+          <div class="lg:col-10" data-aos="fade-up-sm" data-aos-delay="100">
+            <div class="rounded-xl bg-white p-8 md:rounded-3xl md:p-12">
+              {
+                list && (
+                  <ul class="mb-8 space-y-4">
+                    {list.map((item) => (
+                      <li class="flex gap-3">
+                        <span class="text-tertiary">•</span>
+                        <span set:html={markdownify(item)} />
+                      </li>
+                    ))}
+                  </ul>
+                )
+              }
+              {
+                closing && (
+                  <p class="text-lg/[inherit] font-medium text-center" set:html={markdownify(closing)} />
+                )
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

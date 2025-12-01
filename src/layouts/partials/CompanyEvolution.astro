@@ -1,0 +1,93 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const { title, subtitle, phases, impact_title, impact_list } = (
+  (await getEntry(
+    "companyEvolutionSection",
+    "company-evolution"
+  )) as CollectionEntry<"companyEvolutionSection">
+).data;
+---
+
+<section class="section bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+        {
+          subtitle && (
+            <p
+              class="mb-2 font-medium text-tertiary"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
+        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+      </div>
+      <div class="col-12 pt-16">
+        <div class="row g-4 justify-center">
+          {
+            phases?.map((phase, index) => (
+              <div
+                class="md:col-6"
+                data-aos="fade-up-sm"
+                data-aos-delay={index * 100}>
+                <div class="min-h-full rounded-xl bg-white p-8 md:rounded-3xl">
+                  {phase.title && (
+                    <h3 class="h5 mb-2" set:html={markdownify(phase.title)} />
+                  )}
+                  {phase.duration && (
+                    <p class="mb-4 font-medium text-tertiary" set:html={markdownify(phase.duration)} />
+                  )}
+                  {phase.description && (
+                    <p class="mb-4" set:html={markdownify(phase.description)} />
+                  )}
+                  {phase.list && phase.list.length > 0 && (
+                    <ul class="space-y-2">
+                      {phase.list.map((item) => (
+                        <li class="flex items-start gap-2">
+                          <span class="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-tertiary" />
+                          <span set:html={markdownify(item)} />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        {
+          impact_title && impact_list && (
+            <div class="row pt-16">
+              <div class="mx-auto lg:col-10" data-aos="fade-up-sm" data-aos-delay="200">
+                <div class="rounded-xl bg-tertiary p-8 text-text-light md:rounded-3xl md:p-10">
+                  <h3 class="h4 mb-6 text-center text-inherit" set:html={markdownify(impact_title)} />
+                  <ul class="space-y-3">
+                    {impact_list.map((item) => (
+                      <li class="flex items-start gap-3">
+                        <svg
+                          class="mt-1 h-5 w-5 flex-shrink-0"
+                          fill="currentColor"
+                          viewBox="0 0 20 20">
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                        <span class="text-lg/[inherit] text-inherit" set:html={markdownify(item)} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+

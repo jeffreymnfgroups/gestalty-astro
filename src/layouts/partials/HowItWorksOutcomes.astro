@@ -1,0 +1,174 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import DynamicIcon from "@/helpers/DynamicIcon";
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const { title, subtitle, description, stats, cta } = (
+  (await getEntry(
+    "howItWorksOutcomesSection",
+    "how-it-works-outcomes"
+  )) as CollectionEntry<"howItWorksOutcomesSection">
+).data;
+---
+
+<section class="section bg-gradient-to-b from-light/30 to-transparent">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+        {
+          subtitle && (
+            <p
+              class="mb-2 font-medium text-tertiary"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
+        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+        {
+          description && (
+            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+          )
+        }
+      </div>
+      
+      {/* Stats Cards */}
+      <div class="col-12 pt-16">
+        <div class="row g-4 justify-center">
+          {
+            stats?.map((stat, index) => (
+              <div
+                class="md:col-6 lg:col-4"
+                data-aos="fade-up-sm"
+                data-aos-delay={200 + index * 100}>
+                <div class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/5 to-secondary/5 p-8 text-center transition-all duration-500 hover:shadow-2xl">
+                  <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div class="relative z-10">
+                    {stat.icon && (
+                      <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-tertiary to-primary shadow-lg">
+                        <ImageMod
+                          class="h-10 w-10 object-cover brightness-0 invert"
+                          src={stat.icon}
+                          alt={`icon for ${stat.label}`}
+                        />
+                      </div>
+                    )}
+                    <div
+                      class="counter mb-3 text-5xl font-bold text-primary md:text-6xl"
+                      data-target={stat.value}>
+                      {stat.value}
+                    </div>
+                    {stat.label && (
+                      <p
+                        class="text-lg font-medium text-text-dark"
+                        set:html={markdownify(stat.label)}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      {cta && (
+        <div class="col-12 pt-20">
+          <div class="mx-auto lg:col-10">
+            <div
+              class="rounded-3xl bg-gradient-to-br from-primary to-secondary p-8 text-center text-white shadow-2xl md:p-12"
+              data-aos="fade-up-sm"
+              data-aos-delay="400">
+              {cta.title && (
+                <h3 class="mb-4 text-3xl font-bold md:text-4xl">
+                  {cta.title}
+                </h3>
+              )}
+              {cta.description && (
+                <p class="mb-8 text-lg opacity-95">
+                  {cta.description}
+                </p>
+              )}
+              {cta.buttons && cta.buttons.length > 0 && (
+                <div class="flex flex-wrap justify-center gap-4">
+                  {cta.buttons.map((button, index) => (
+                    button.enable && (
+                      <a
+                        href={button.link}
+                        class={`btn ${
+                          index === 0
+                            ? "btn-light"
+                            : "btn-outline-light"
+                        } group inline-flex items-center gap-2 px-6 py-3 text-base font-medium shadow-lg transition-all duration-300 hover:scale-105`}>
+                        {button.label}
+                        <span class="icon-wrapper">
+                          <span class="icon">
+                            <DynamicIcon icon="FaArrowRight" />
+                          </span>
+                          <span class="icon" aria-hidden="true">
+                            <DynamicIcon icon="FaArrowRight" />
+                          </span>
+                        </span>
+                      </a>
+                    )
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Counter animation
+  function animateCounter(element: HTMLElement) {
+    const target = element.getAttribute("data-target") || "0";
+    const numericValue = parseInt(target.replace(/[^0-9]/g, ""));
+    const suffix = target.replace(/[0-9]/g, "");
+    const duration = 2000;
+    const increment = numericValue / (duration / 16);
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= numericValue) {
+        element.textContent = target;
+        clearInterval(timer);
+      } else {
+        element.textContent = Math.floor(current) + suffix;
+      }
+    }, 16);
+  }
+
+  // Intersection Observer for counter animation
+  if (typeof window !== "undefined") {
+    const observerOptions = {
+      threshold: 0.5,
+      rootMargin: "0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const counter = entry.target as HTMLElement;
+          if (!counter.classList.contains("animated")) {
+            counter.classList.add("animated");
+            animateCounter(counter);
+            observer.unobserve(counter);
+          }
+        }
+      });
+    }, observerOptions);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const counters = document.querySelectorAll(".counter");
+      counters.forEach((counter) => observer.observe(counter));
+    });
+  }
+</script>
+

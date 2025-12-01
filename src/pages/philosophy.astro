@@ -1,0 +1,36 @@
+---
+import Base from "@/layouts/Base.astro";
+import PhilosophyBanner from "@/partials/PhilosophyBanner.astro";
+import EffortProgress from "@/partials/EffortProgress.astro";
+import LearningAcumen from "@/partials/LearningAcumen.astro";
+import PlatformEthos from "@/partials/PlatformEthos.astro";
+import AdultLearners from "@/partials/AdultLearners.astro";
+import LearningPhilosophy from "@/partials/LearningPhilosophy.astro";
+import ScienceApproach from "@/partials/ScienceApproach.astro";
+import LearningEngine from "@/partials/LearningEngine.astro";
+import ExpectedOutcomes from "@/partials/ExpectedOutcomes.astro";
+import CallToAction from "@/partials/CallToAction.astro";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const philosophy = (await getEntry("philosophy", "-index")) as CollectionEntry<"philosophy">;
+const { title, description, meta_title, image } = philosophy.data;
+---
+
+<Base
+  title={title}
+  meta_title={meta_title}
+  description={description}
+  image={image}>
+  <PhilosophyBanner />
+  <EffortProgress />
+  <LearningAcumen />
+  <PlatformEthos />
+  <AdultLearners />
+  <LearningPhilosophy />
+  <ScienceApproach />
+  <LearningEngine />
+  <ExpectedOutcomes />
+  <CallToAction />
+</Base>
+

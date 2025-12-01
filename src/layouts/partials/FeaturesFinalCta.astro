@@ -1,0 +1,89 @@
+---
+import DynamicIcon from "@/helpers/DynamicIcon";
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const { title, subtitle, description, tagline, buttons, alternative_buttons } = (
+  (await getEntry(
+    "featuresFinalCtaSection",
+    "features-final-cta"
+  )) as CollectionEntry<"featuresFinalCtaSection">
+).data;
+---
+
+<section class="section bg-gradient pb-24">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+        {title && <h2 class="mb-4" set:html={markdownify(title)} />}
+        {
+          subtitle && (
+            <p
+              class="mb-6 text-xl font-medium text-tertiary"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
+        {
+          description && (
+            <p class="mb-10 text-lg/[inherit]" set:html={markdownify(description)} />
+          )
+        }
+        
+        {/* Primary CTA Buttons */}
+        {
+          buttons && buttons.length > 0 && (
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+              {buttons.map((button) => (
+                button.enable && (
+                  <a
+                    class={button.primary ? "btn btn-primary" : "btn btn-outline-primary"}
+                    href={button.link}>
+                    {button.label}
+                    <span class="icon-wrapper">
+                      <span class="icon">
+                        <DynamicIcon icon={"FaArrowRight"} />
+                      </span>
+                      <span class="icon" aria-hidden="true">
+                        <DynamicIcon icon={"FaArrowRight"} />
+                      </span>
+                    </span>
+                  </a>
+                )
+              ))}
+            </div>
+          )
+        }
+
+        {/* Alternative Buttons */}
+        {
+          alternative_buttons && alternative_buttons.length > 0 && (
+            <div class="flex flex-wrap justify-center gap-3 mb-10">
+              {alternative_buttons.map((button) => (
+                button.enable && (
+                  <a
+                    class="text-sm font-medium text-tertiary hover:text-primary transition-colors"
+                    href={button.link}>
+                    {button.label}
+                  </a>
+                )
+              ))}
+            </div>
+          )
+        }
+
+        {/* Tagline */}
+        {
+          tagline && (
+            <p
+              class="text-lg font-medium text-gray-600 italic"
+              set:html={markdownify(tagline)}
+            />
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+

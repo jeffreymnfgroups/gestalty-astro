@@ -1,0 +1,92 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const {
+  title,
+  subtitle,
+  description,
+  core_belief,
+  list,
+  what_makes_different,
+} = (
+  (await getEntry(
+    "whatWeBuiltForSection",
+    "what-we-built-for"
+  )) as CollectionEntry<"whatWeBuiltForSection">
+).data;
+---
+
+<section class="section bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+        {
+          subtitle && (
+            <p
+              class="mb-2 font-medium text-tertiary"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
+        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+        {
+          description && (
+            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+          )
+        }
+      </div>
+      <div class="col-12 pt-16">
+        {
+          core_belief && (
+            <div class="row">
+              <div class="mx-auto lg:col-10" data-aos="fade-up-sm">
+                <div class="rounded-xl bg-tertiary p-8 text-center text-text-light md:rounded-3xl md:p-10">
+                  <h3 class="h4 mb-0 text-inherit" set:html={markdownify(core_belief)} />
+                </div>
+              </div>
+            </div>
+          )
+        }
+        {
+          list && (
+            <div class="row pt-12">
+              <div class="mx-auto lg:col-10" data-aos="fade-up-sm" data-aos-delay="100">
+                <div class="rounded-xl bg-white p-8 md:rounded-3xl md:p-12">
+                  <ul class="space-y-4">
+                    {list.map((item) => (
+                      <li class="flex items-start gap-3">
+                        <svg
+                          class="mt-1 h-5 w-5 flex-shrink-0 text-tertiary"
+                          fill="currentColor"
+                          viewBox="0 0 20 20">
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                        <span class="text-lg/[inherit]" set:html={markdownify(item)} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )
+        }
+        {
+          what_makes_different && (
+            <div class="row pt-12">
+              <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm" data-aos-delay="200">
+                <p class="text-lg/[inherit] font-medium" set:html={markdownify(what_makes_different)} />
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+

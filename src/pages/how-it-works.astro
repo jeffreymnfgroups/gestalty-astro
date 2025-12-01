@@ -1,0 +1,31 @@
+---
+import Base from "@/layouts/Base.astro";
+import CallToAction from "@/partials/CallToAction.astro";
+import HowItWorksBanner from "@/partials/HowItWorksBanner.astro";
+import HowItWorksDailyRoutine from "@/partials/HowItWorksDailyRoutine.astro";
+import HowItWorksJourney from "@/partials/HowItWorksJourney.astro";
+import HowItWorksOutcomes from "@/partials/HowItWorksOutcomes.astro";
+import HowItWorksWhyChoose from "@/partials/HowItWorksWhyChoose.astro";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const howItWorks = (await getEntry(
+  "howItWorks",
+  "-index"
+)) as CollectionEntry<"howItWorks">;
+const { title, description, meta_title, image } = howItWorks.data;
+---
+
+<Base
+  title={title}
+  meta_title={meta_title}
+  description={description}
+  image={image}>
+  <HowItWorksBanner />
+  <HowItWorksJourney />
+  <HowItWorksDailyRoutine />
+  <HowItWorksWhyChoose />
+  <HowItWorksOutcomes />
+  <CallToAction />
+</Base>
+

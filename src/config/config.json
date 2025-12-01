@@ -1,0 +1,44 @@
+{
+  "site": {
+    "title": "Gestalty - Top 5% Exam Prep Platform | NEET, UPSC, JEE Preparation",
+    "base_url": "https://fortify-astro.vercel.app",
+    "base_path": "/",
+    "trailing_slash": true,
+    "favicon": "/images/favicon.ico",
+    "logo": "/images/GestaltyFinal.svg",
+    "logo_width": "120",
+    "logo_height": "30",
+    "logo_text": "Gestalty"
+  },
+
+  "settings": {
+    "pagination": 3,
+    "summary_length": 120,
+    "blog_folder": "blog"
+  },
+
+  "params": {
+    "contact_form_action": "#",
+    "footer_description": "A cognitive precision learning platform engineered to master competitive exam preparation with structure, clarity, control, and confidence. Where progress is visible, study is scientific, and accountability is shared.",
+    "copyright": "Copyright © 2025 Gestalty. All Rights Reserved"
+  },
+
+  "subscription": {
+    "enable": true,
+    "action": "#",
+    "title": "Subscribe to Our Newsletter!",
+    "description": "Get the latest insights on cognitive learning, exam strategies, and success stories from top performers!"
+  },
+
+  "navigation_button": {
+    "enable": true,
+    "label": "Get Started",
+    "link": "/contact/"
+  },
+
+  "metadata": {
+    "meta_author": "Gestalty",
+    "meta_image": "/images/og-image.png",
+    "meta_description": "Science-driven exam preparation platform combining cognitive psychology, AI analytics, and expert mentorship. Transform your NEET, UPSC, or JEE prep with proven results."
+  }
+}

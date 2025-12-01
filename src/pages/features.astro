@@ -1,0 +1,33 @@
+---
+import Base from "@/layouts/Base.astro";
+import FeaturesSection from "@/partials/FeatureSection.astro";
+import FeaturesGrid from "@/partials/FeaturesGrid.astro";
+import FeaturesExplanation from "@/partials/FeaturesExplanation.astro";
+import FeaturesWhoItsFor from "@/partials/FeaturesWhoItsFor.astro";
+import FeaturesDifferentiators from "@/partials/FeaturesDifferentiators.astro";
+import FeaturesBenefits from "@/partials/FeaturesBenefits.astro";
+import FeaturesFinalCta from "@/partials/FeaturesFinalCta.astro";
+import type { CollectionEntry } from "astro:content";
+import { getEntry } from "astro:content";
+
+const features = (await getEntry(
+  "features",
+  "-index"
+)) as CollectionEntry<"features">;
+const { title, description, meta_title, image, hero } = features.data;
+---
+
+<Base
+  title={title}
+  meta_title={meta_title}
+  description={description}
+  image={image}>
+  <FeaturesGrid content={hero} largeHeading={true} />
+  <FeaturesSection />
+  <FeaturesGrid />
+  <FeaturesExplanation />
+  <FeaturesWhoItsFor />
+  <FeaturesDifferentiators />
+  <FeaturesBenefits />
+  <FeaturesFinalCta />
+</Base>
