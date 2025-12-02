@@ -1,5 +1,6 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
+import FlipWords from "@/components/FlipWords.astro";
 import DynamicIcon from "@/helpers/DynamicIcon";
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
@@ -11,6 +12,8 @@ const { title, description, buttons, images } = (
     "home-banner"
   )) as CollectionEntry<"homeBannerSection">
 ).data;
+
+const flipWords = ["Scientifically", "Strategically", "Psychologically", "Statistically"];
 ---
 
 {
@@ -19,6 +22,17 @@ const { title, description, buttons, images } = (
       <div class="container">
         <div class="row justify-center">
           <div class="mb-16 text-center md:col-9 lg:col-11">
+            <div 
+              class="mb-6 text-2xl lg:text-3xl font-semibold"
+              data-aos="fade-up-sm"
+            >
+              <span>A System That Thinks with You </span>
+              <FlipWords 
+                words={flipWords} 
+                duration={3000}
+                className="text-tertiary"
+              />
+            </div>
             {title && (
               <h1
                 set:html={markdownify(title)}

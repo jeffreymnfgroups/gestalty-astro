@@ -1,0 +1,109 @@
+---
+interface Props {
+  words: string[];
+  duration?: number;
+  className?: string;
+}
+
+const { words, duration = 3000, className = "" } = Astro.props;
+const uniqueId = `flip-words-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class={`flip-words-container ${className}`} id={uniqueId}>
+  <span class="flip-words-wrapper">
+    <span class="flip-words-sizer" aria-hidden="true">
+      {words.reduce((longest, word) => word.length > longest.length ? word : longest, words[0])}
+    </span>
+    {words.map((word, index) => (
+      <span 
+        class={`flip-word ${index === 0 ? 'active' : ''}`}
+        data-index={index}
+      >
+        {word.split('').map((letter) => (
+          <span class="letter">{letter}</span>
+        ))}
+      </span>
+    ))}
+  </span>
+</div>
+
+<style>
+  .flip-words-container {
+    display: inline-block;
+    position: relative;
+  }
+
+  .flip-words-wrapper {
+    display: inline-block;
+    position: relative;
+    min-height: 1.2em;
+  }
+
+  .flip-words-sizer {
+    visibility: hidden;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .flip-word {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    white-space: nowrap;
+    transform: translateY(20px) rotateX(-90deg);
+    transform-origin: center center;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform, opacity;
+  }
+
+  .flip-word.active {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+
+  .flip-word .letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform, opacity;
+  }
+
+  .flip-word.active .letter {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script define:vars={{ words, duration, uniqueId }}>
+  const container = document.getElementById(uniqueId);
+  const wordElements = container.querySelectorAll('.flip-word');
+  let currentIndex = 0;
+
+  function animateWord() {
+    const currentWord = wordElements[currentIndex];
+    const nextIndex = (currentIndex + 1) % words.length;
+    const nextWord = wordElements[nextIndex];
+
+    // Remove active class from current word
+    currentWord.classList.remove('active');
+
+    // Add active class to next word
+    requestAnimationFrame(() => {
+      nextWord.classList.add('active');
+      
+      // Stagger letter animations
+      const letters = nextWord.querySelectorAll('.letter');
+      letters.forEach((letter, index) => {
+        letter.style.transitionDelay = `${index * 0.03}s`;
+      });
+    });
+
+    currentIndex = nextIndex;
+  }
+
+  // Start animation loop
+  setInterval(animateWord, duration);
+</script>
