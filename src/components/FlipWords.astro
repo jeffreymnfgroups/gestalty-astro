@@ -9,6 +9,10 @@ const { words, duration = 2000, className = "" } = Astro.props;
 const uniqueId = `flip-words-${Math.random().toString(36).substr(2, 9)}`;
 ---
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
 <div class={`flip-words-container ${className}`} id={uniqueId}>
   <span class="flip-words-wrapper">
     <span class="flip-words-sizer" aria-hidden="true">
@@ -61,6 +65,9 @@ const uniqueId = `flip-words-${Math.random().toString(36).substr(2, 9)}`;
                 visibility 0s 0.4s;
     will-change: transform, opacity;
     z-index: 1;
+    color: #fbc10d;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
   }
 
   .flip-word.active {
