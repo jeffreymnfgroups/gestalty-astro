@@ -38,9 +38,10 @@ const { title, subtitle, description, tagline, buttons, alternative_buttons } = 
               {buttons.map((button) => (
                 button.enable && (
                   <a
-                    class={button.primary ? "btn btn-primary" : "btn btn-outline-primary"}
+                    class="btn btn-outline-primary text-sm px-4 py-2 font-medium [&_.icon-wrapper]:h-9 [&_.icon-wrapper]:w-9 [&_.icon]:h-9 [&_.icon]:min-w-9 [&_svg]:h-4 [&_svg]:w-4"
                     href={button.link}>
                     {button.label}
+                    <span class="sr-only">Details</span>
                     <span class="icon-wrapper">
                       <span class="icon">
                         <DynamicIcon icon={"FaArrowRight"} />

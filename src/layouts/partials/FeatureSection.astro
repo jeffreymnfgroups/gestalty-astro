@@ -114,8 +114,9 @@ const { title, subtitle, description, list } = (
                 )}
 
                 {item.button && item.button.enable && (
-                  <a class="btn btn-primary mt-12" href={item.button.link}>
+                  <a class="btn btn-outline-primary text-sm px-4 py-2 font-medium [&_.icon-wrapper]:h-9 [&_.icon-wrapper]:w-9 [&_.icon]:h-9 [&_.icon]:min-w-9 [&_svg]:h-4 [&_svg]:w-4 mt-12" href={item.button.link}>
                     {item.button.label}
+                    <span class="sr-only">Details</span>
                     <span class="icon-wrapper">
                       <span class="icon">
                         <DynamicIcon icon={"FaArrowRight"} />

@@ -1,5 +1,6 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
+import DynamicIcon from "@/helpers/DynamicIcon";
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
@@ -42,8 +43,17 @@ const { title, subtitle, subheadline, description, left_image, right_image, butt
                 button.enable ? (
                   <a
                     href={button.link}
-                    class={button.variant === "secondary" ? "btn btn-outline-primary" : "btn btn-primary"}>
+                    class="btn btn-outline-primary text-sm px-4 py-2 font-medium [&_.icon-wrapper]:h-9 [&_.icon-wrapper]:w-9 [&_.icon]:h-9 [&_.icon]:min-w-9 [&_svg]:h-4 [&_svg]:w-4">
                     {button.label}
+                    <span class="sr-only">Details</span>
+                    <span class="icon-wrapper">
+                      <span class="icon">
+                        <DynamicIcon icon={"FaArrowRight"} />
+                      </span>
+                      <span class="icon" aria-hidden="true">
+                        <DynamicIcon icon={"FaArrowRight"} />
+                      </span>
+                    </span>
                   </a>
                 ) : null
               )}

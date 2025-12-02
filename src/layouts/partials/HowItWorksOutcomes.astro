@@ -97,12 +97,9 @@ const { title, subtitle, description, stats, cta } = (
                     button.enable && (
                       <a
                         href={button.link}
-                        class={`btn ${
-                          index === 0
-                            ? "btn-light"
-                            : "btn-outline-light"
-                        } group inline-flex items-center gap-2 px-6 py-3 text-base font-medium shadow-lg transition-all duration-300 hover:scale-105`}>
+                        class="btn btn-outline-primary text-sm px-4 py-2 font-medium [&_.icon-wrapper]:h-9 [&_.icon-wrapper]:w-9 [&_.icon]:h-9 [&_.icon]:min-w-9 [&_svg]:h-4 [&_svg]:w-4">
                         {button.label}
+                        <span class="sr-only">Details</span>
                         <span class="icon-wrapper">
                           <span class="icon">
                             <DynamicIcon icon="FaArrowRight" />
