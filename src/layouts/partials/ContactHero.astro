@@ -1,171 +1,347 @@
 ---
-import ImageMod from "@/components/ImageMod.astro";
 import config from "@/config/config.json";
-import { markdownify } from "@/lib/utils/textConverter";
-import type { CollectionEntry } from "astro:content";
-import { getEntry } from "astro:content";
 
 const { contact_form_action } = config.params;
-const { hero } = (
-  (await getEntry("contact", "-index")) as CollectionEntry<"contact">
-).data;
 ---
 
-<section class="section pt-24">
+<section class="section bg-offWhite">
   <div class="container">
-    <div class="row">
-      <div class="lg:col-7 lg:pe-20 lg:pt-16" data-aos="fade-left-sm">
-        {
-          hero.subtitle && (
-            <p
-              class="mb-2 font-medium text-tertiary"
-              set:html={markdownify(hero.subtitle)}
-            />
-          )
-        }
-        {
-          hero.title && (
-            <h2 class="md:h1 mb-6" set:html={markdownify(hero.title)} />
-          )
-        }
-        {
-          hero.description && (
-            <p
-              class="text-lg/[inherit]"
-              set:html={markdownify(hero.description)}
-            />
-          )
-        }
-        {
-          hero.list && (
-            <div class="mt-10 flex flex-col gap-10 sm:flex-row xl:mt-20">
-              {hero.list.map((point) => (
-                <div>
-                  {point.icon && (
-                    <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-tertiary">
-                      <ImageMod
-                        class="h-6 w-6 object-cover"
-                        src={point.icon}
-                        alt={`icon related to ${point.title}`}
-                      />
-                    </div>
-                  )}
-                  {point.title && (
-                    <h3
-                      class="h6 mb-2 mt-5"
-                      set:html={markdownify(point.title)}
-                    />
-                  )}
-                  {point.description && (
-                    <p
-                      class="text-lg/[inherit]"
-                      set:html={markdownify(point.description)}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          )
-        }
+    <!-- Contact Header -->
+    <div class="mx-auto text-center lg:col-10 mb-12 md:mb-16 animate-on-scroll delay-0">
+      <h1 class="mb-6">
+        Contact
+      </h1>
+    </div>
+
+    <form class="w-full" action={contact_form_action} method="POST">
+    <!-- Paragraph-style form fields -->
+    <div class="w-full flex flex-col gap-8 md:gap-10 animate-on-scroll delay-1">
+      <!-- Line 1: Name and Exam Preparation -->
+      <div class="w-full flex flex-wrap items-baseline gap-2 md:gap-3">
+        <span class="form-label-group">
+          <span class="form-label font-primary font-semibold text-text-dark">Hi! My name is</span>
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter your name*"
+            required
+            class="form-input-inline font-primary"
+          />
+        </span>
+        <span class="form-label-group">
+          <span class="form-label font-primary font-semibold text-text-dark">and I'm preparing for</span>
+          <input
+            type="text"
+            name="exam"
+            placeholder="NEET / JEE / UPSC / Other*"
+            required
+            class="form-input-inline font-primary"
+          />
+        </span>
       </div>
-      <div
-        class="relative pt-24 lg:col-5 lg:pt-16"
-        data-aos="fade-left-sm"
-        data-aos-delay="200">
-        <ImageMod
-          class="absolute left-1/2 top-5 -z-10 w-20 -translate-x-1/2 lg:-top-7"
-          src={"/images/logo-icon.svg"}
-          alt="hero image"
-          loading="eager"
-        />
-        <div class="rounded-2xl bg-light p-5 md:p-10">
-          <form class="row g-4" action={contact_form_action} method="POST">
-            <div class="lg:col-6">
-              <label for="name" class="form-label">
-                First Name <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="name"
-                name="name"
-                class="form-input"
-                placeholder="Your First Name"
-                required
-                type="text"
-              />
-            </div>
-            <div class="lg:col-6">
-              <label for="name" class="form-label">
-                Last Name <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="name"
-                name="name"
-                class="form-input"
-                placeholder="Your Last Name"
-                required
-                type="text"
-              />
-            </div>
-            <div class="col-12">
-              <label for="email" class="form-label">
-                Email <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="email"
-                name="email"
-                class="form-input"
-                placeholder="youremail@email.com"
-                required
-                type="email"
-              />
-            </div>
-            <div class="col-12">
-              <label for="comapny-name" class="form-label">
-                Company Name <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="comapny-name"
-                name="comapny-name"
-                class="form-input"
-                placeholder="Your Company Name"
-                required
-                type="text"
-              />
-            </div>
-            <div class="col-12">
-              <label for="subject" class="form-label">
-                Subject <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="subject"
-                name="subject"
-                class="form-input"
-                placeholder="Your Company Name"
-                required
-                type="text"
-              />
-            </div>
-            <div class="col-12">
-              <label for="message" class="form-label">
-                Write Message <span class="text-red-500">*</span>
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                class="form-input"
-                placeholder="Write Your Message Here"
-                required
-                rows="3">
-              </textarea>
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-regular">
-                Send Message
-              </button>
-            </div>
-          </form>
-        </div>
+
+      <!-- Line 2: Goal -->
+      <div class="w-full flex flex-wrap items-baseline gap-2 md:gap-3">
+        <span class="form-label-group form-label-group-flex">
+          <span class="form-label font-primary font-semibold text-text-dark">I'm looking for a platform to help me achieve</span>
+          <input
+            type="text"
+            name="goal"
+            placeholder="Your exam preparation goal*"
+            required
+            class="form-input-inline font-primary flex-1 min-w-[250px]"
+          />
+        </span>
+      </div>
+
+      <!-- Line 3: Exam Date and Budget -->
+      <div class="w-full flex flex-wrap items-baseline gap-2 md:gap-3">
+        <span class="form-label-group">
+          <span class="form-label font-primary font-semibold text-text-dark">My target exam date is</span>
+          <input
+            type="text"
+            name="examDate"
+            placeholder="Exam date (e.g., May 2025)*"
+            required
+            class="form-input-inline font-primary"
+          />
+        </span>
+        <span class="form-label-group">
+          <span class="form-label font-primary font-semibold text-text-dark">and I'm interested in a plan that fits my budget of</span>
+          <input
+            type="text"
+            name="budget"
+            placeholder="Budget range (optional)"
+            class="form-input-inline font-primary"
+          />
+        </span>
+      </div>
+
+      <!-- Line 4: Email -->
+      <div class="w-full flex flex-wrap items-baseline gap-2 md:gap-3">
+        <span class="form-label-group">
+          <span class="form-label font-primary font-semibold text-text-dark">You can reach me at</span>
+          <input
+            type="email"
+            name="email"
+            placeholder="your.email@example.com"
+            required
+            class="form-input-inline font-primary"
+          />
+        </span>
+        <span class="form-label font-primary font-semibold text-text-dark">to start the conversation.</span>
+      </div>
+
+      <!-- Line 5: Additional Info -->
+      <div class="w-full flex flex-wrap items-baseline gap-2 md:gap-3">
+        <span class="form-label-group form-label-group-flex">
+          <span class="form-label font-primary font-semibold text-text-dark">Optionally, I'd like to share more about my preparation:</span>
+          <input
+            type="text"
+            name="additionalInfo"
+            placeholder="Current preparation stage, challenges, or specific needs..."
+            class="form-input-inline font-primary flex-1 min-w-[250px]"
+          />
+        </span>
       </div>
     </div>
+    
+    <!-- Footer: Checkbox and Button -->
+    <div class="w-full flex items-center justify-end sm:justify-start max-[400px]:justify-start pt-14 md:pt-16 animate-on-scroll delay-7">
+      <div class="flex sm:flex-col max-[400px]:flex-col gap-5 md:gap-[25px]">
+        <!-- Privacy Policy Checkbox -->
+        <div class="flex gap-[10px] items-center">
+          <div class="flex gap-[10px]">
+            <input
+              type="checkbox"
+              name="privacyAgree"
+              required
+              class="w-6 h-6 md:w-7 md:h-7 accent-primaryYellow cursor-pointer border-2 border-grayBlue-30 rounded focus:ring-2 focus:ring-[rgba(251,193,13,0.5)] transition-all"
+            />
+            <p class="text-base md:text-lg text-text-dark font-primary font-normal">
+              I agree with the
+            </p>
+          </div>
+          <a
+            class="text-base md:text-lg font-medium font-primary text-primaryYellow capitalize flex flex-col hover:text-text-dark transition-colors duration-200"
+            href="/privacy"
+          >
+            Privacy Policy
+          </a>
+        </div>
+        
+        <!-- Submit Button (RoundButton) -->
+        <button
+          type="submit"
+          class="text-base md:text-lg uppercase font-semibold font-primary group flex items-center justify-between bg-darkBlue cursor-pointer rounded-full hover:bg-primaryYellow transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
+          <span class="px-4 md:px-5 ml-4 md:ml-5 py-3 md:py-3.5 text-offWhite group-hover:text-text-dark font-semibold transition-colors">
+            Start My Journey
+          </span>
+          <div class="p-2.5 md:p-3 rounded-full mr-2.5 md:mr-3 transition-all duration-300">
+            <svg
+              stroke-width="1.5"
+              width="26"
+              height="26"
+              class="md:w-[32px] md:h-[32px] text-offWhite group-hover:text-text-dark transition-colors"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+            </svg>
+          </div>
+        </button>
+      </div>
+    </div>
+    </form>
   </div>
 </section>
+
+<style>
+  /* Animation Keyframes */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Animation Classes */
+  .animate-on-scroll {
+    opacity: 0;
+  }
+
+  .animate-on-scroll.delay-0 { 
+    animation: fadeInUp 0.5s ease-out 0s forwards; 
+  }
+
+  .animate-on-scroll.delay-1 { 
+    animation: fadeInUp 0.5s ease-out 0.1s forwards; 
+  }
+
+  .animate-on-scroll.delay-7 { 
+    animation: fadeInUp 0.5s ease-out 0.7s forwards; 
+  }
+
+  /* Form Label - Enhanced size, using font-secondary */
+  .form-label {
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 1024px) {
+    .form-label {
+      font-size: 22px;
+      line-height: 30px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .form-label {
+      font-size: 20px;
+      line-height: 28px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .form-label {
+      font-size: 18px;
+      line-height: 26px;
+    }
+  }
+
+  /* Inline Input Field Styling - Dash/Underline Style */
+  .form-input-inline {
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2.5px solid rgba(106, 113, 136, 0.3);
+    padding-bottom: 10px;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    color: #1d1d1d;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    min-width: 180px;
+    width: auto;
+    flex: 1 1 auto;
+    display: inline-block;
+  }
+
+  @media (max-width: 1024px) {
+    .form-input-inline {
+      font-size: 18px;
+      line-height: 26px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .form-input-inline {
+      font-size: 17px;
+      line-height: 24px;
+    }
+  }
+
+  .form-input-inline::placeholder {
+    color: rgba(106, 113, 136, 0.7);
+    opacity: 1;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .form-input-inline:focus {
+    border-bottom-color: #fbc10d;
+    border-bottom-width: 3px;
+    background: transparent;
+    transform: translateY(-1px);
+  }
+
+  .form-input-inline:focus::placeholder {
+    opacity: 0;
+  }
+
+  .form-input-inline:hover {
+    border-bottom-color: rgba(106, 113, 136, 0.5);
+  }
+
+  /* Form label group - keeps text and input together, prevents unwanted breaks */
+  .form-label-group {
+    display: inline-flex;
+    align-items: baseline;
+    white-space: nowrap;
+    flex-shrink: 0;
+    gap: 0.5rem;
+  }
+
+  /* Form label group with flex input for longer fields */
+  .form-label-group-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  /* On desktop, prevent breaking between label and input */
+  @media (min-width: 769px) {
+    .form-label-group {
+      white-space: nowrap;
+    }
+  }
+
+  /* Responsive adjustments for paragraph flow */
+  @media (max-width: 768px) {
+    .form-input-inline {
+      width: 100%;
+      min-width: 100%;
+    }
+    
+    /* Allow breaking on mobile for better readability */
+    .form-label-group {
+      white-space: normal;
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    
+    .form-label-group-flex {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll animations
+  if (typeof window !== 'undefined') {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-on-scroll');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+      });
+    });
+  }
+</script>

@@ -16,14 +16,14 @@ const { title, subtitle, subheadline, description, left_image, right_image, butt
   <div class="container">
     <div class="row">
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        {
+        <!-- {
           subtitle && (
             <p
               class="mb-2 font-medium text-tertiary"
               set:html={markdownify(subtitle)}
             />
           )
-        }
+        } -->
         {title && <h1 class="mb-4" set:html={markdownify(title)} />}
         {
           subheadline && (

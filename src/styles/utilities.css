@@ -4,3 +4,149 @@
 @utility custom-shadow-sm {
   box-shadow: 0 4px 8px #0000000d;
 }
+
+/* Padding Utilities */
+.padding-x {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+@media (max-width: 1023px) {
+  .padding-x {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .padding-x {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+.padding-y {
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+@media (max-width: 1024px) {
+  .padding-y {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .padding-y {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+
+@media (max-width: 400px) {
+  .padding-y {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+}
+
+/* Typography */
+.sub-heading {
+  font-size: 55px;
+  line-height: 55px;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .sub-heading {
+    font-size: 52px;
+    line-height: 52px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sub-heading {
+    font-size: 40px;
+    line-height: 40px;
+  }
+}
+
+@media (max-width: 400px) {
+  .sub-heading {
+    font-size: 31px;
+    line-height: 31px;
+  }
+}
+
+.paragraph {
+  font-size: 18px;
+  line-height: 26px;
+}
+
+@media (max-width: 1024px) {
+  .paragraph {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.small-text {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+@media (min-width: 1024px) {
+  .small-text {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+/* Font Families - Mapping to existing fonts */
+.font-FoundersGrotesk {
+  font-family: var(--font-secondary), sans-serif;
+}
+
+.font-NeueMontreal {
+  font-family: var(--font-primary), sans-serif;
+}
+
+/* Color Utilities */
+.bg-offWhite {
+  background-color: #fefefe;
+}
+
+.bg-darkBlue {
+  background-color: #19254c;
+}
+
+.bg-primaryYellow {
+  background-color: #fbc10d;
+}
+
+.text-darkBlue {
+  color: #19254c;
+}
+
+.text-primaryYellow {
+  color: #fbc10d;
+}
+
+.text-offWhite {
+  color: #fefefe;
+}
+
+.border-grayBlue-30 {
+  border-color: rgba(106, 113, 136, 0.3);
+}
+
+.border-primaryYellow {
+  border-color: #fbc10d;
+}
+
+/* Glow Effect */
+.glow-yellow-hover:hover {
+  box-shadow: 0 0 30px rgba(251, 193, 13, 0.6), 0 0 60px rgba(251, 193, 13, 0.3);
+  transition: box-shadow 0.3s ease-in-out;
+}

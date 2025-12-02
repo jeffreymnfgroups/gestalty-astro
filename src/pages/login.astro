@@ -1,0 +1,17 @@
+---
+import Base from "@/layouts/Base.astro";
+import LoginHero from "@/partials/LoginHero.astro";
+import CallToAction from "@/partials/CallToAction.astro";
+
+const meta_title = "Log In - Gestalty";
+const title = "Log In";
+const description = "Log in to your Gestalty account to continue your exam preparation journey.";
+---
+
+<Base
+  title={title}
+  meta_title={meta_title}
+  description={description}>
+  <LoginHero />
+  <CallToAction />
+</Base>

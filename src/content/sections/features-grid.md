@@ -1,5 +1,5 @@
 ---
-subtitle: "The Barriers We Break"
+subtitle: ""
 title: "The Challenge We Address"
 description: "We don't just fix education's pain points—we dismantle them with science-backed tools"
 list:

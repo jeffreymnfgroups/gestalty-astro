@@ -7,7 +7,9 @@
         "tertiary": "#19254c",
         "body": "#fff",
         "border": "#e0e0e0",
-        "light": "#fafafa"
+        "light": "#fafafa",
+        "grayBlue": "#6a7188",
+        "offWhite": "#fefefe"
       },
       "text_color": {
         "text": "#464646",

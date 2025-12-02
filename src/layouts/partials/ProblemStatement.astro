@@ -9,12 +9,28 @@ const { title, subtitle, description, list } = (
     "problem-statement"
   )) as CollectionEntry<"problemStatementSection">
 ).data;
+
+// Map list items to images (problem1.webp to problem9.webp)
+const cards = list?.map((item, index) => ({
+  name: item.title || "",
+  description: item.description || "",
+  src: `/images/problem${index + 1}.webp`
+})) || [];
 ---
 
-<section class="section">
-  <div class="container">
-    <div class="row">
-      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
+<section class="w-full bg-gradient-to-b from-body via-light/20 to-body relative pt-12 sm:pt-16 lg:pt-20 pb-12 sm:pb-16 lg:pb-20 overflow-hidden">
+  <!-- Background Pattern -->
+  <div
+    class="absolute inset-0 opacity-[0.03]"
+    style={{
+      backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2319254c' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+    }}
+  />
+
+  <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
+    <div class="max-w-[1600px] mx-auto">
+      <!-- Header Section -->
+      <div class="text-center mb-12">
         {title && <h2 class="mb-6" set:html={markdownify(title)} />}
         {
           subtitle && (
@@ -30,28 +46,303 @@ const { title, subtitle, description, list } = (
           )
         }
       </div>
-      <div class="col-12">
-        <div class="row g-4 justify-center">
-          {
-            list?.map((item, index) => (
+
+      <!-- Card Stack Section -->
+      <div class="mb-8 sm:mb-12">
+        <!-- Section Title with Navigation -->
+        <div class="mb-6 sm:mb-8 flex items-center justify-between">
+          <div>
+            <!-- <p class="text-xs sm:text-sm md:text-base font-medium text-secondary italic">
+              Cognitive Biases Aspirants Face:
+            </p> -->
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="flex gap-2">
+            <button
+              id="scrollLeftBtn"
+              class="h-10 w-10 rounded-full border-2 border-tertiary/30 bg-body/80 backdrop-blur-sm hover:border-secondary hover:bg-secondary/10 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-tertiary/30 disabled:hover:bg-body/80 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
+              aria-label="Scroll left">
+              <svg class="h-6 w-6 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              id="scrollRightBtn"
+              class="h-10 w-10 rounded-full border-2 border-tertiary/30 bg-body/80 backdrop-blur-sm hover:border-secondary hover:bg-secondary/10 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-tertiary/30 disabled:hover:bg-body/80 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
+              aria-label="Scroll right">
+              <svg class="h-6 w-6 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Carousel Container -->
+        <div class="relative">
+          <div
+            id="carousel"
+            class="flex flex-row gap-3 overflow-x-scroll scroll-smooth py-4 md:py-6 overscroll-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden cursor-grab"
+          >
+            {cards.map((card, index) => (
               <div
-                class="md:col-6 lg:col-4"
-                data-aos="fade-up-sm"
-                data-aos-delay={index * 100}>
-                <div class="min-h-full rounded-xl bg-light px-6 py-8 md:rounded-3xl">
-                  {item.title && (
-                    <h4 class="h6 mb-3" set:html={markdownify(item.title)} />
-                  )}
-                  {item.description && (
-                    <p class="text-sm" set:html={markdownify(item.description)} />
-                  )}
+                class="group relative flex-shrink-0 card-item"
+                data-index={index}
+              >
+                <!-- Card Container -->
+                <div class="science-card relative flex h-[20rem] w-64 flex-shrink-0 flex-col items-start justify-end overflow-hidden rounded-2xl bg-light/20 md:h-[24rem] md:w-72 hover:scale-[1.02] transition-all duration-300 shadow-md hover:shadow-lg">
+                  <!-- Background Image -->
+                  <img
+                    src={card.src}
+                    alt={card.name}
+                    class="absolute inset-0 z-10 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading={index < 3 ? "eager" : "lazy"}
+                  />
+
+                  <!-- Gradient Overlay -->
+                  <div class="absolute inset-0 z-30 bg-gradient-to-b from-transparent via-tertiary/40 to-tertiary/80 pointer-events-none transition-opacity duration-300 group-hover:via-tertiary/50 group-hover:to-tertiary/90" />
+
+                  <!-- Content Overlay -->
+                  <div class="relative z-40 p-4 w-full">
+                    {card.name && (
+                      <h4 class="h6 mb-2 text-body drop-shadow-md" set:html={markdownify(card.name)} />
+                    )}
+                    {card.description && (
+                      <p class="text-sm text-body/95 drop-shadow-md leading-snug" set:html={markdownify(card.description)} />
+                    )}
+                  </div>
                 </div>
               </div>
-            ))
-          }
+            ))}
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Custom Drag Cursor -->
+  <div
+    id="dragCursor"
+    class="fixed pointer-events-none z-50 hidden"
+  >
+    <div class="bg-tertiary/80 text-body px-3 py-1.5 rounded-full text-xs font-medium font-primary whitespace-nowrap shadow-lg backdrop-blur-sm border border-secondary/30">
+      Drag
+    </div>
+  </div>
 </section>
 
+<style>
+  /* Card entrance animations */
+  .card-item {
+    animation: fadeInUp 0.55s ease-out forwards;
+    opacity: 0;
+  }
+
+  .card-item[data-index="0"] {
+    animation-delay: 0.09s;
+  }
+
+  .card-item[data-index="1"] {
+    animation-delay: 0.18s;
+  }
+
+  .card-item[data-index="2"] {
+    animation-delay: 0.27s;
+  }
+
+  .card-item[data-index="3"] {
+    animation-delay: 0.36s;
+  }
+
+  .card-item[data-index="4"] {
+    animation-delay: 0.45s;
+  }
+
+  .card-item[data-index="5"] {
+    animation-delay: 0.54s;
+  }
+
+  .card-item[data-index="6"] {
+    animation-delay: 0.63s;
+  }
+
+  .card-item[data-index="7"] {
+    animation-delay: 0.72s;
+  }
+
+  .card-item[data-index="8"] {
+    animation-delay: 0.81s;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Smooth scrollbar hiding */
+  [scrollbar-width=none] {
+    scrollbar-width: none;
+  }
+
+  [-ms-overflow-style=none] {
+    -ms-overflow-style: none;
+  }
+
+  [&::-webkit-scrollbar]:hidden::-webkit-scrollbar {
+    display: none;
+  }
+
+  .science-card {
+    will-change: transform;
+  }
+</style>
+
+<script>
+  // Carousel functionality
+  const carousel = document.getElementById('carousel');
+  const scrollLeftBtn = document.getElementById('scrollLeftBtn');
+  const scrollRightBtn = document.getElementById('scrollRightBtn');
+  const dragCursor = document.getElementById('dragCursor');
+
+  if (!carousel || !scrollLeftBtn || !scrollRightBtn) {
+    console.warn('Carousel elements not found');
+  } else {
+    let isDragging = false;
+    let dragStart = { x: 0, scrollLeft: 0 };
+    let cursorPosition = { x: 0, y: 0 };
+    let touchStart = { x: 0, scrollLeft: 0 };
+
+    // Check scrollability and update button states
+    function checkScrollability() {
+      if (!carousel) return;
+      const { scrollLeft, scrollWidth, clientWidth } = carousel;
+      scrollLeftBtn.disabled = scrollLeft <= 0;
+      scrollRightBtn.disabled = scrollLeft >= scrollWidth - clientWidth - 1;
+    }
+
+    // Initial check
+    checkScrollability();
+
+    // Scroll event listener
+    carousel.addEventListener('scroll', checkScrollability);
+
+    // Window resize handler
+    window.addEventListener('resize', checkScrollability);
+
+    // Navigation button handlers
+    scrollLeftBtn.addEventListener('click', () => {
+      if (carousel) {
+        carousel.scrollBy({ left: -280, behavior: 'smooth' });
+      }
+    });
+
+    scrollRightBtn.addEventListener('click', () => {
+      if (carousel) {
+        carousel.scrollBy({ left: 280, behavior: 'smooth' });
+      }
+    });
+
+    // Drag handlers
+    function handleMouseDown(e: MouseEvent) {
+      if (!carousel) return;
+      isDragging = true;
+      const rect = carousel.getBoundingClientRect();
+      dragStart = {
+        x: e.pageX - rect.left,
+        scrollLeft: carousel.scrollLeft,
+      };
+      cursorPosition = { x: e.pageX, y: e.pageY };
+      carousel.style.cursor = 'grabbing';
+      carousel.style.userSelect = 'none';
+      e.preventDefault();
+    }
+
+    function handleMouseMove(e: MouseEvent) {
+      if (!isDragging || !carousel) return;
+      e.preventDefault();
+      const rect = carousel.getBoundingClientRect();
+      const x = e.pageX - rect.left;
+      const walk = (x - dragStart.x) * 2; // Scroll speed multiplier
+      carousel.scrollLeft = dragStart.scrollLeft - walk;
+      cursorPosition = { x: e.pageX, y: e.pageY };
+
+      // Update drag cursor position
+      if (dragCursor) {
+        dragCursor.style.left = `${cursorPosition.x + 20}px`;
+        dragCursor.style.top = `${cursorPosition.y - 20}px`;
+        dragCursor.classList.remove('hidden');
+      }
+    }
+
+    function handleMouseUp() {
+      isDragging = false;
+      if (carousel) {
+        carousel.style.cursor = 'grab';
+        carousel.style.userSelect = 'auto';
+      }
+      if (dragCursor) {
+        dragCursor.classList.add('hidden');
+      }
+    }
+
+    // Touch handlers for mobile
+    function handleTouchStart(e: TouchEvent) {
+      if (!carousel) return;
+      touchStart = {
+        x: e.touches[0].pageX,
+        scrollLeft: carousel.scrollLeft,
+      };
+    }
+
+    function handleTouchMove(e: TouchEvent) {
+      if (!touchStart.x || !carousel) return;
+      const x = e.touches[0].pageX;
+      const walk = (x - touchStart.x) * 2;
+      carousel.scrollLeft = touchStart.scrollLeft - walk;
+    }
+
+    function handleTouchEnd() {
+      touchStart = { x: 0, scrollLeft: 0 };
+    }
+
+    // Attach event listeners
+    carousel.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    carousel.addEventListener('touchstart', handleTouchStart);
+    carousel.addEventListener('touchmove', handleTouchMove);
+    carousel.addEventListener('touchend', handleTouchEnd);
+
+    // Prevent text selection during drag
+    carousel.addEventListener('selectstart', (e) => {
+      if (isDragging) {
+        e.preventDefault();
+      }
+    });
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '-50px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.card-item').forEach((card) => {
+      observer.observe(card);
+    });
+  }
+</script>

@@ -1,5 +1,5 @@
 ---
-subtitle: Expert Mentorship
+subtitle: ""
 title: Your Guide to Precision Success
 description: Where Learning Psychology Meets Expert Guidance. Backed by peer-reviewed research. Guaranteed to improve performance.
 left_image: /images/about-1.jpg

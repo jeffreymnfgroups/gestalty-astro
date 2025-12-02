@@ -5,7 +5,7 @@ description: "Transform overwhelm into mastery with evidence-driven, personalize
 draft: false
 
 hero:
-  subtitle: 10 Science-Driven Tools for Exam Mastery
+  subtitle: ""
   title: Gestalty – Empower Your Learning with Real-Time Analytics
   description: Transform overwhelm into mastery with evidence-driven, personalized learning. Every feature validated by cognitive science research and proven through thousands of successful aspirants.
   buttons:

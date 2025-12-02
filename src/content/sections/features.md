@@ -1,6 +1,6 @@
 ---
 subtitle: "Science-Driven Tools"
-title: "10 Science-Driven Tools for Exam Mastery"
+title: ""
 description: "Each feature backed by cognitive science research and validated through real aspirant success stories."
 list:
   - title: "Learning Analytics Dashboard"

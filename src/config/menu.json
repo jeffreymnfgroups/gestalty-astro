@@ -23,10 +23,6 @@
     {
       "name": "Blog",
       "url": "/blog/"
-    },
-    {
-      "name": "Log In",
-      "url": "/login/"
     }
   ],
   "footer_menu": [

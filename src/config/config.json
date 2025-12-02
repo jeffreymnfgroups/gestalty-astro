@@ -30,6 +30,12 @@
     "description": "Get the latest insights on cognitive learning, exam strategies, and success stories from top performers!"
   },
 
+  "login_button": {
+    "enable": true,
+    "label": "Log In",
+    "link": "/login/"
+  },
+
   "navigation_button": {
     "enable": true,
     "label": "Get Started",

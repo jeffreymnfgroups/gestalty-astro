@@ -21,7 +21,7 @@ export interface NavigationLink {
 const { banner, errorPage } = Astro.props;
 
 const { main }: { main: NavigationLink[] } = menu;
-const { navigation_button } = config;
+const { login_button, navigation_button } = config;
 const { pathname } = Astro.url;
 ---
 
@@ -59,11 +59,30 @@ const { pathname } = Astro.url;
         </div>
         
         <div class="flex items-center gap-2 xl:gap-4">
+          <!-- Login Button - visible from 1024px (lg) and above -->
+          {
+            login_button.enable && (
+              <a
+                class="btn btn-dark hidden lg:flex px-4 py-0.5 text-xs shadow-lg login-button"
+                href={login_button.link}>
+                {login_button.label}
+                <span class="icon-wrapper">
+                  <span class="icon">
+                    <DynamicIcon icon={"FaArrowRight"} />
+                  </span>
+                  <span class="icon" aria-hidden="true">
+                    <DynamicIcon icon={"FaArrowRight"} />
+                  </span>
+                </span>
+              </a>
+            )
+          }
+          
           <!-- CTA Button - visible from 1024px (lg) and above -->
           {
             navigation_button.enable && (
               <a
-                class="btn btn-dark hidden lg:flex px-4 py-0.5 text-xs shadow-lg"
+                class="btn btn-dark hidden lg:flex px-4 py-0.5 text-xs shadow-lg navigation-button"
                 href={navigation_button.link}>
                 {navigation_button.label}
                 <span class="icon-wrapper">
@@ -149,10 +168,29 @@ const { pathname } = Astro.url;
             }
           </ul>
           <div class="flex flex-col items-center gap-3 px-2 mt-6 pb-4">
+            <!-- Mobile Login Button -->
+            {
+              login_button.enable && (
+                <a
+                  class="btn btn-dark w-full justify-center px-4 py-3 text-base shadow-lg login-button"
+                  href={login_button.link}>
+                  {login_button.label}
+                  <span class="icon-wrapper">
+                    <span class="icon">
+                      <DynamicIcon icon={"FaArrowRight"} />
+                    </span>
+                    <span class="icon" aria-hidden="true">
+                      <DynamicIcon icon={"FaArrowRight"} />
+                    </span>
+                  </span>
+                </a>
+              )
+            }
+            
             {
               navigation_button.enable && (
                 <a
-                  class="btn btn-dark w-full justify-center px-4 py-3 text-base shadow-lg"
+                  class="btn btn-dark w-full justify-center px-4 py-3 text-base shadow-lg navigation-button"
                   href={navigation_button.link}>
                   {navigation_button.label}
                   <span class="icon-wrapper">
@@ -186,6 +224,30 @@ const { pathname } = Astro.url;
     />
   </div>
 </div>
+
+<style>
+  .login-button {
+    background-color: #fbc10d !important;
+    border-color: #fbc10d !important;
+    min-width: 120px;
+  }
+  
+  .login-button:hover {
+    background-color: #e6ad0a !important;
+    border-color: #e6ad0a !important;
+  }
+  
+  .navigation-button {
+    background-color: #19254c !important;
+    border-color: #19254c !important;
+    min-width: 120px;
+  }
+  
+  .navigation-button:hover {
+    background-color: #fbc10d !important;
+    border-color: #fbc10d !important;
+  }
+</style>
 
 <script>
   // Mobile menu toggle functionality
