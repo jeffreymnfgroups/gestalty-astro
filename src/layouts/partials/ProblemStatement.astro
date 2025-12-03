@@ -3,346 +3,632 @@ import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
 
-const { title, subtitle, description, list } = (
+const { title, subtitle, description, list, tagline, ctaText, ctaHref } = (
   (await getEntry(
     "problemStatementSection",
     "problem-statement"
   )) as CollectionEntry<"problemStatementSection">
 ).data;
 
-// Map list items to images (problem1.webp to problem9.webp)
-const cards = list?.map((item, index) => ({
-  name: item.title || "",
-  description: item.description || "",
-  src: `/images/problem${index + 1}.webp`
-})) || [];
+const cards =
+  list?.map((item, index) => ({
+    name: item.title || "",
+    description: item.description || "",
+    src: `/images/problem${index + 1}.webp`,
+  })) || [];
+
+const slideCount = cards.length;
 ---
 
-<section class="w-full bg-gradient-to-b from-body via-light/20 to-body relative pt-12 sm:pt-16 lg:pt-20 pb-12 sm:pb-16 lg:pb-20 overflow-hidden">
-  <!-- Background Pattern -->
+<section class="ps-section relative isolate overflow-hidden bg-light text-body py-16 sm:py-20 lg:py-24">
   <div
-    class="absolute inset-0 opacity-[0.03]"
+    class="absolute inset-0 opacity-[0.05]"
     style={{
-      backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2319254c' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+      backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd' opacity='.35'%3E%3Cg fill='%2319254c' fill-opacity='1'%3E%3Cpath d='M54 40v-6h-3v6h-6v3h6v6h3v-6h6v-3h-6zm0-30V0h-3v10h-6v3h6v10h3V13h6v-3h-6zM13 40v-6H7v6H0v3h7v6h6v-6h6v-3h-6zM13 10V0H7v10H0v3h7v10h6V13h6v-3h-6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
     }}
   />
 
-  <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
-    <div class="max-w-[1600px] mx-auto">
-      <!-- Header Section -->
-      <div class="text-center mb-12">
-        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
-        {
-          subtitle && (
-            <h3
-              class="h5 mb-4 font-medium text-tertiary"
-              set:html={markdownify(subtitle)}
-            />
-          )
-        }
-        {
-          description && (
-            <p class="text-lg/[inherit] mb-12" set:html={markdownify(description)} />
-          )
-        }
-      </div>
+  <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+    <div class="mx-auto max-w-[1500px]">
+      <div class="ps-grid grid gap-12 xl:gap-16 items-center lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <!-- Left Copy Column -->
+        <div class="ps-copy mx-auto max-w-xl space-y-6 text-center lg:text-left">
+          {tagline && (
+            <p class="text-xs font-semibold uppercase tracking-[0.4em] text-secondary/80">
+              {tagline}
+            </p>
+          )}
 
-      <!-- Card Stack Section -->
-      <div class="mb-8 sm:mb-12">
-        <!-- Section Title with Navigation -->
-        <div class="mb-6 sm:mb-8 flex items-center justify-between">
+          {title && (
+            <h2 class="text-3xl sm:text-4xl lg:text-[2.9rem] font-semibold leading-tight" set:html={markdownify(title)} />
+          )}
+
+          {subtitle && (
+            <p class="text-lg font-medium text-tertiary" set:html={markdownify(subtitle)} />
+          )}
+
+          {slideCount > 0 && (
+            <div class="ps-active-card space-y-3">
+              <p class="ps-active-label text-[0.6rem] uppercase tracking-[0.4em] text-secondary/60">
+                Currently highlighting
+              </p>
+              <h4 class="ps-active-title text-2xl font-semibold text-[#0d1b3d]" data-active-title>
+                {cards[0]?.name || ""}
+              </h4>
+              <p class="ps-active-description text-base text-[#0d1b3d]" data-active-description>
+                {cards[0]?.description || ""}
+              </p>
+            </div>
+          )}
+
+          {description && (
+            <p class="text-base/[1.7] text-[#0d1b3d]" set:html={markdownify(description)} />
+          )}
+
+          {slideCount > 0 && (
+            <p class="text-sm font-semibold uppercase tracking-[0.35em] text-secondary/70">
+              {String(slideCount).padStart(2, "0")} invisible blockers uncovered
+            </p>
+          )}
+
           <div>
-            <!-- <p class="text-xs sm:text-sm md:text-base font-medium text-secondary italic">
-              Cognitive Biases Aspirants Face:
-            </p> -->
-          </div>
-
-          <!-- Navigation Buttons -->
-          <div class="flex gap-2">
-            <button
-              id="scrollLeftBtn"
-              class="h-10 w-10 rounded-full border-2 border-tertiary/30 bg-body/80 backdrop-blur-sm hover:border-secondary hover:bg-secondary/10 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-tertiary/30 disabled:hover:bg-body/80 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
-              aria-label="Scroll left">
-              <svg class="h-6 w-6 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <a
+              href={ctaHref || "/how-it-works"}
+              class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent bg-secondary px-6 py-3 text-sm font-semibold uppercase tracking-wide text-body shadow-lg shadow-secondary/30 transition hover:-translate-y-0.5 hover:bg-tertiary hover:text-light"
+            >
+              {ctaText || "Learn More"}
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7-7 7" />
               </svg>
-            </button>
-            <button
-              id="scrollRightBtn"
-              class="h-10 w-10 rounded-full border-2 border-tertiary/30 bg-body/80 backdrop-blur-sm hover:border-secondary hover:bg-secondary/10 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-tertiary/30 disabled:hover:bg-body/80 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
-              aria-label="Scroll right">
-              <svg class="h-6 w-6 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+            </a>
           </div>
         </div>
 
-        <!-- Carousel Container -->
-        <div class="relative">
-          <div
-            id="carousel"
-            class="flex flex-row gap-3 overflow-x-scroll scroll-smooth py-4 md:py-6 overscroll-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden cursor-grab"
-          >
-            {cards.map((card, index) => (
-              <div
-                class="group relative flex-shrink-0 card-item"
-                data-index={index}
-              >
-                <!-- Card Container -->
-                <div class="science-card relative flex h-[20rem] w-64 flex-shrink-0 flex-col items-start justify-end overflow-hidden rounded-2xl bg-light/20 md:h-[24rem] md:w-72 hover:scale-[1.02] transition-all duration-300 shadow-md hover:shadow-lg">
-                  <!-- Background Image -->
-                  <img
-                    src={card.src}
-                    alt={card.name}
-                    class="absolute inset-0 z-10 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading={index < 3 ? "eager" : "lazy"}
-                  />
-
-                  <!-- Gradient Overlay -->
-                  <div class="absolute inset-0 z-30 bg-gradient-to-b from-transparent via-tertiary/40 to-tertiary/80 pointer-events-none transition-opacity duration-300 group-hover:via-tertiary/50 group-hover:to-tertiary/90" />
-
-                  <!-- Content Overlay -->
-                  <div class="relative z-40 p-4 w-full">
-                    {card.name && (
-                      <h4 class="h6 mb-2 text-body drop-shadow-md" set:html={markdownify(card.name)} />
-                    )}
-                    {card.description && (
-                      <p class="text-sm text-body/95 drop-shadow-md leading-snug" set:html={markdownify(card.description)} />
-                    )}
-                  </div>
+        <!-- Media Column -->
+        <div class="ps-media w-full">
+          <div class="ps-slider w-full">
+            <div class="mb-4 flex items-center justify-between gap-4">
+              <span class="text-[0.65rem] uppercase tracking-[0.4em] text-secondary/80">Gallery</span>
+              {slideCount > 0 && (
+                <div class="ps-counter text-sm font-semibold text-secondary">
+                  <span data-slide-current>01</span>
+                  <span class="mx-1 opacity-50">/</span>
+                  <span data-slide-total>{String(slideCount).padStart(2, "0")}</span>
                 </div>
+              )}
+            </div>
+
+            <div class="ps-stage-wrapper relative">
+              <button
+                type="button"
+                class="ps-nav ps-nav--prev"
+                aria-label="Previous insight"
+                data-ps-prev
+                disabled={slideCount === 0}
+                aria-disabled={slideCount === 0 ? "true" : "false"}
+              >
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <div
+                class="ps-stage"
+                data-ps-slider
+                role="region"
+                aria-roledescription="carousel"
+              >
+                {slideCount === 0 && (
+                  <div class="ps-empty flex h-full items-center justify-center text-sm text-body/70">
+                    More insights coming soon
+                  </div>
+                )}
+
+                {cards.map((card, index) => (
+                  <figure
+                    class={`ps-slide ${index === 0 ? "is-active" : ""}`}
+                    data-index={index}
+                    id={`ps-slide-${index}`}
+                    aria-hidden={index === 0 ? "false" : "true"}
+                    data-title={card.name || ""}
+                    data-description={card.description || ""}
+                  >
+                    <img
+                      src={card.src}
+                      alt={card.name}
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+                  </figure>
+                ))}
               </div>
-            ))}
+
+              <button
+                type="button"
+                class="ps-nav ps-nav--next"
+                aria-label="Next insight"
+                data-ps-next
+                disabled={slideCount === 0}
+                aria-disabled={slideCount === 0 ? "true" : "false"}
+              >
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                class="ps-play"
+                aria-label="Start autoplay"
+                aria-pressed="false"
+                disabled={slideCount === 0}
+                aria-disabled={slideCount === 0 ? "true" : "false"}
+                data-ps-play
+              >
+                <span class="sr-only">Toggle autoplay preview</span>
+                <svg viewBox="0 0 32 32" class="ps-play-icon ps-play-icon--play h-5 w-5 fill-current" aria-hidden="true">
+                  <path d="M12 9v14l10-7z" />
+                </svg>
+                <svg viewBox="0 0 32 32" class="ps-play-icon ps-play-icon--pause h-5 w-5 fill-current" aria-hidden="true">
+                  <path d="M12 10h4v12h-4zM18 10h4v12h-4z" />
+                </svg>
+              </button>
+            </div>
+
+            {slideCount > 0 && (
+              <div class="ps-pagination" role="tablist">
+                {cards.map((card, index) => (
+                  <button
+                    type="button"
+                    class={`ps-dot ${index === 0 ? "is-active" : ""}`}
+                    aria-label={`Go to slide ${index + 1}`}
+                    aria-controls={`ps-slide-${index}`}
+                    aria-selected={index === 0 ? "true" : "false"}
+                    role="tab"
+                    data-ps-dot
+                    data-index={index}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div class="ps-thumbs-container">
+            {slideCount > 0 && (
+              <div class="ps-thumbs flex flex-row flex-wrap items-center justify-center gap-3 lg:flex-col lg:items-center lg:justify-center">
+                {cards.map((card, index) => (
+                  <button
+                    type="button"
+                    class={`ps-thumb ${index === 0 ? "is-active" : ""}`}
+                    aria-label={`Show ${card.name || "slide"}`}
+                    data-ps-thumb
+                    data-index={index}
+                  >
+                    <span class="ps-thumb-ring" aria-hidden="true" />
+                    <img src={card.src} alt={card.name || `Slide ${index + 1}`} loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Custom Drag Cursor -->
-  <div
-    id="dragCursor"
-    class="fixed pointer-events-none z-50 hidden"
-  >
-    <div class="bg-tertiary/80 text-body px-3 py-1.5 rounded-full text-xs font-medium font-primary whitespace-nowrap shadow-lg backdrop-blur-sm border border-secondary/30">
-      Drag
     </div>
   </div>
 </section>
 
 <style>
-  /* Card entrance animations */
-  .card-item {
-    animation: fadeInUp 0.55s ease-out forwards;
+  .ps-active-card {
+    border-top: 1px solid rgba(25, 37, 76, 0.12);
+    padding-top: 1.5rem;
+  }
+
+  .ps-media {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+  }
+
+  .ps-slider {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .ps-stage {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: clamp(320px, 42vw, 640px);
+    margin: 0 auto;
+    border-radius: 36px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+    box-shadow: 0 30px 80px rgba(11, 11, 33, 0.12);
+  }
+
+  .ps-stage-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ps-slide {
+    position: absolute;
+    inset: 0;
     opacity: 0;
+    transition: opacity 400ms ease, transform 400ms ease;
+    pointer-events: none;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1.5rem;
   }
 
-  .card-item[data-index="0"] {
-    animation-delay: 0.09s;
+  .ps-slide img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
-  .card-item[data-index="1"] {
-    animation-delay: 0.18s;
+  .ps-slide::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 19, 36, 0.05) 0%, rgba(15, 19, 36, 0.8) 100%);
+    z-index: 1;
   }
 
-  .card-item[data-index="2"] {
-    animation-delay: 0.27s;
+  .ps-slide.is-active {
+    opacity: 1;
+    pointer-events: auto;
   }
 
-  .card-item[data-index="3"] {
-    animation-delay: 0.36s;
+  .ps-nav {
+    height: 48px;
+    width: 48px;
+    border-radius: 999px;
+    border: 1px solid rgba(9, 10, 28, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    color: #111224;
+    box-shadow: 0 10px 25px rgba(6, 8, 20, 0.15);
+    transition: transform 200ms ease, box-shadow 200ms ease;
   }
 
-  .card-item[data-index="4"] {
-    animation-delay: 0.45s;
+  .ps-nav:hover {
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 18px 35px rgba(6, 8, 20, 0.25);
   }
 
-  .card-item[data-index="5"] {
-    animation-delay: 0.54s;
+  .ps-nav--prev {
+    left: -1.75rem;
   }
 
-  .card-item[data-index="6"] {
-    animation-delay: 0.63s;
+  .ps-nav--next {
+    right: -1.75rem;
   }
 
-  .card-item[data-index="7"] {
-    animation-delay: 0.72s;
+  .ps-play {
+    position: absolute;
+    bottom: 1.4rem;
+    right: 1.4rem;
+    height: 64px;
+    width: 64px;
+    border-radius: 999px;
+    border: none;
+    background: #ffffff;
+    color: var(--color-tertiary, #111224);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 45px rgba(8, 9, 29, 0.2);
+    z-index: 4;
+    transition: transform 200ms ease;
+    gap: 0.25rem;
   }
 
-  .card-item[data-index="8"] {
-    animation-delay: 0.81s;
+  .ps-play:hover {
+    transform: scale(1.05);
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Smooth scrollbar hiding */
-  [scrollbar-width=none] {
-    scrollbar-width: none;
-  }
-
-  [-ms-overflow-style=none] {
-    -ms-overflow-style: none;
-  }
-
-  [&::-webkit-scrollbar]:hidden::-webkit-scrollbar {
+  .ps-play .ps-play-icon {
     display: none;
   }
 
-  .science-card {
-    will-change: transform;
+  .ps-play .ps-play-icon--play {
+    display: block;
+  }
+
+  .ps-play.is-playing {
+    background: var(--color-secondary, #fcb23b);
+    color: var(--color-body, #0d1b3d);
+  }
+
+  .ps-play.is-playing .ps-play-icon--play {
+    display: none;
+  }
+
+  .ps-play.is-playing .ps-play-icon--pause {
+    display: block;
+  }
+
+  .ps-pagination {
+    margin-top: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    justify-content: center;
+  }
+
+  .ps-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(25, 37, 76, 0.3);
+    background: transparent;
+    transition: background 200ms ease, transform 200ms ease, border-color 200ms ease;
+  }
+
+  .ps-dot.is-active {
+    transform: scale(1.3);
+    background: var(--color-secondary, #fcb23b);
+    border-color: var(--color-secondary, #fcb23b);
+  }
+
+  .ps-thumbs-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ps-thumbs {
+    flex-wrap: wrap;
+  }
+
+  .ps-thumb {
+    height: 64px;
+    width: 64px;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    position: relative;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 200ms ease;
+  }
+
+  .ps-thumb img {
+    height: 100%;
+    width: 100%;
+    border-radius: 999px;
+    object-fit: cover;
+    border: 2px solid transparent;
+  }
+
+  .ps-thumb .ps-thumb-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 999px;
+    border: 1px dashed rgba(25, 37, 76, 0.3);
+  }
+
+  .ps-thumb.is-active {
+    transform: scale(1.08);
+  }
+
+  .ps-thumb.is-active img {
+    border-color: var(--color-secondary, #fcb23b);
+  }
+
+  .ps-empty {
+    font-weight: 500;
+  }
+
+  @media (max-width: 1023px) {
+    .ps-stage {
+      max-width: 100%;
+    }
+
+    .ps-nav--prev {
+      left: 0.5rem;
+    }
+
+    .ps-nav--next {
+      right: 0.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .ps-media {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+
+    .ps-thumbs-container {
+      width: auto;
+      justify-content: center;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .ps-media {
+      gap: 3rem;
+    }
   }
 </style>
 
 <script>
-  // Carousel functionality
-  const carousel = document.getElementById('carousel');
-  const scrollLeftBtn = document.getElementById('scrollLeftBtn');
-  const scrollRightBtn = document.getElementById('scrollRightBtn');
-  const dragCursor = document.getElementById('dragCursor');
+// @ts-nocheck
+const sliderRoot = /** @type {HTMLElement | null} */ (document.querySelector('[data-ps-slider]'));
+const slides = sliderRoot
+  ? /** @type {HTMLElement[]} */ (Array.from(sliderRoot.querySelectorAll('.ps-slide')))
+  : [];
+const dots = /** @type {HTMLButtonElement[]} */ (Array.from(document.querySelectorAll('[data-ps-dot]')));
+const thumbs = /** @type {HTMLButtonElement[]} */ (Array.from(document.querySelectorAll('[data-ps-thumb]')));
+const counterCurrent = document.querySelector('[data-slide-current]');
+const counterTotal = document.querySelector('[data-slide-total]');
+const nextButton = document.querySelector('[data-ps-next]');
+const prevButton = document.querySelector('[data-ps-prev]');
+const playButton = /** @type {HTMLButtonElement | null} */ (document.querySelector('[data-ps-play]'));
+const activeTitleEl = document.querySelector('[data-active-title]');
+const activeDescriptionEl = document.querySelector('[data-active-description]');
+const totalSlides = slides.length;
+const AUTOPLAY_DELAY = 4500;
+let currentIndex = 0;
+/** @type {number | null} */
+let autoplayId = null;
+let isAutoplaying = false;
 
-  if (!carousel || !scrollLeftBtn || !scrollRightBtn) {
-    console.warn('Carousel elements not found');
-  } else {
-    let isDragging = false;
-    let dragStart = { x: 0, scrollLeft: 0 };
-    let cursorPosition = { x: 0, y: 0 };
-    let touchStart = { x: 0, scrollLeft: 0 };
+if (counterTotal && totalSlides > 0) {
+  counterTotal.textContent = totalSlides.toString().padStart(2, '0');
+}
 
-    // Check scrollability and update button states
-    function checkScrollability() {
-      if (!carousel) return;
-      const { scrollLeft, scrollWidth, clientWidth } = carousel;
-      scrollLeftBtn.disabled = scrollLeft <= 0;
-      scrollRightBtn.disabled = scrollLeft >= scrollWidth - clientWidth - 1;
-    }
+/**
+ * @param {boolean} isPlaying
+ */
+function setPlayButtonState(isPlaying) {
+  if (!playButton) return;
+  playButton.classList.toggle('is-playing', isPlaying);
+  playButton.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+  playButton.setAttribute('aria-label', isPlaying ? 'Pause autoplay' : 'Start autoplay');
+}
 
-    // Initial check
-    checkScrollability();
-
-    // Scroll event listener
-    carousel.addEventListener('scroll', checkScrollability);
-
-    // Window resize handler
-    window.addEventListener('resize', checkScrollability);
-
-    // Navigation button handlers
-    scrollLeftBtn.addEventListener('click', () => {
-      if (carousel) {
-        carousel.scrollBy({ left: -280, behavior: 'smooth' });
-      }
-    });
-
-    scrollRightBtn.addEventListener('click', () => {
-      if (carousel) {
-        carousel.scrollBy({ left: 280, behavior: 'smooth' });
-      }
-    });
-
-    // Drag handlers
-    function handleMouseDown(e: MouseEvent) {
-      if (!carousel) return;
-      isDragging = true;
-      const rect = carousel.getBoundingClientRect();
-      dragStart = {
-        x: e.pageX - rect.left,
-        scrollLeft: carousel.scrollLeft,
-      };
-      cursorPosition = { x: e.pageX, y: e.pageY };
-      carousel.style.cursor = 'grabbing';
-      carousel.style.userSelect = 'none';
-      e.preventDefault();
-    }
-
-    function handleMouseMove(e: MouseEvent) {
-      if (!isDragging || !carousel) return;
-      e.preventDefault();
-      const rect = carousel.getBoundingClientRect();
-      const x = e.pageX - rect.left;
-      const walk = (x - dragStart.x) * 2; // Scroll speed multiplier
-      carousel.scrollLeft = dragStart.scrollLeft - walk;
-      cursorPosition = { x: e.pageX, y: e.pageY };
-
-      // Update drag cursor position
-      if (dragCursor) {
-        dragCursor.style.left = `${cursorPosition.x + 20}px`;
-        dragCursor.style.top = `${cursorPosition.y - 20}px`;
-        dragCursor.classList.remove('hidden');
-      }
-    }
-
-    function handleMouseUp() {
-      isDragging = false;
-      if (carousel) {
-        carousel.style.cursor = 'grab';
-        carousel.style.userSelect = 'auto';
-      }
-      if (dragCursor) {
-        dragCursor.classList.add('hidden');
-      }
-    }
-
-    // Touch handlers for mobile
-    function handleTouchStart(e: TouchEvent) {
-      if (!carousel) return;
-      touchStart = {
-        x: e.touches[0].pageX,
-        scrollLeft: carousel.scrollLeft,
-      };
-    }
-
-    function handleTouchMove(e: TouchEvent) {
-      if (!touchStart.x || !carousel) return;
-      const x = e.touches[0].pageX;
-      const walk = (x - touchStart.x) * 2;
-      carousel.scrollLeft = touchStart.scrollLeft - walk;
-    }
-
-    function handleTouchEnd() {
-      touchStart = { x: 0, scrollLeft: 0 };
-    }
-
-    // Attach event listeners
-    carousel.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    carousel.addEventListener('touchstart', handleTouchStart);
-    carousel.addEventListener('touchmove', handleTouchMove);
-    carousel.addEventListener('touchend', handleTouchEnd);
-
-    // Prevent text selection during drag
-    carousel.addEventListener('selectstart', (e) => {
-      if (isDragging) {
-        e.preventDefault();
-      }
-    });
-
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '-50px',
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in');
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('.card-item').forEach((card) => {
-      observer.observe(card);
-    });
+/**
+ * @param {boolean} [updateState=true]
+ */
+function stopAutoplay(updateState = true) {
+  if (autoplayId !== null) {
+    window.clearInterval(autoplayId);
+    autoplayId = null;
   }
+  if (updateState) {
+    isAutoplaying = false;
+    setPlayButtonState(false);
+  }
+}
+
+function startAutoplay() {
+  if (!totalSlides || !playButton || playButton.hasAttribute('disabled')) return;
+  stopAutoplay(false);
+  isAutoplaying = true;
+  setPlayButtonState(true);
+  autoplayId = window.setInterval(() => {
+    updateActiveSlide(currentIndex + 1);
+  }, AUTOPLAY_DELAY);
+}
+
+function restartAutoplayIfNeeded() {
+  if (!isAutoplaying) return;
+  startAutoplay();
+}
+
+/**
+ * @param {number} targetIndex
+ */
+function updateActiveSlide(targetIndex) {
+  if (!totalSlides) return;
+  currentIndex = (targetIndex + totalSlides) % totalSlides;
+  const activeSlide = slides[currentIndex];
+
+  slides.forEach((slide, idx) => {
+    const isActive = idx === currentIndex;
+    slide.classList.toggle('is-active', isActive);
+    slide.setAttribute('aria-hidden', String(!isActive));
+  });
+
+  dots.forEach((dot, idx) => {
+    const isActive = idx === currentIndex;
+    dot.classList.toggle('is-active', isActive);
+    dot.setAttribute('aria-selected', String(isActive));
+  });
+
+  thumbs.forEach((thumb, idx) => {
+    thumb.classList.toggle('is-active', idx === currentIndex);
+  });
+
+  if (counterCurrent) {
+    counterCurrent.textContent = (currentIndex + 1).toString().padStart(2, '0');
+  }
+
+  if (activeSlide) {
+    if (activeTitleEl) {
+      activeTitleEl.textContent = activeSlide.dataset.title || '';
+    }
+    if (activeDescriptionEl) {
+      activeDescriptionEl.textContent = activeSlide.dataset.description || '';
+    }
+  }
+}
+
+/**
+ * @param {number} targetIndex
+ */
+function handleManualAdvance(targetIndex) {
+  updateActiveSlide(targetIndex);
+  restartAutoplayIfNeeded();
+}
+
+if (totalSlides) {
+  updateActiveSlide(0);
+
+  nextButton?.addEventListener('click', () => {
+    handleManualAdvance(currentIndex + 1);
+  });
+
+  prevButton?.addEventListener('click', () => {
+    handleManualAdvance(currentIndex - 1);
+  });
+
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const index = Number(dot.dataset.index) || 0;
+      handleManualAdvance(index);
+    });
+  });
+
+  thumbs.forEach((thumb) => {
+    thumb.addEventListener('click', () => {
+      const index = Number(thumb.dataset.index) || 0;
+      handleManualAdvance(index);
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowRight') {
+      handleManualAdvance(currentIndex + 1);
+    }
+
+    if (event.key === 'ArrowLeft') {
+      handleManualAdvance(currentIndex - 1);
+    }
+  });
+
+  playButton?.addEventListener('click', () => {
+    if (!playButton || playButton.hasAttribute('disabled')) return;
+    if (isAutoplaying) {
+      stopAutoplay();
+    } else {
+      startAutoplay();
+    }
+  });
+}
+
+window.addEventListener('beforeunload', () => {
+  stopAutoplay(false);
+});
 </script>

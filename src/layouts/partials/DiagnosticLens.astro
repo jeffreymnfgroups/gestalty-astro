@@ -20,7 +20,7 @@ const icons: Record<string, string> = {
 };
 ---
 
-<section class="section">
+<section class="section diagnostic-lens-section">
   <div class="container">
     <div class="row">
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
@@ -44,7 +44,7 @@ const icons: Record<string, string> = {
                 style={`grid-area: card${index + 1};`}
               >
                 <div class="card-front">
-                  <div class="card-icon-wrapper">
+                  <div class="card-icon-wrapper">   
                     <div class="card-icon" set:html={icons[card.icon] || icons["target"]} />
                   </div>
                   <div class="card-labels">
@@ -74,6 +74,16 @@ const icons: Record<string, string> = {
 </section>
 
 <style>
+  .diagnostic-lens-section {
+    padding-top: 4rem;
+  }
+
+  @media (min-width: 1024px) {
+    .diagnostic-lens-section {
+      padding-top: 5rem;
+    }
+  }
+
   .service-cards-container {
     display: grid;
     gap: 1.5rem;

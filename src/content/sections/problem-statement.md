@@ -2,6 +2,9 @@
 title: "Why Traditional Preparation Fails"
 subtitle: "The Hidden Enemies of Exam Success"
 description: "Most aspirants struggle not from lack of effort, but from fighting invisible cognitive barriers that traditional methods can't address."
+tagline: "Remote Controls"
+ctaText: "Learn More"
+ctaHref: "/how-it-works"
 list:
   - title: "Illusion of Fluency"
     description: "Mistaking familiarity for mastery — \"I read it, so I know it\""
