@@ -29,8 +29,8 @@ const slideCount = cards.length;
   />
 
   <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 xl:px-12">
-    <div class="mx-auto max-w-[1500px]">
-      <div class="ps-grid grid gap-12 xl:gap-16 items-center lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+    <div class="mx-auto max-w-[1400px]">
+      <div class="ps-grid grid gap-8 xl:gap-10 items-center lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
         <!-- Left Copy Column -->
         <div class="ps-copy mx-auto max-w-xl space-y-6 text-center lg:text-left">
           {tagline && (
@@ -40,29 +40,29 @@ const slideCount = cards.length;
           )}
 
           {title && (
-            <h2 class="text-3xl sm:text-4xl lg:text-[2.9rem] font-semibold leading-tight" set:html={markdownify(title)} />
+            <h2 class="text-3xl sm:text-4xl lg:text-[2.9rem] font-bold leading-tight" set:html={markdownify(title)} />
           )}
 
           {subtitle && (
-            <p class="text-lg font-medium text-tertiary" set:html={markdownify(subtitle)} />
+            <p class="text-lg font-bold text-tertiary" set:html={markdownify(subtitle)} />
           )}
 
           {slideCount > 0 && (
             <div class="ps-active-card space-y-3">
-              <p class="ps-active-label text-[0.6rem] uppercase tracking-[0.4em] text-secondary/60">
+              <p class="ps-active-label text-[0.6rem] uppercase tracking-[0.4em] text-secondary/60 font-bold">
                 Currently highlighting
               </p>
-              <h4 class="ps-active-title text-2xl font-semibold text-[#0d1b3d]" data-active-title>
+              <h4 class="ps-active-title text-2xl font-bold text-[#0d1b3d]" data-active-title>
                 {cards[0]?.name || ""}
               </h4>
-              <p class="ps-active-description text-base text-[#0d1b3d]" data-active-description>
+              <p class="ps-active-description text-base font-semibold text-[#0d1b3d]" data-active-description>
                 {cards[0]?.description || ""}
               </p>
             </div>
           )}
 
           {description && (
-            <p class="text-base/[1.7] text-[#0d1b3d]" set:html={markdownify(description)} />
+            <p class="text-base/[1.7] font-semibold text-[#0d1b3d]" set:html={markdownify(description)} />
           )}
 
           {slideCount > 0 && (
@@ -88,9 +88,9 @@ const slideCount = cards.length;
         <div class="ps-media w-full">
           <div class="ps-slider w-full">
             <div class="mb-4 flex items-center justify-between gap-4">
-              <span class="text-[0.65rem] uppercase tracking-[0.4em] text-secondary/80">Gallery</span>
+              <span class="text-sm font-bold uppercase tracking-[0.4em] text-secondary">Gallery</span>
               {slideCount > 0 && (
-                <div class="ps-counter text-sm font-semibold text-secondary">
+                <div class="ps-counter text-sm font-bold text-secondary">
                   <span data-slide-current>01</span>
                   <span class="mx-1 opacity-50">/</span>
                   <span data-slide-total>{String(slideCount).padStart(2, "0")}</span>
@@ -226,25 +226,25 @@ const slideCount = cards.length;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.75rem;
+    gap: 1.25rem;
   }
 
   .ps-slider {
     width: 100%;
-    max-width: 640px;
+    max-width: 480px;
     margin: 0 auto;
   }
 
   .ps-stage {
     aspect-ratio: 1 / 1;
     width: 100%;
-    max-width: clamp(320px, 42vw, 640px);
+    max-width: clamp(280px, 30vw, 420px);
     margin: 0 auto;
-    border-radius: 36px;
+    border-radius: 24px;
     position: relative;
     overflow: hidden;
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
-    box-shadow: 0 30px 80px rgba(11, 11, 33, 0.12);
+    box-shadow: 0 20px 50px rgba(11, 11, 33, 0.12);
   }
 
   .ps-stage-wrapper {
@@ -365,7 +365,7 @@ const slideCount = cards.length;
   }
 
   .ps-pagination {
-    margin-top: 1.75rem;
+    margin-top: 1.25rem;
     display: flex;
     align-items: center;
     gap: 0.65rem;
@@ -456,7 +456,7 @@ const slideCount = cards.length;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      gap: 2.5rem;
+      gap: 1.5rem;
     }
 
     .ps-thumbs-container {
@@ -467,7 +467,7 @@ const slideCount = cards.length;
 
   @media (min-width: 1280px) {
     .ps-media {
-      gap: 3rem;
+      gap: 2rem;
     }
   }
 </style>

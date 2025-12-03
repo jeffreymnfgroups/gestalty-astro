@@ -19,15 +19,15 @@ const { title, subtitle, description, periods } = (
         {
           subtitle && (
             <p
-              class="mb-2 font-medium text-tertiary"
+              class="mb-2 font-bold text-tertiary"
               set:html={markdownify(subtitle)}
             />
           )
         }
-        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+        {title && <h2 class="mb-6 font-bold" set:html={markdownify(title)} />}
         {
           description && (
-            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+            <p class="text-lg/[inherit] font-semibold" set:html={markdownify(description)} />
           )
         }
       </div>
@@ -92,7 +92,7 @@ const { title, subtitle, description, periods } = (
                                 </svg>
                               </div>
                               <span
-                                class="flex-1 text-lg text-text"
+                                class="flex-1 text-lg text-text font-semibold"
                                 set:html={markdownify(activity)}
                               />
                             </li>
@@ -112,10 +112,13 @@ const { title, subtitle, description, periods } = (
 </section>
 
 <script>
-  // Tab functionality
-  document.addEventListener("DOMContentLoaded", () => {
+  // Tab functionality - Initialize function
+  function initializeTabs() {
     const tabButtons = document.querySelectorAll(".tab-button");
     const tabContents = document.querySelectorAll(".tab-content");
+
+    // Check if elements exist
+    if (tabButtons.length === 0 || tabContents.length === 0) return;
 
     tabButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -142,7 +145,19 @@ const { title, subtitle, description, periods } = (
         }
       });
     });
-  });
+  }
+
+  // Initialize on page load and after navigation (for View Transitions)
+  document.addEventListener("DOMContentLoaded", initializeTabs);
+  document.addEventListener("astro:page-load", initializeTabs);
+  
+  // Fallback: initialize immediately if DOMContentLoaded already fired
+  if (document.readyState === "loading") {
+    // Still loading, event listener will handle it
+  } else {
+    // Already loaded, initialize now
+    initializeTabs();
+  }
 </script>
 
 <style>

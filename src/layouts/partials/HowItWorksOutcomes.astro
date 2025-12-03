@@ -20,15 +20,15 @@ const { title, subtitle, description, stats, cta } = (
         {
           subtitle && (
             <p
-              class="mb-2 font-medium text-tertiary"
+              class="mb-2 font-bold text-tertiary"
               set:html={markdownify(subtitle)}
             />
           )
         }
-        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+        {title && <h2 class="mb-6 font-bold" set:html={markdownify(title)} />}
         {
           description && (
-            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+            <p class="text-lg/[inherit] font-semibold" set:html={markdownify(description)} />
           )
         }
       </div>
@@ -61,7 +61,7 @@ const { title, subtitle, description, stats, cta } = (
                     </div>
                     {stat.label && (
                       <p
-                        class="text-lg font-medium text-text-dark"
+                        class="text-lg font-bold text-text-dark"
                         set:html={markdownify(stat.label)}
                       />
                     )}
@@ -87,7 +87,7 @@ const { title, subtitle, description, stats, cta } = (
                 </h3>
               )}
               {cta.description && (
-                <p class="mb-8 text-lg opacity-95">
+                <p class="mb-8 text-lg font-semibold opacity-95">
                   {cta.description}
                 </p>
               )}

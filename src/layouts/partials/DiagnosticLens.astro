@@ -46,12 +46,27 @@ const icons: Record<string, string> = {
                   <div class="card-icon-wrapper">   
                     <div class="card-icon" set:html={icons[card.icon] || icons["target"]} />
                   </div>
-                  <div class="card-labels">
-                    <span class="card-label card-label-problem">Problem</span>
-                    <span class="card-label card-label-impact">Impact</span>
+                  
+                  <div class="problem-section">
+                    <div class="section-badge problem-badge">
+                      <svg class="badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                      </svg>
+                      <span class="badge-text">Problem</span>
+                    </div>
+                    <h3 class="card-title">{card.title}</h3>
                   </div>
-                  <h3 class="card-title">{card.title}</h3>
-                  <p class="card-description">{card.description}</p>
+
+                  <div class="impact-section">
+                    <div class="section-badge impact-badge">
+                      <svg class="badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                      </svg>
+                      <span class="badge-text">Impact</span>
+                    </div>
+                    <p class="card-description">{card.description}</p>
+                  </div>
+
                   <div class="card-hover-hint">
                     <svg class="hint-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
@@ -119,6 +134,8 @@ const icons: Record<string, string> = {
     min-height: 280px;
     overflow: hidden;
     will-change: transform;
+    z-index: 1;
+    transition: z-index 0s;
   }
 
   .card-front,
@@ -240,70 +257,91 @@ const icons: Record<string, string> = {
 
   /* Icon animation handled by GSAP */
 
-  .card-labels {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+  /* Problem and Impact Sections */
+  .problem-section {
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   }
 
-  .card-label {
-    padding: 0.375rem 0.875rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
+  .service-card-blue .problem-section,
+  .service-card-purple .problem-section {
+    border-bottom-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .impact-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    margin-bottom: 0.75rem;
   }
 
-  .card-label-problem {
-    background: rgba(239, 68, 68, 0.15);
+  .badge-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    stroke-width: 2.5;
+  }
+
+  .problem-badge {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(220, 38, 38, 0.08));
     color: #dc2626;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    border: 1.5px solid rgba(239, 68, 68, 0.25);
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.08);
   }
 
-  .card-label-impact {
-    background: rgba(245, 158, 11, 0.15);
+  .impact-badge {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(217, 119, 6, 0.08));
     color: #d97706;
-    border: 1px solid rgba(245, 158, 11, 0.3);
+    border: 1.5px solid rgba(245, 158, 11, 0.25);
+    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.08);
   }
 
-  /* Label colors for dark backgrounds */
-  .service-card-blue .card-label-problem,
-  .service-card-purple .card-label-problem {
-    background: rgba(239, 68, 68, 0.25);
+  /* Badge styles for dark backgrounds */
+  .service-card-blue .problem-badge,
+  .service-card-purple .problem-badge {
+    background: linear-gradient(135deg, rgba(252, 165, 165, 0.18), rgba(239, 68, 68, 0.12));
     color: #fca5a5;
-    border-color: rgba(239, 68, 68, 0.4);
+    border-color: rgba(239, 68, 68, 0.35);
   }
 
-  .service-card-blue .card-label-impact,
-  .service-card-purple .card-label-impact {
-    background: rgba(245, 158, 11, 0.25);
+  .service-card-blue .impact-badge,
+  .service-card-purple .impact-badge {
+    background: linear-gradient(135deg, rgba(252, 211, 77, 0.18), rgba(245, 158, 11, 0.12));
     color: #fcd34d;
-    border-color: rgba(245, 158, 11, 0.4);
+    border-color: rgba(245, 158, 11, 0.35);
   }
 
   .card-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin: 0;
     color: #1d1d1d;
-    line-height: 1.3;
+    line-height: 1.35;
   }
 
   .card-description {
     font-size: 0.95rem;
     color: #464646;
-    line-height: 1.6;
-    margin-bottom: auto;
-    flex-grow: 1;
+    line-height: 1.65;
+    margin: 0;
   }
 
   .card-hover-hint {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
+    margin-top: auto;
+    padding-top: 1.75rem;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     font-size: 0.875rem;
     opacity: 0.7;
@@ -354,15 +392,34 @@ const icons: Record<string, string> = {
   /* Mobile responsive adjustments */
   @media (max-width: 1023px) {
     .service-card {
-      min-height: 320px;
+      min-height: 340px;
     }
 
     .card-title {
-      font-size: 1.375rem;
+      font-size: 1.3rem;
     }
 
     .card-description {
       font-size: 0.9rem;
+    }
+
+    .section-badge {
+      font-size: 0.65rem;
+      padding: 0.35rem 0.65rem;
+    }
+
+    .badge-icon {
+      width: 0.85rem;
+      height: 0.85rem;
+    }
+
+    .problem-section {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+    }
+
+    .impact-section {
+      margin-bottom: 1.25rem;
     }
 
     .hint-text::after {
@@ -377,11 +434,111 @@ const icons: Record<string, string> = {
   let eventListeners: Array<{ element: Element | Document; event: string; handler: (e?: any) => void }> = [];
   let cards: NodeListOf<Element> | null = null;
   let gsapAnimations: Map<Element, gsap.core.Timeline> = new Map();
+  let currentlyHoveredCard: Element | null = null;
+  let cardAnimations: Map<Element, { hoverTimeline: gsap.core.Timeline | null; cardTween: gsap.core.Tween | null; iconTween: gsap.core.Tween | null }> = new Map();
+
+  function resetCardToDefault(card: Element, immediate = false) {
+    const cardFront = card.querySelector('.card-front') as HTMLElement;
+    const cardSolution = card.querySelector('.card-solution') as HTMLElement;
+    const cardIcon = card.querySelector('.card-icon') as HTMLElement;
+    const cardEl = card as HTMLElement;
+
+    if (!cardFront || !cardSolution) return;
+
+    // Kill all animations for this card
+    const animData = cardAnimations.get(card);
+    if (animData) {
+      if (animData.hoverTimeline) {
+        animData.hoverTimeline.kill();
+        animData.hoverTimeline = null;
+      }
+      if (animData.cardTween) {
+        animData.cardTween.kill();
+        animData.cardTween = null;
+      }
+      if (animData.iconTween) {
+        animData.iconTween.kill();
+        animData.iconTween = null;
+      }
+    }
+
+    gsap.killTweensOf([card, cardFront, cardSolution, cardIcon]);
+
+    if (immediate) {
+      // Immediate reset - no animation
+      gsap.set(card, { y: 0, boxShadow: '0 0 0 rgba(0, 0, 0, 0)', zIndex: 1 });
+      gsap.set(cardFront, { opacity: 1, transform: 'translateY(0) scale(1)' });
+      gsap.set(cardSolution, { opacity: 0, transform: 'translateY(10px) scale(0.98)', pointerEvents: 'none' });
+      gsap.set(cardIcon, { scale: 1, opacity: 0.8 });
+    } else {
+      // Animated reset
+      gsap.to(card, {
+        duration: 0.3,
+        y: 0,
+        boxShadow: '0 0 0 rgba(0, 0, 0, 0)',
+        zIndex: 1,
+        ease: 'power2.out',
+        overwrite: true
+      });
+
+      gsap.to(cardIcon, {
+        duration: 0.3,
+        scale: 1,
+        opacity: 0.8,
+        ease: 'power2.out',
+        overwrite: true
+      });
+
+      gsap.to(cardFront, {
+        duration: 0.3,
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        ease: 'power2.out',
+        overwrite: true
+      });
+
+      gsap.to(cardSolution, {
+        duration: 0.3,
+        opacity: 0,
+        scale: 0.98,
+        y: 10,
+        pointerEvents: 'none',
+        ease: 'power2.in',
+        overwrite: true
+      });
+    }
+
+    gsapAnimations.delete(card);
+  }
 
   function cleanupDiagnosticLens() {
     // Kill all GSAP animations
-    gsapAnimations.forEach((tl) => tl.kill());
+    gsapAnimations.forEach((tl) => {
+      if (tl) tl.kill();
+    });
     gsapAnimations.clear();
+
+    // Kill all card-specific animations
+    cardAnimations.forEach((animData) => {
+      if (animData.hoverTimeline) animData.hoverTimeline.kill();
+      if (animData.cardTween) animData.cardTween.kill();
+      if (animData.iconTween) animData.iconTween.kill();
+    });
+    cardAnimations.clear();
+
+    // Kill any lingering animations on cards
+    if (cards) {
+      cards.forEach((card) => {
+        gsap.killTweensOf(card);
+        const cardFront = card.querySelector('.card-front');
+        const cardSolution = card.querySelector('.card-solution');
+        const cardIcon = card.querySelector('.card-icon');
+        if (cardFront) gsap.killTweensOf(cardFront);
+        if (cardSolution) gsap.killTweensOf(cardSolution);
+        if (cardIcon) gsap.killTweensOf(cardIcon);
+      });
+    }
 
     // Remove all event listeners
     eventListeners.forEach(({ element, event, handler }) => {
@@ -389,6 +546,7 @@ const icons: Record<string, string> = {
     });
     eventListeners = [];
     cards = null;
+    currentlyHoveredCard = null;
   }
 
   function initDiagnosticLens() {
@@ -410,33 +568,87 @@ const icons: Record<string, string> = {
       if (!cardFront || !cardSolution) return;
 
       // Set initial states
+      gsap.set(card, { zIndex: 1 });
       gsap.set(cardFront, { opacity: 1, transform: 'translateY(0) scale(1)' });
-      gsap.set(cardSolution, { opacity: 0, transform: 'translateY(10px) scale(0.98)' });
+      gsap.set(cardSolution, { opacity: 0, transform: 'translateY(10px) scale(0.98)', pointerEvents: 'none' });
       gsap.set(cardIcon, { scale: 1, opacity: 0.8 });
 
       if (isDesktop) {
         // Desktop: Hover animations with GSAP
-        const hoverTimeline = gsap.timeline({ paused: true });
+        // Initialize animation data for this card
+        cardAnimations.set(card, {
+          hoverTimeline: null,
+          cardTween: null,
+          iconTween: null
+        });
         
-        card.addEventListener('mouseenter', () => {
+        const mouseEnterHandler = () => {
+          // Immediately set this card's z-index high to prevent overlap
+          gsap.set(card, { zIndex: 10 });
+
+          // Reset all other cards immediately to prevent overlap
+          if (currentlyHoveredCard && currentlyHoveredCard !== card) {
+            resetCardToDefault(currentlyHoveredCard, true);
+          }
+
+          // Reset all cards except the current one
+          if (cards) {
+            cards.forEach((c) => {
+              if (c !== card && c !== currentlyHoveredCard) {
+                resetCardToDefault(c, true);
+              }
+            });
+          }
+
+          // Update currently hovered card
+          currentlyHoveredCard = card;
+
+          // Get animation data for this card
+          const animData = cardAnimations.get(card);
+          if (!animData) return;
+
+          // Kill any existing animations first to prevent conflicts
+          if (animData.hoverTimeline) {
+            animData.hoverTimeline.kill();
+          }
+          if (animData.cardTween) {
+            animData.cardTween.kill();
+          }
+          if (animData.iconTween) {
+            animData.iconTween.kill();
+          }
+
+          // Kill all tweens on this card
+          gsap.killTweensOf([card, cardFront, cardSolution, cardIcon]);
+
+          // Reset all states first
+          gsap.set(cardFront, { opacity: 1, transform: 'translateY(0) scale(1)' });
+          gsap.set(cardSolution, { opacity: 0, transform: 'translateY(10px) scale(0.98)', pointerEvents: 'none' });
+          gsap.set(cardIcon, { scale: 1, opacity: 0.8 });
+
+          // Create fresh timeline
+          animData.hoverTimeline = gsap.timeline();
+          
           // Card lift animation
-          gsap.to(card, {
+          animData.cardTween = gsap.to(card, {
             duration: 0.4,
             y: -4,
             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
-            ease: 'power2.out'
+            ease: 'power2.out',
+            overwrite: true
           });
 
           // Icon animation
-          gsap.to(cardIcon, {
+          animData.iconTween = gsap.to(cardIcon, {
             duration: 0.3,
             scale: 1.15,
             opacity: 1,
-            ease: 'back.out(1.7)'
+            ease: 'back.out(1.7)',
+            overwrite: true
           });
 
           // Card flip animation
-          hoverTimeline
+          animData.hoverTimeline
             .to(cardFront, {
               duration: 0.4,
               opacity: 0,
@@ -449,37 +661,29 @@ const icons: Record<string, string> = {
               opacity: 1,
               scale: 1,
               y: 0,
+              pointerEvents: 'all',
               ease: 'power2.out'
             }, 0.1);
 
-          hoverTimeline.play();
-          gsapAnimations.set(card, hoverTimeline);
-        });
+          gsapAnimations.set(card, animData.hoverTimeline);
+        };
 
-        card.addEventListener('mouseleave', () => {
-          // Reset card position
-          gsap.to(card, {
-            duration: 0.4,
-            y: 0,
-            boxShadow: '0 0 0 rgba(0, 0, 0, 0)',
-            ease: 'power2.out'
-          });
+        const mouseLeaveHandler = () => {
+          // Only reset if this is the currently hovered card
+          if (currentlyHoveredCard === card) {
+            currentlyHoveredCard = null;
+          }
 
-          // Reset icon
-          gsap.to(cardIcon, {
-            duration: 0.3,
-            scale: 1,
-            opacity: 0.8,
-            ease: 'power2.out'
-          });
+          // Reset this card
+          resetCardToDefault(card, false);
+        };
 
-          // Reverse flip animation
-          hoverTimeline.reverse();
-        });
+        card.addEventListener('mouseenter', mouseEnterHandler);
+        card.addEventListener('mouseleave', mouseLeaveHandler);
 
         eventListeners.push(
-          { element: card, event: 'mouseenter', handler: () => {} },
-          { element: card, event: 'mouseleave', handler: () => {} }
+          { element: card, event: 'mouseenter', handler: mouseEnterHandler },
+          { element: card, event: 'mouseleave', handler: mouseLeaveHandler }
         );
       } else {
         // Mobile: Click animations with GSAP
