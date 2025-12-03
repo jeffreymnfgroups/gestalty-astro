@@ -25,7 +25,7 @@ const { title, subtitle, subheadline, description, left_image, right_image, butt
             />
           )
         } -->
-        {title && <h1 class="mb-4" set:html={markdownify(title)} />}
+        {title && <h1 class="mb-6 text-h4 lg:text-h2 leading-[1.2] font-semibold" set:html={markdownify(title)} />}
         {
           subheadline && (
             <h2 class="h4 mb-6 font-medium" set:html={markdownify(subheadline)} />

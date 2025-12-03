@@ -40,7 +40,7 @@ if (content) {
         {
           title &&
             (largeHeading ? (
-              <h1 class="h2 md:h1 mb-6" set:html={markdownify(title)} />
+              <h1 class="mb-6 text-h4 lg:text-h2 leading-[1.2] font-semibold" set:html={markdownify(title)} />
             ) : (
               <h2 class="mb-6" set:html={markdownify(title)} />
             ))

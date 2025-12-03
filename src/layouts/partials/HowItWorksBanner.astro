@@ -23,7 +23,7 @@ const { title, subtitle, description } = (
             />
           )
         }
-        {title && <h1 class="mb-6 font-bold" set:html={markdownify(title)} />}
+        {title && <h1 class="mb-6 text-h4 lg:text-h2 leading-[1.2] font-semibold" set:html={markdownify(title)} />}
         {
           description && (
             <p class="text-lg/[inherit] font-semibold" set:html={markdownify(description)} />
