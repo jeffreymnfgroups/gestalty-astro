@@ -1072,16 +1072,17 @@ export const diagnosticLensSection = defineCollection({
   schema: z.object({
     title: z.string(),
     subtitle: z.string(),
-    table: z.object({
-      headers: z.array(z.string()),
-      rows: z.array(
-        z.object({
-          problem: z.string(),
-          impact: z.string(),
-          solution: z.string(),
-        }),
-      ),
-    }),
+    cta_text: z.string().optional(),
+    cards: z.array(
+      z.object({
+        icon: z.string(),
+        title: z.string(),
+        description: z.string(),
+        solution: z.string(),
+        tags: z.array(z.string()),
+        color: z.string(),
+      }),
+    ),
   }),
 });
 
