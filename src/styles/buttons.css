@@ -79,12 +79,12 @@
 }
 
 .btn-primary {
-  @apply border-primary bg-primary hover:border-secondary hover:bg-secondary hover:text-text-dark text-white;
-  @apply [&:hover_.icon-wrapper]:bg-text-dark [&:hover_svg]:text-text-light [&_.icon-wrapper]:bg-secondary [&_svg]:text-text-dark;
+  @apply border-secondary bg-secondary hover:border-secondary hover:bg-secondary hover:text-text-dark text-text-dark;
+  @apply [&:hover_.icon-wrapper]:bg-tertiary [&:hover_svg]:text-text-light [&_.icon-wrapper]:bg-tertiary [&_svg]:text-text-light;
 }
 .btn-primary-light {
   @apply border-light bg-light text-text-dark hover:border-secondary hover:bg-secondary hover:text-text-dark;
-  @apply [&:hover_.icon-wrapper]:bg-text-dark [&:hover_svg]:text-text-light [&_.icon-wrapper]:bg-secondary [&_svg]:text-text-dark;
+  @apply [&:hover_.icon-wrapper]:bg-tertiary [&:hover_svg]:text-text-light [&_.icon-wrapper]:bg-secondary [&_svg]:text-text-dark;
 }
 
 .btn-light {
@@ -95,6 +95,6 @@
 }
 
 .btn-outline-primary {
-  @apply border-border text-text-dark hover:border-secondary hover:bg-secondary hover:text-text-dark bg-transparent bg-white;
-  @apply [&:hover_.icon-wrapper]:bg-text-dark [&:hover_svg]:text-text-light [&_.icon-wrapper]:bg-light [&_svg]:text-text-dark;
+  @apply border-secondary bg-secondary text-text-dark hover:border-secondary hover:bg-secondary hover:text-text-dark;
+  @apply [&:hover_.icon-wrapper]:bg-tertiary [&:hover_svg]:text-text-light [&_.icon-wrapper]:bg-tertiary [&_svg]:text-text-light;
 }
