@@ -39,7 +39,7 @@ const { title, subtitle, description, list } = (
                 <div class="rounded-3xl bg-white p-8 min-h-full flex flex-col">
                   {item.icon && (
                     <div class="mb-6 text-primary">
-                      <DynamicIcon icon="FaCheckCircle" className="text-4xl" />
+                      <DynamicIcon icon={item.icon} className="text-4xl" />
                     </div>
                   )}
                   {item.title && (
