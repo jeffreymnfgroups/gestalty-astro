@@ -17,6 +17,7 @@ const icons: Record<string, string> = {
   "brain": '<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>',
   "puzzle": '<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>',
   "chart-line": '<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>',
+  "heart": '<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>',
 };
 ---
 
@@ -40,8 +41,6 @@ const icons: Record<string, string> = {
             cards.map((card, index) => (
               <div 
                 class={`service-card service-card-${card.color}`}
-                data-card={`card-${index + 1}`}
-                style={`grid-area: card${index + 1};`}
               >
                 <div class="card-front">
                   <div class="card-icon-wrapper">   
@@ -87,108 +86,26 @@ const icons: Record<string, string> = {
   .service-cards-container {
     display: grid;
     gap: 1.5rem;
-    min-height: 600px;
-    transition: all 7s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
-  /* Default layout: Card 1 (70%) | Card 2 (30%) on top, then 3 equal cards below */
+  /* Simple 3-column grid for desktop */
   @media (min-width: 1024px) {
     .service-cards-container {
-      grid-template-columns: 7fr 3fr;
-      grid-template-rows: 1fr 1fr;
-      grid-template-areas:
-        "card1 card2"
-        "card3 card4-5";
-    }
-
-    /* Card 3 in bottom left */
-    [data-card="card-3"] {
-      grid-area: card3;
-    }
-
-    /* Cards 4 and 5 share right side in default */
-    [data-card="card-4"], [data-card="card-5"] {
-      grid-area: card4-5;
-    }
-
-    /* Create sub-grid for cards 4 and 5 */
-    .service-cards-container::after {
-      content: '';
-      grid-area: card4-5;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 
-  /* Actually, let me use a simpler approach with explicit positioning */
-  @media (min-width: 1024px) {
+  /* 2-column grid for tablet */
+  @media (min-width: 768px) and (max-width: 1023px) {
     .service-cards-container {
-      grid-template-columns: repeat(10, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      grid-template-areas:
-        "card1 card1 card1 card1 card1 card1 card1 card2 card2 card2"
-        "card3 card3 card3 card4 card4 card4 card5 card5 card5 card5";
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  /* Hover Card 1 - stays 70% (default) */
-  @media (min-width: 1024px) {
-    .service-cards-container:has([data-card="card-1"]:hover) {
-      grid-template-areas:
-        "card1 card1 card1 card1 card1 card1 card1 card2 card2 card2"
-        "card3 card3 card3 card4 card4 card4 card5 card5 card5 card5";
-    }
-  }
-
-  /* Hover Card 2 - Card 2 becomes 70%, Card 1 becomes 30% */
-  @media (min-width: 1024px) {
-    .service-cards-container:has([data-card="card-2"]:hover) {
-      grid-template-areas:
-        "card1 card1 card1 card2 card2 card2 card2 card2 card2 card2"
-        "card3 card3 card3 card4 card4 card4 card5 card5 card5 card5";
-    }
-  }
-
-  /* Hover Card 3 - Card 4 moves to first row as 2nd card, Card 3 expands to 70% bottom */
-  @media (min-width: 1024px) {
-    .service-cards-container:has([data-card="card-3"]:hover) {
-      grid-template-areas:
-        "card1 card1 card1 card4 card4 card4 card2 card2 card2 card2"
-        "card3 card3 card3 card3 card3 card3 card3 card5 card5 card5";
-    }
-  }
-
-  /* Hover Card 4 - Card 4 expands in middle from row 1 to row 2 */
-  @media (min-width: 1024px) {
-    .service-cards-container:has([data-card="card-4"]:hover) {
-      grid-template-areas:
-        "card1 card1 card1 card4 card4 card4 card4 card2 card2 card2"
-        "card3 card3 card3 card4 card4 card4 card4 card5 card5 card5";
-    }
-  }
-
-  /* Hover Card 5 - Card 4 moves to first row as 2nd card, Card 5 expands to 70% bottom */
-  @media (min-width: 1024px) {
-    .service-cards-container:has([data-card="card-5"]:hover) {
-      grid-template-areas:
-        "card1 card1 card1 card4 card4 card4 card2 card2 card2 card2"
-        "card3 card3 card3 card5 card5 card5 card5 card5 card5 card5";
-    }
-  }
-
-  /* Mobile responsive - stack vertically */
-  @media (max-width: 1023px) {
+  /* Single column for mobile */
+  @media (max-width: 767px) {
     .service-cards-container {
       grid-template-columns: 1fr;
-      grid-template-rows: auto;
-      grid-template-areas:
-        "card1"
-        "card2"
-        "card3"
-        "card4"
-        "card5";
-      min-height: auto;
     }
   }
 
@@ -196,14 +113,17 @@ const icons: Record<string, string> = {
     position: relative;
     padding: 2.5rem 2rem;
     border-radius: 20px 20px 20px 60px;
-    transition: all 7s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="88" height="34" viewBox="0 0 88 34"><rect x="6" y="5" width="76" height="24" rx="6" fill="%2390ee90" stroke="%23000" stroke-width="2"/><rect x="4" y="3" width="76" height="24" rx="6" fill="%2390ee90" stroke="%23000" stroke-width="2"/><text x="42" y="18.5" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="%23000" text-anchor="middle">SOLUTION</text></svg>') 44 17, pointer;
     display: flex;
     flex-direction: column;
     min-height: 280px;
-    opacity: 1;
-    will-change: transform, opacity;
     overflow: hidden;
+  }
+
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   }
 
   .card-front,
@@ -313,23 +233,17 @@ const icons: Record<string, string> = {
     .service-card:hover {
       z-index: 10;
     }
-
-    /* Fade non-hovered cards when any card is hovered */
-    .service-cards-container:has(.service-card:hover) .service-card:not(:hover) {
-      opacity: 0.8;
-      transition: opacity 3s ease-out, all 7s cubic-bezier(0.25, 0.1, 0.25, 1);
-    }
   }
 
   .card-icon-wrapper {
     margin-bottom: 1.5rem;
-    transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s ease;
   }
 
   .card-icon {
     color: currentColor;
     opacity: 0.8;
-    transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s ease, opacity 0.3s ease;
   }
 
   /* Icon colors - Updated to match theme palette */
@@ -341,7 +255,7 @@ const icons: Record<string, string> = {
 
   /* Enlarge icon on hover */
   .service-card:hover .card-icon {
-    transform: scale(1.1);
+    transform: scale(1.15);
     opacity: 1;
   }
 

@@ -33,5 +33,11 @@ cards:
     solution: "AI Feedback Loop: Statistical tools calibrate effort with actual outcomes"
     tags: ["ai analytics", "feedback"]
     color: "mint"
+  - icon: "heart"
+    title: "Mental Health & Motivation Issues"
+    description: "Anxiety, burnout, and low motivation harm results"
+    solution: "Cognitive Inertia Detector: ML algorithms spot resistance early and keep you on track"
+    tags: ["mental health", "motivation"]
+    color: "peach"
 ---
 
