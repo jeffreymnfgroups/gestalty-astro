@@ -57,9 +57,6 @@ const wordsJson = JSON.stringify(words);
     pointer-events: none;
     white-space: nowrap;
     transform: translateY(20px);
-    transition: opacity 0.5s ease-out,
-                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                visibility 0s 0.5s;
     will-change: transform, opacity;
     z-index: 1;
   }
@@ -69,9 +66,6 @@ const wordsJson = JSON.stringify(words);
     visibility: visible;
     pointer-events: auto;
     transform: translateY(0);
-    transition: opacity 0.5s ease-in,
-                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                visibility 0s;
     z-index: 2;
   }
 
@@ -84,9 +78,9 @@ const wordsJson = JSON.stringify(words);
     background-size: 200% 100%;
     border-radius: 2px;
     width: 0;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     animation: shimmer 3s ease-in-out infinite;
     z-index: 3;
+    will-change: width;
   }
 
   @keyframes shimmer {
@@ -100,6 +94,8 @@ const wordsJson = JSON.stringify(words);
 </style>
 
 <script>
+  import { gsap } from 'gsap';
+
   function initFlipWords() {
     const containers = document.querySelectorAll('[id^="flip-words-"]');
     
@@ -117,13 +113,21 @@ const wordsJson = JSON.stringify(words);
       
       let currentIndex = 0;
       let intervalId: number | null = null;
+      let currentAnimation: any = null;
       
-      // Initialize first word
+      // Initialize first word with Motion One
       wordElements.forEach((word, index) => {
-        (word as HTMLElement).classList.remove('active');
+        const wordEl = word as HTMLElement;
+        wordEl.classList.remove('active');
         if (index === 0) {
-          (word as HTMLElement).classList.add('active');
+          wordEl.classList.add('active');
+          // Set initial state without animation
+          wordEl.style.opacity = '1';
+          wordEl.style.transform = 'translateY(0)';
           container.classList.add('active');
+        } else {
+          wordEl.style.opacity = '0';
+          wordEl.style.transform = 'translateY(20px)';
         }
       });
       
@@ -131,34 +135,62 @@ const wordsJson = JSON.stringify(words);
         if (!underline) return;
         const activeWord = container.querySelector('.flip-word.active') as HTMLElement;
         if (activeWord && activeWord.offsetWidth > 0) {
-          underline.style.width = activeWord.offsetWidth + 'px';
+          gsap.to(underline, {
+            width: activeWord.offsetWidth,
+            duration: 0.6,
+            ease: 'power2.out'
+          });
         }
       }
       
-      function animate() {
+      function animateTransition() {
         const currentWord = wordElements[currentIndex] as HTMLElement;
         const nextIndex = (currentIndex + 1) % words.length;
         const nextWord = wordElements[nextIndex] as HTMLElement;
         
         if (!currentWord || !nextWord) return;
         
-        // Remove active from current
-        currentWord.classList.remove('active');
-        container.classList.remove('active');
+        // Kill any ongoing animation
+        if (currentAnimation) {
+          currentAnimation.kill();
+        }
         
-        // After fade out, switch to next word
-        setTimeout(() => {
-          nextWord.classList.add('active');
-          container.classList.add('active');
-          currentIndex = nextIndex;
-          
-          // Update underline width to match new word
-          updateUnderline();
-        }, 500);
+        // Create timeline for smooth transition
+        const tl = gsap.timeline({
+          onComplete: () => {
+            currentIndex = nextIndex;
+            updateUnderline();
+          }
+        });
+        
+        // Animate current word out
+        tl.to(currentWord, {
+          opacity: 0,
+          y: -20,
+          duration: 0.5,
+          ease: 'power2.in',
+          onComplete: () => {
+            currentWord.classList.remove('active');
+            container.classList.remove('active');
+          }
+        });
+        
+        // Animate next word in
+        nextWord.classList.add('active');
+        container.classList.add('active');
+        
+        tl.to(nextWord, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: 'power2.out'
+        }, '-=0.2'); // Start slightly before previous animation ends
+        
+        currentAnimation = tl;
       }
       
       // Start animation
-      intervalId = window.setInterval(animate, duration) as unknown as number;
+      intervalId = window.setInterval(animateTransition, duration) as unknown as number;
       
       // Initialize underline width
       updateUnderline();
@@ -169,12 +201,16 @@ const wordsJson = JSON.stringify(words);
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             if (!intervalId) {
-              intervalId = window.setInterval(animate, duration) as unknown as number;
+              intervalId = window.setInterval(animateTransition, duration) as unknown as number;
             }
           } else {
             if (intervalId) {
               clearInterval(intervalId);
               intervalId = null;
+            }
+            if (currentAnimation) {
+              currentAnimation.kill();
+              currentAnimation = null;
             }
           }
         });
@@ -187,6 +223,10 @@ const wordsJson = JSON.stringify(words);
         if (intervalId) {
           clearInterval(intervalId);
           intervalId = null;
+        }
+        if (currentAnimation) {
+          currentAnimation.stop();
+          currentAnimation = null;
         }
         observer.disconnect();
       };

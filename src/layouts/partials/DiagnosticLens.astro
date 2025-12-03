@@ -113,22 +113,17 @@ const icons: Record<string, string> = {
     position: relative;
     padding: 2.5rem 2rem;
     border-radius: 20px 20px 20px 60px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="88" height="34" viewBox="0 0 88 34"><rect x="6" y="5" width="76" height="24" rx="6" fill="%2390ee90" stroke="%23000" stroke-width="2"/><rect x="4" y="3" width="76" height="24" rx="6" fill="%2390ee90" stroke="%23000" stroke-width="2"/><text x="42" y="18.5" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="%23000" text-anchor="middle">SOLUTION</text></svg>') 44 17, pointer;
     display: flex;
     flex-direction: column;
     min-height: 280px;
     overflow: hidden;
-  }
-
-  .service-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    will-change: transform;
   }
 
   .card-front,
   .card-solution {
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    will-change: opacity, transform;
   }
 
   .card-front {
@@ -155,16 +150,7 @@ const icons: Record<string, string> = {
     background: rgba(255, 255, 255, 0.95);
   }
 
-  /* Desktop hover */
-  @media (min-width: 1024px) {
-    .service-card:hover .card-front {
-      opacity: 0;
-    }
-
-    .service-card:hover .card-solution {
-      opacity: 1;
-    }
-  }
+  /* Desktop hover animations handled by GSAP */
 
   /* Mobile click - using active class that will be toggled via JS */
   @media (max-width: 1023px) {
@@ -237,13 +223,12 @@ const icons: Record<string, string> = {
 
   .card-icon-wrapper {
     margin-bottom: 1.5rem;
-    transition: transform 0.3s ease;
   }
 
   .card-icon {
     color: currentColor;
     opacity: 0.8;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    will-change: transform, opacity;
   }
 
   /* Icon colors - Updated to match theme palette */
@@ -253,11 +238,7 @@ const icons: Record<string, string> = {
   .service-card-yellow .card-icon { color: #1a2847; }
   .service-card-mint .card-icon { color: #2d2d2d; }
 
-  /* Enlarge icon on hover */
-  .service-card:hover .card-icon {
-    transform: scale(1.15);
-    opacity: 1;
-  }
+  /* Icon animation handled by GSAP */
 
   .card-labels {
     display: flex;
@@ -391,10 +372,17 @@ const icons: Record<string, string> = {
 </style>
 
 <script>
+  import { gsap } from 'gsap';
+
   let eventListeners: Array<{ element: Element | Document; event: string; handler: (e?: any) => void }> = [];
   let cards: NodeListOf<Element> | null = null;
+  let gsapAnimations: Map<Element, gsap.core.Timeline> = new Map();
 
   function cleanupDiagnosticLens() {
+    // Kill all GSAP animations
+    gsapAnimations.forEach((tl) => tl.kill());
+    gsapAnimations.clear();
+
     // Remove all event listeners
     eventListeners.forEach(({ element, event, handler }) => {
       element.removeEventListener(event, handler);
@@ -412,38 +400,191 @@ const icons: Record<string, string> = {
     
     if (!cards || cards.length === 0) return;
 
-    // Add click handlers for mobile
-    cards.forEach(card => {
-      const handler = function(this: Element, e: Event) {
-        // Only for mobile
-        if (window.innerWidth < 1024) {
-          // Toggle active class
+    const isDesktop = window.innerWidth >= 1024;
+
+    cards.forEach((card) => {
+      const cardFront = card.querySelector('.card-front') as HTMLElement;
+      const cardSolution = card.querySelector('.card-solution') as HTMLElement;
+      const cardIcon = card.querySelector('.card-icon') as HTMLElement;
+
+      if (!cardFront || !cardSolution) return;
+
+      // Set initial states
+      gsap.set(cardFront, { opacity: 1, transform: 'translateY(0) scale(1)' });
+      gsap.set(cardSolution, { opacity: 0, transform: 'translateY(10px) scale(0.98)' });
+      gsap.set(cardIcon, { scale: 1, opacity: 0.8 });
+
+      if (isDesktop) {
+        // Desktop: Hover animations with GSAP
+        const hoverTimeline = gsap.timeline({ paused: true });
+        
+        card.addEventListener('mouseenter', () => {
+          // Card lift animation
+          gsap.to(card, {
+            duration: 0.4,
+            y: -4,
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
+            ease: 'power2.out'
+          });
+
+          // Icon animation
+          gsap.to(cardIcon, {
+            duration: 0.3,
+            scale: 1.15,
+            opacity: 1,
+            ease: 'back.out(1.7)'
+          });
+
+          // Card flip animation
+          hoverTimeline
+            .to(cardFront, {
+              duration: 0.4,
+              opacity: 0,
+              scale: 0.95,
+              y: -10,
+              ease: 'power2.in'
+            }, 0)
+            .to(cardSolution, {
+              duration: 0.4,
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              ease: 'power2.out'
+            }, 0.1);
+
+          hoverTimeline.play();
+          gsapAnimations.set(card, hoverTimeline);
+        });
+
+        card.addEventListener('mouseleave', () => {
+          // Reset card position
+          gsap.to(card, {
+            duration: 0.4,
+            y: 0,
+            boxShadow: '0 0 0 rgba(0, 0, 0, 0)',
+            ease: 'power2.out'
+          });
+
+          // Reset icon
+          gsap.to(cardIcon, {
+            duration: 0.3,
+            scale: 1,
+            opacity: 0.8,
+            ease: 'power2.out'
+          });
+
+          // Reverse flip animation
+          hoverTimeline.reverse();
+        });
+
+        eventListeners.push(
+          { element: card, event: 'mouseenter', handler: () => {} },
+          { element: card, event: 'mouseleave', handler: () => {} }
+        );
+      } else {
+        // Mobile: Click animations with GSAP
+        const clickHandler = function(this: Element) {
           const isActive = this.classList.contains('active');
           
-          // Remove active from all cards
-          cards!.forEach(c => c.classList.remove('active'));
+          // Remove active from all cards with animation
+          cards!.forEach((c) => {
+            if (c !== this && c.classList.contains('active')) {
+              const front = c.querySelector('.card-front') as HTMLElement;
+              const solution = c.querySelector('.card-solution') as HTMLElement;
+              if (front && solution) {
+                gsap.to(front, {
+                  duration: 0.3,
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                  ease: 'power2.out'
+                });
+                gsap.to(solution, {
+                  duration: 0.3,
+                  opacity: 0,
+                  scale: 0.98,
+                  y: 10,
+                  ease: 'power2.in'
+                });
+              }
+              c.classList.remove('active');
+            }
+          });
           
           // Toggle current card
           if (!isActive) {
             this.classList.add('active');
+            gsap.to(cardFront, {
+              duration: 0.3,
+              opacity: 0,
+              scale: 0.95,
+              y: -10,
+              ease: 'power2.in'
+            });
+            gsap.to(cardSolution, {
+              duration: 0.3,
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              ease: 'power2.out',
+              delay: 0.1
+            });
+          } else {
+            gsap.to(cardFront, {
+              duration: 0.3,
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              ease: 'power2.out'
+            });
+            gsap.to(cardSolution, {
+              duration: 0.3,
+              opacity: 0,
+              scale: 0.98,
+              y: 10,
+              ease: 'power2.in'
+            });
           }
-        }
-      };
-      card.addEventListener('click', handler);
-      eventListeners.push({ element: card, event: 'click', handler });
+        };
+
+        card.addEventListener('click', clickHandler);
+        eventListeners.push({ element: card, event: 'click', handler: clickHandler });
+      }
     });
 
-    // Close solution when clicking outside
-    const outsideClickHandler = (e: Event) => {
-      if (window.innerWidth < 1024) {
+    // Close solution when clicking outside (mobile only)
+    if (!isDesktop) {
+      const outsideClickHandler = (e: Event) => {
         const clickedCard = (e.target as Element).closest('.service-card');
         if (!clickedCard && cards) {
-          cards.forEach(c => c.classList.remove('active'));
+          cards.forEach((c) => {
+            if (c.classList.contains('active')) {
+              const front = c.querySelector('.card-front') as HTMLElement;
+              const solution = c.querySelector('.card-solution') as HTMLElement;
+              if (front && solution) {
+                gsap.to(front, {
+                  duration: 0.3,
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                  ease: 'power2.out'
+                });
+                gsap.to(solution, {
+                  duration: 0.3,
+                  opacity: 0,
+                  scale: 0.98,
+                  y: 10,
+                  ease: 'power2.in'
+                });
+              }
+              c.classList.remove('active');
+            }
+          });
         }
-      }
-    };
-    document.addEventListener('click', outsideClickHandler);
-    eventListeners.push({ element: document, event: 'click', handler: outsideClickHandler });
+      };
+      document.addEventListener('click', outsideClickHandler);
+      eventListeners.push({ element: document, event: 'click', handler: outsideClickHandler });
+    }
   }
 
   // Initialize on load
@@ -463,5 +604,14 @@ const icons: Record<string, string> = {
 
     // Cleanup before page swap
     document.addEventListener('astro:before-swap', cleanupDiagnosticLens);
+
+    // Handle window resize
+    let resizeTimeout: number;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(() => {
+        initDiagnosticLens();
+      }, 250);
+    });
   }
 </script>
