@@ -33,7 +33,7 @@ visiblePosts && (sortedPosts = sortedPosts.slice(0, visiblePosts));
 
 {
   (
-    <section class="section overflow-hidden pt-24">
+    <section id={largeHeading && content ? "hero-section" : undefined} class="section overflow-hidden pt-24">
       <div class="container">
         <div class="row">
           <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">

@@ -281,83 +281,181 @@ const { enable, title, description, image, button } = (
 </style>
 
 <script>
-  // Parallax Effect on Scroll
-  const ctaSection = document.querySelector('.cta-section');
-  const bgImage = document.querySelector('.cta-bg-image');
-  const ctaCard = document.querySelector('.cta-card');
+  let eventListeners: Array<{ element: Element | Window; event: string; handler: (e?: any) => void }> = [];
+  let scrollHandler: (() => void) | null = null;
+  let throttledScrollHandler: (() => void) | null = null;
+  let rafId: number | null = null;
+  let observer: IntersectionObserver | null = null;
+  let ctaSection: Element | null = null;
+  let bgImage: HTMLElement | null = null;
+  let ctaCard: HTMLElement | null = null;
+  let ctaButton: HTMLElement | null = null;
+  let ctaTitle: Element | null = null;
 
-  if (ctaSection && bgImage) {
-    window.addEventListener('scroll', () => {
-      const rect = ctaSection.getBoundingClientRect();
-      const scrollPercent = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-      
-      if (scrollPercent > 0 && scrollPercent < 1) {
-        const parallaxOffset = (scrollPercent - 0.5) * 30;
-        const scale = 1 + (scrollPercent * 0.03);
-        bgImage.style.transform = `translate(-50%, -50%) rotate(7.83deg) translateY(${parallaxOffset}px) scale(${scale})`;
+  // Throttle utility using requestAnimationFrame
+  function throttleRAF(func: () => void): () => void {
+    return () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(() => {
+          func();
+          rafId = null;
+        });
       }
-    });
+    };
   }
 
-  // Magnetic Button Effect
-  const ctaButton = document.querySelector('.cta-button');
-  
-  if (ctaButton) {
-    ctaButton.addEventListener('mousemove', (e) => {
-      const rect = ctaButton.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      
-      const distance = Math.sqrt(x * x + y * y);
-      const maxDistance = 100;
-      
-      if (distance < maxDistance) {
-        const strength = (maxDistance - distance) / maxDistance;
-        const moveX = (x / rect.width) * 20 * strength;
-        const moveY = (y / rect.height) * 20 * strength;
+  function cleanupCallToAction() {
+    // Remove all event listeners
+    eventListeners.forEach(({ element, event, handler }) => {
+      element.removeEventListener(event, handler);
+    });
+    eventListeners = [];
+
+    // Remove scroll listener
+    if (throttledScrollHandler) {
+      window.removeEventListener('scroll', throttledScrollHandler, { passive: true } as EventListenerOptions);
+    }
+
+    // Disconnect observer
+    if (observer) {
+      observer.disconnect();
+      observer = null;
+    }
+
+    // Cancel pending animation frame
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+
+    // Reset styles
+    if (ctaButton) ctaButton.style.transform = '';
+    if (ctaCard) ctaCard.style.background = '#19254c';
+
+    // Reset references
+    ctaSection = null;
+    bgImage = null;
+    ctaCard = null;
+    ctaButton = null;
+    ctaTitle = null;
+    scrollHandler = null;
+    throttledScrollHandler = null;
+  }
+
+  function initCallToAction() {
+    cleanupCallToAction();
+
+    // Re-query DOM elements
+    ctaSection = document.querySelector('.cta-section');
+    bgImage = document.querySelector('.cta-bg-image') as HTMLElement;
+    ctaCard = document.querySelector('.cta-card') as HTMLElement;
+    ctaButton = document.querySelector('.cta-button') as HTMLElement;
+    ctaTitle = document.querySelector('.cta-title');
+
+    // Parallax Effect on Scroll with throttling
+    if (ctaSection && bgImage) {
+      scrollHandler = () => {
+        const rect = ctaSection!.getBoundingClientRect();
+        const scrollPercent = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
         
-        ctaButton.style.transform = `translate(${moveX}px, ${moveY}px) translateY(-4px)`;
-      }
-    });
-    
-    ctaButton.addEventListener('mouseleave', () => {
-      ctaButton.style.transform = '';
-    });
-  }
-
-  // Cursor Following Gradient Effect
-  if (ctaCard) {
-    ctaCard.addEventListener('mousemove', (e) => {
-      const rect = ctaCard.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      
-      ctaCard.style.background = `
-        radial-gradient(circle at ${x}% ${y}%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-        #19254c
-      `;
-    });
-    
-    ctaCard.addEventListener('mouseleave', () => {
-      ctaCard.style.background = '#19254c';
-    });
-  }
-
-  // Title fade-in animation without breaking HTML
-  const ctaTitle = document.querySelector('.cta-title');
-  
-  if (ctaTitle) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          ctaTitle.style.animation = 'titleFadeIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
-          observer.unobserve(entry.target);
+        if (scrollPercent > 0 && scrollPercent < 1) {
+          const parallaxOffset = (scrollPercent - 0.5) * 30;
+          const scale = 1 + (scrollPercent * 0.03);
+          bgImage!.style.transform = `translate(-50%, -50%) rotate(7.83deg) translateY(${parallaxOffset}px) scale(${scale})`;
         }
-      });
-    }, { threshold: 0.5 });
-    
-    observer.observe(ctaTitle);
+      };
+
+      throttledScrollHandler = throttleRAF(scrollHandler);
+      window.addEventListener('scroll', throttledScrollHandler, { passive: true });
+    }
+
+    // Magnetic Button Effect
+    if (ctaButton) {
+      const mousemoveHandler = (e: MouseEvent) => {
+        const rect = ctaButton!.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        const distance = Math.sqrt(x * x + y * y);
+        const maxDistance = 100;
+        
+        if (distance < maxDistance) {
+          const strength = (maxDistance - distance) / maxDistance;
+          const moveX = (x / rect.width) * 20 * strength;
+          const moveY = (y / rect.height) * 20 * strength;
+          
+          ctaButton!.style.transform = `translate(${moveX}px, ${moveY}px) translateY(-4px)`;
+        }
+      };
+      
+      const mouseleaveHandler = () => {
+        ctaButton!.style.transform = '';
+      };
+
+      ctaButton.addEventListener('mousemove', mousemoveHandler);
+      ctaButton.addEventListener('mouseleave', mouseleaveHandler);
+      eventListeners.push(
+        { element: ctaButton, event: 'mousemove', handler: mousemoveHandler },
+        { element: ctaButton, event: 'mouseleave', handler: mouseleaveHandler }
+      );
+    }
+
+    // Cursor Following Gradient Effect
+    if (ctaCard) {
+      const cardMousemoveHandler = (e: MouseEvent) => {
+        const rect = ctaCard!.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        ctaCard!.style.background = `
+          radial-gradient(circle at ${x}% ${y}%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+          #19254c
+        `;
+      };
+      
+      const cardMouseleaveHandler = () => {
+        ctaCard!.style.background = '#19254c';
+      };
+
+      ctaCard.addEventListener('mousemove', cardMousemoveHandler);
+      ctaCard.addEventListener('mouseleave', cardMouseleaveHandler);
+      eventListeners.push(
+        { element: ctaCard, event: 'mousemove', handler: cardMousemoveHandler },
+        { element: ctaCard, event: 'mouseleave', handler: cardMouseleaveHandler }
+      );
+    }
+
+    // Title fade-in animation
+    if (ctaTitle) {
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).style.animation = 'titleFadeIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+            observer?.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      observer.observe(ctaTitle);
+    }
   }
+
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initCallToAction, 10);
+    });
+  } else {
+    setTimeout(initCallToAction, 10);
+  }
+
+  // Re-initialize on page navigation
+  document.addEventListener('astro:page-load', () => {
+    setTimeout(initCallToAction, 50);
+  });
+
+  // Cleanup before page swap
+  document.addEventListener('astro:before-swap', cleanupCallToAction);
 </script>
 
 <style is:global>

@@ -220,11 +220,23 @@ const {
       import "aos/dist/aos.css";
 
       let scrollRef = 0;
+      let aosScrollHandler: (() => void) | null = null;
+      let throttledAosHandler: (() => void) | null = null;
+      let aosScrollListenerAttached = false;
+      let dropdownListeners: Array<{ element: HTMLElement; handler: (e: Event) => void }> = [];
+      let rafId: number | null = null;
 
-      // Fix `not animating although in viewport` issue
-      window.addEventListener("scroll", function () {
-        scrollRef <= 10 ? scrollRef++ : AOS.refresh();
-      });
+      // Throttle utility using requestAnimationFrame
+      function throttleRAF(func: () => void): () => void {
+        return () => {
+          if (rafId === null) {
+            rafId = requestAnimationFrame(() => {
+              func();
+              rafId = null;
+            });
+          }
+        };
+      }
 
       function aosInit() {
         AOS.init({
@@ -235,22 +247,90 @@ const {
       }
 
       function scriptInit() {
+        // Cleanup existing dropdown listeners
+        dropdownListeners.forEach(({ element, handler }) => {
+          element.removeEventListener("click", handler);
+        });
+        dropdownListeners = [];
+
         // Dropdown Menu Toggler For Mobile
         const dropdownMenuToggler: NodeListOf<HTMLElement> =
           document.querySelectorAll(".nav-dropdown > .nav-link");
 
         dropdownMenuToggler.forEach((toggler) => {
-          toggler?.addEventListener("click", (e: Event) => {
+          const handler = (e: Event) => {
             const target = e.target as HTMLElement;
             target && target.parentElement?.classList.toggle("active");
-          });
+          };
+          toggler.addEventListener("click", handler);
+          dropdownListeners.push({ element: toggler, handler });
         });
       }
 
-      document.addEventListener("astro:page-load", () => {
+      function initAOSScroll() {
+        // Cleanup existing scroll listener
+        if (throttledAosHandler && aosScrollListenerAttached) {
+          window.removeEventListener("scroll", throttledAosHandler, { passive: true } as EventListenerOptions);
+          aosScrollListenerAttached = false;
+        }
+
+        scrollRef = 0;
+
+        // Fix `not animating although in viewport` issue with throttling
+        aosScrollHandler = () => {
+          scrollRef <= 10 ? scrollRef++ : AOS.refresh();
+        };
+
+        throttledAosHandler = throttleRAF(aosScrollHandler);
+        window.addEventListener("scroll", throttledAosHandler, { passive: true });
+        aosScrollListenerAttached = true;
+      }
+
+      function cleanupBase() {
+        // Remove scroll listener
+        if (throttledAosHandler && aosScrollListenerAttached) {
+          window.removeEventListener("scroll", throttledAosHandler, { passive: true } as EventListenerOptions);
+          aosScrollListenerAttached = false;
+        }
+
+        // Cleanup dropdown listeners
+        dropdownListeners.forEach(({ element, handler }) => {
+          element.removeEventListener("click", handler);
+        });
+        dropdownListeners = [];
+
+        // Cancel pending animation frame
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+
+        aosScrollHandler = null;
+        throttledAosHandler = null;
+      }
+
+      function initAll() {
         scriptInit();
         aosInit();
+        initAOSScroll();
+      }
+
+      // Initialize on load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAll);
+      } else {
+        initAll();
+      }
+
+      // Re-initialize on page navigation (Astro transitions)
+      document.addEventListener("astro:page-load", () => {
+        cleanupBase();
+        // Small delay to ensure DOM is ready
+        setTimeout(initAll, 10);
       });
+
+      // Cleanup before page swap
+      document.addEventListener('astro:before-swap', cleanupBase);
     </script>
   </body>
 </html>

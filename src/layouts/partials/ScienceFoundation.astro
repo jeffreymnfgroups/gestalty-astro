@@ -407,13 +407,43 @@ const iconPaths = [
 </style>
 
 <script>
-  // Scroll-based interactive behavior for pillar cards
-  if (typeof window !== 'undefined') {
-    const cards = document.querySelectorAll('.pillar-card');
-    const indexItems = document.querySelectorAll('.index-item');
+  let eventListeners: Array<{ element: Element; event: string; handler: (e?: any) => void }> = [];
+  let observer: IntersectionObserver | null = null;
+  let cards: NodeListOf<Element> | null = null;
+  let indexItems: NodeListOf<Element> | null = null;
+
+  function cleanupScienceFoundation() {
+    // Disconnect observer
+    if (observer) {
+      observer.disconnect();
+      observer = null;
+    }
+
+    // Remove all event listeners
+    eventListeners.forEach(({ element, event, handler }) => {
+      element.removeEventListener(event, handler);
+    });
+    eventListeners = [];
+
+    // Reset references
+    cards = null;
+    indexItems = null;
+  }
+
+  function initScienceFoundation() {
+    cleanupScienceFoundation();
+
+    if (typeof window === 'undefined') return;
+
+    cards = document.querySelectorAll('.pillar-card');
+    indexItems = document.querySelectorAll('.index-item');
+
+    if (!cards || cards.length === 0) return;
 
     // Function to activate a specific card
     function activateCard(index: number) {
+      if (!cards || !indexItems) return;
+      
       cards.forEach((card, i) => {
         if (i === index) {
           card.classList.add('active');
@@ -439,7 +469,7 @@ const iconPaths = [
       threshold: 0
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const card = entry.target as HTMLElement;
@@ -451,23 +481,27 @@ const iconPaths = [
 
     // Observe all cards
     cards.forEach((card) => {
-      observer.observe(card);
+      observer!.observe(card);
     });
 
     // Index item click behavior - scroll to card
-    indexItems.forEach((item, index) => {
-      item.addEventListener('click', () => {
-        const targetCard = cards[index];
-        if (targetCard) {
-          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          // The intersection observer will handle expanding the card
-        }
+    if (indexItems) {
+      indexItems.forEach((item, index) => {
+        const handler = () => {
+          const targetCard = cards![index];
+          if (targetCard) {
+            targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // The intersection observer will handle expanding the card
+          }
+        };
+        item.addEventListener('click', handler);
+        eventListeners.push({ element: item, event: 'click', handler });
       });
-    });
+    }
 
     // Mobile/Tablet: Click/tap behavior to toggle
     cards.forEach((card, index) => {
-      card.addEventListener('click', () => {
+      const handler = () => {
         if (window.innerWidth < 1024) {
           const isActive = card.classList.contains('active');
           
@@ -475,7 +509,9 @@ const iconPaths = [
             activateCard(index);
           }
         }
-      });
+      };
+      card.addEventListener('click', handler);
+      eventListeners.push({ element: card, event: 'click', handler });
     });
 
     // Keyboard navigation
@@ -484,16 +520,37 @@ const iconPaths = [
       card.setAttribute('role', 'button');
       card.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
 
-      card.addEventListener('keydown', (e) => {
+      const keydownHandler = (e: KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           card.scrollIntoView({ behavior: 'smooth', block: 'center' });
           card.setAttribute('aria-expanded', 'true');
         }
-      });
+      };
+      card.addEventListener('keydown', keydownHandler);
+      eventListeners.push({ element: card, event: 'keydown', handler: keydownHandler });
     });
 
     // Initialize first card as active
     activateCard(0);
+  }
+
+  // Initialize on load
+  if (typeof window !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initScienceFoundation, 10);
+      });
+    } else {
+      setTimeout(initScienceFoundation, 10);
+    }
+
+    // Re-initialize on page navigation
+    document.addEventListener('astro:page-load', () => {
+      setTimeout(initScienceFoundation, 50);
+    });
+
+    // Cleanup before page swap
+    document.addEventListener('astro:before-swap', cleanupScienceFoundation);
   }
 </script>

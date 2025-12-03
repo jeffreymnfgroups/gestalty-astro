@@ -6,7 +6,9 @@ interface Props {
 }
 
 const { words, duration = 2000, className = "" } = Astro.props;
-const uniqueId = `flip-words-${Math.random().toString(36).substr(2, 9)}`;
+// Generate stable ID based on words content to avoid mismatches
+const wordsHash = words.join('-').replace(/[^a-z0-9-]/gi, '').substring(0, 20) || 'default';
+const uniqueId = `flip-words-${wordsHash}`;
 ---
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,44 +98,174 @@ const uniqueId = `flip-words-${Math.random().toString(36).substr(2, 9)}`;
 </style>
 
 <script define:vars={{ words, duration, uniqueId }}>
-  const container = document.getElementById(uniqueId);
-  const wordElements = container.querySelectorAll('.flip-word');
+  let animationInterval: number | null = null;
   let currentIndex = 0;
   let isAnimating = false;
+  let observer: IntersectionObserver | null = null;
+  let container: HTMLElement | null = null;
+  let wordElements: NodeListOf<HTMLElement> | null = null;
 
-  function animateWord() {
-    if (isAnimating) return;
-    isAnimating = true;
+  function initFlipWords() {
+    // Cleanup existing interval
+    if (animationInterval !== null) {
+      clearInterval(animationInterval);
+      animationInterval = null;
+    }
 
-    const currentWord = wordElements[currentIndex];
-    const nextIndex = (currentIndex + 1) % words.length;
-    const nextWord = wordElements[nextIndex];
+    // Cleanup existing observer
+    if (observer) {
+      observer.disconnect();
+      observer = null;
+    }
 
-    // Remove active class from current word (exit animation)
-    currentWord.classList.remove('active');
+    // Get container and word elements
+    container = document.getElementById(uniqueId);
+    if (!container) return;
 
-    // Wait for exit transition to complete before showing next word
-    setTimeout(() => {
-      // Reset letter delays
-      const currentLetters = currentWord.querySelectorAll('.letter');
-      currentLetters.forEach(letter => {
-        letter.style.transitionDelay = '';
+    wordElements = container.querySelectorAll('.flip-word');
+    if (!wordElements || wordElements.length === 0) return;
+
+    // Reset state
+    currentIndex = 0;
+    isAnimating = false;
+
+    // Reset all words to initial state
+    wordElements.forEach((word, index) => {
+      word.classList.remove('active');
+      const letters = word.querySelectorAll('.letter');
+      letters.forEach(letter => {
+        (letter as HTMLElement).style.transitionDelay = '';
       });
+      if (index === 0) {
+        word.classList.add('active');
+        const letters = word.querySelectorAll('.letter');
+        letters.forEach((letter, letterIndex) => {
+          (letter as HTMLElement).style.transitionDelay = `${letterIndex * 0.03}s`;
+        });
+      }
+    });
 
-      // Add active class to next word (enter animation)
-      nextWord.classList.add('active');
-      
-      // Stagger letter animations
-      const letters = nextWord.querySelectorAll('.letter');
-      letters.forEach((letter, index) => {
-        letter.style.transitionDelay = `${index * 0.03}s`;
+    function animateWord() {
+      if (isAnimating || !wordElements || wordElements.length === 0) return;
+      isAnimating = true;
+
+      const currentWord = wordElements[currentIndex];
+      const nextIndex = (currentIndex + 1) % words.length;
+      const nextWord = wordElements[nextIndex];
+
+      if (!currentWord || !nextWord) {
+        isAnimating = false;
+        return;
+      }
+
+      // Remove active class from current word (exit animation)
+      currentWord.classList.remove('active');
+
+      // Wait for exit transition to complete before showing next word
+      setTimeout(() => {
+        // Reset letter delays
+        const currentLetters = currentWord.querySelectorAll('.letter');
+        currentLetters.forEach(letter => {
+          (letter as HTMLElement).style.transitionDelay = '';
+        });
+
+        // Add active class to next word (enter animation)
+        nextWord.classList.add('active');
+        
+        // Stagger letter animations
+        const letters = nextWord.querySelectorAll('.letter');
+        letters.forEach((letter, index) => {
+          (letter as HTMLElement).style.transitionDelay = `${index * 0.03}s`;
+        });
+
+        currentIndex = nextIndex;
+        isAnimating = false;
+      }, 400); // Match transition duration
+    }
+
+    // Start animation loop
+    animationInterval = window.setInterval(animateWord, duration);
+
+    // Use Intersection Observer to pause animation when not visible
+    observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Resume animation if paused
+          if (!animationInterval) {
+            animationInterval = window.setInterval(animateWord, duration);
+          }
+        } else {
+          // Pause animation when not visible
+          if (animationInterval !== null) {
+            clearInterval(animationInterval);
+            animationInterval = null;
+          }
+        }
       });
+    }, {
+      threshold: 0.1
+    });
 
-      currentIndex = nextIndex;
-      isAnimating = false;
-    }, 400); // Match transition duration
+    observer.observe(container);
   }
 
-  // Start animation loop
-  setInterval(animateWord, duration);
+  function cleanupFlipWords() {
+    if (animationInterval !== null) {
+      clearInterval(animationInterval);
+      animationInterval = null;
+    }
+    if (observer) {
+      observer.disconnect();
+      observer = null;
+    }
+    container = null;
+    wordElements = null;
+  }
+
+  function tryInit() {
+    // Check if element exists before initializing
+    const element = document.getElementById(uniqueId);
+    if (element) {
+      initFlipWords();
+      return true;
+    }
+    return false;
+  }
+
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      // Try multiple times if element not found immediately
+      if (!tryInit()) {
+        let attempts = 0;
+        const checkInterval = setInterval(() => {
+          attempts++;
+          if (tryInit() || attempts > 10) {
+            clearInterval(checkInterval);
+          }
+        }, 50);
+      }
+    });
+  } else {
+    if (!tryInit()) {
+      // Element might not be ready yet, try again after a short delay
+      setTimeout(() => tryInit(), 50);
+    }
+  }
+
+  // Re-initialize on page navigation (Astro transitions)
+  document.addEventListener('astro:page-load', () => {
+    cleanupFlipWords();
+    // Try multiple times if element not found immediately
+    let attempts = 0;
+    const checkInterval = setInterval(() => {
+      attempts++;
+      if (tryInit() || attempts > 20) {
+        clearInterval(checkInterval);
+      }
+    }, 50);
+  });
+
+  // Cleanup before page unload
+  document.addEventListener('astro:before-swap', cleanupFlipWords);
 </script>

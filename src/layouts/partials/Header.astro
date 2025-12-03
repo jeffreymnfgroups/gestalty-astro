@@ -27,7 +27,16 @@ const { pathname } = Astro.url;
 
 <div
   class={`header-wrapper ${Astro.url.pathname === "/" ? "relative" : !errorPage && "pb-6"}`}>
-  <header class="header-modern fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300">
+  <!-- Scroll Progress Indicator -->
+  <div 
+    id="scroll-progress-bar" 
+    class="fixed top-0 left-0 right-0 h-[3px] bg-[#fbc10d] z-[60] transition-all duration-100"
+    style="width: 0%;">
+  </div>
+  
+  <header 
+    id="main-header"
+    class={`header-modern fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${banner ? 'header-home' : ''}`}>
     <div class="w-full max-w-[75rem] mx-auto px-5 sm:px-7 py-2">
       <nav
         class="navbar-modern flex items-center justify-between transition-all duration-300 rounded-full shadow-sm bg-body/95 backdrop-blur-md px-3 py-2"
@@ -247,54 +256,165 @@ const { pathname } = Astro.url;
     background-color: #fbc10d !important;
     border-color: #fbc10d !important;
   }
+  
+  .header-modern.header-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
 </style>
 
 <script>
-  // Mobile menu toggle functionality
-  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-  const mobileMenuClose = document.getElementById('mobile-menu-close');
-  const mobileSidebar = document.getElementById('mobile-sidebar');
-  const mobileBackdrop = document.getElementById('mobile-backdrop');
-  const headerNav = document.getElementById('header-nav');
+  // Store references for cleanup
+  let scrollHandler: (() => void) | null = null;
+  let throttledScrollHandler: (() => void) | null = null;
+  let scrollListenersAttached = false;
+  let menuEventListeners: Array<{ element: Element; event: string; handler: () => void }> = [];
+  let rafId: number | null = null;
 
-  function openMobileMenu() {
-    mobileSidebar?.classList.remove('translate-x-full');
-    mobileBackdrop?.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeMobileMenu() {
-    mobileSidebar?.classList.add('translate-x-full');
-    mobileBackdrop?.classList.add('hidden');
-    document.body.style.overflow = '';
-  }
-
-  mobileMenuToggle?.addEventListener('click', openMobileMenu);
-  mobileMenuClose?.addEventListener('click', closeMobileMenu);
-  mobileBackdrop?.addEventListener('click', closeMobileMenu);
-
-  // Sticky header on scroll
-  let lastScrollY = window.scrollY;
-  
-  function handleScroll() {
-    const currentScrollY = window.scrollY;
-    const isSticky = currentScrollY >= 80;
-    
-    if (headerNav) {
-      if (isSticky) {
-        headerNav.className = 'navbar-modern flex items-center justify-between transition-all duration-300 rounded-full shadow-sm bg-body/95 backdrop-blur-md px-3 py-2';
-      } else {
-        headerNav.className = 'navbar-modern flex items-center justify-between transition-all duration-300 rounded-full shadow-sm bg-body/95 backdrop-blur-md px-3 py-2';
+  // Throttle utility using requestAnimationFrame
+  function throttleRAF(func: () => void): () => void {
+    return () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(() => {
+          func();
+          rafId = null;
+        });
       }
+    };
+  }
+
+  function initHeader() {
+    // Get DOM elements (re-query on each init)
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+    const mobileSidebar = document.getElementById('mobile-sidebar');
+    const mobileBackdrop = document.getElementById('mobile-backdrop');
+    const mainHeader = document.getElementById('main-header');
+    const progressBar = document.getElementById('scroll-progress-bar');
+
+    // Cleanup existing menu event listeners
+    menuEventListeners.forEach(({ element, event, handler }) => {
+      element.removeEventListener(event, handler);
+    });
+    menuEventListeners = [];
+
+    function openMobileMenu() {
+      mobileSidebar?.classList.remove('translate-x-full');
+      mobileBackdrop?.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      mobileSidebar?.classList.add('translate-x-full');
+      mobileBackdrop?.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // Attach menu event listeners
+    if (mobileMenuToggle) {
+      menuEventListeners.push({ element: mobileMenuToggle, event: 'click', handler: openMobileMenu });
+      mobileMenuToggle.addEventListener('click', openMobileMenu);
     }
     
-    lastScrollY = currentScrollY;
+    if (mobileMenuClose) {
+      menuEventListeners.push({ element: mobileMenuClose, event: 'click', handler: closeMobileMenu });
+      mobileMenuClose.addEventListener('click', closeMobileMenu);
+    }
+    
+    if (mobileBackdrop) {
+      menuEventListeners.push({ element: mobileBackdrop, event: 'click', handler: closeMobileMenu });
+      mobileBackdrop.addEventListener('click', closeMobileMenu);
+    }
+
+    // Scroll progress and header visibility handler
+    scrollHandler = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Update scroll progress bar
+      if (progressBar) {
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = scrollHeight > 0 ? (currentScrollY / scrollHeight) * 100 : 0;
+        progressBar.style.width = `${Math.min(100, Math.max(0, scrollPercent))}%`;
+      }
+      
+      // Hide header when past hero section (works on all pages)
+      if (mainHeader) {
+        const heroSection = document.getElementById('hero-section') || 
+                           document.querySelector('[data-hero-section]');
+        
+        if (heroSection) {
+          const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+          const shouldHide = currentScrollY > heroBottom;
+          
+          if (shouldHide) {
+            mainHeader.classList.add('header-hidden');
+          } else {
+            mainHeader.classList.remove('header-hidden');
+          }
+        } else {
+          // No hero section found, show header
+          mainHeader.classList.remove('header-hidden');
+        }
+      }
+    };
+
+    // Create throttled scroll handler
+    throttledScrollHandler = throttleRAF(scrollHandler);
+
+    // Remove existing scroll listener if any
+    if (scrollListenersAttached) {
+      window.removeEventListener('scroll', throttledScrollHandler!, { passive: true } as EventListenerOptions);
+    }
+
+    // Attach throttled scroll listener
+    window.addEventListener('scroll', throttledScrollHandler, { passive: true });
+    scrollListenersAttached = true;
+    
+    // Initialize on load
+    scrollHandler();
+
+    // Close mobile menu on navigation
+    closeMobileMenu();
   }
 
-  window.addEventListener('scroll', handleScroll, { passive: true });
+  function cleanupHeader() {
+    // Remove scroll listener
+    if (throttledScrollHandler && scrollListenersAttached) {
+      window.removeEventListener('scroll', throttledScrollHandler, { passive: true } as EventListenerOptions);
+      scrollListenersAttached = false;
+    }
 
-  // Close mobile menu on route change
+    // Cleanup menu event listeners
+    menuEventListeners.forEach(({ element, event, handler }) => {
+      element.removeEventListener(event, handler);
+    });
+    menuEventListeners = [];
+
+    // Cancel pending animation frame
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+
+    scrollHandler = null;
+    throttledScrollHandler = null;
+  }
+
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeader);
+  } else {
+    initHeader();
+  }
+
+  // Re-initialize on page navigation (Astro transitions)
   document.addEventListener('astro:page-load', () => {
-    closeMobileMenu();
+    cleanupHeader();
+    // Small delay to ensure DOM is ready
+    setTimeout(initHeader, 10);
   });
+
+  // Cleanup before page swap
+  document.addEventListener('astro:before-swap', cleanupHeader);
 </script>

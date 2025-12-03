@@ -5,7 +5,7 @@ const { title = "", lastModified }: { title?: string; lastModified?: string } =
   Astro.props;
 ---
 
-<section>
+<section id="hero-section">
   <div class="container text-center" data-aos="fade-up-sm">
     <div class="rounded-2xl px-8 pt-28">
       <h1 class="h2 md:h1 mb-4" set:text={humanize(title)} />

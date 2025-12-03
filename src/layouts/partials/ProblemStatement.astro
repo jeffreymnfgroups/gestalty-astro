@@ -474,29 +474,73 @@ const slideCount = cards.length;
 
 <script>
 // @ts-nocheck
-const sliderRoot = /** @type {HTMLElement | null} */ (document.querySelector('[data-ps-slider]'));
-const slides = sliderRoot
-  ? /** @type {HTMLElement[]} */ (Array.from(sliderRoot.querySelectorAll('.ps-slide')))
-  : [];
-const dots = /** @type {HTMLButtonElement[]} */ (Array.from(document.querySelectorAll('[data-ps-dot]')));
-const thumbs = /** @type {HTMLButtonElement[]} */ (Array.from(document.querySelectorAll('[data-ps-thumb]')));
-const counterCurrent = document.querySelector('[data-slide-current]');
-const counterTotal = document.querySelector('[data-slide-total]');
-const nextButton = document.querySelector('[data-ps-next]');
-const prevButton = document.querySelector('[data-ps-prev]');
-const playButton = /** @type {HTMLButtonElement | null} */ (document.querySelector('[data-ps-play]'));
-const activeTitleEl = document.querySelector('[data-active-title]');
-const activeDescriptionEl = document.querySelector('[data-active-description]');
-const totalSlides = slides.length;
 const AUTOPLAY_DELAY = 4500;
 let currentIndex = 0;
-/** @type {number | null} */
-let autoplayId = null;
+let autoplayId: number | null = null;
 let isAutoplaying = false;
+let eventListeners: Array<{ element: Element | Document | Window; event: string; handler: (e?: any) => void }> = [];
+let sliderRoot: HTMLElement | null = null;
+let slides: HTMLElement[] = [];
+let dots: HTMLButtonElement[] = [];
+let thumbs: HTMLButtonElement[] = [];
+let counterCurrent: Element | null = null;
+let counterTotal: Element | null = null;
+let nextButton: Element | null = null;
+let prevButton: Element | null = null;
+let playButton: HTMLButtonElement | null = null;
+let activeTitleEl: Element | null = null;
+let activeDescriptionEl: Element | null = null;
+let totalSlides = 0;
 
-if (counterTotal && totalSlides > 0) {
-  counterTotal.textContent = totalSlides.toString().padStart(2, '0');
+function cleanupProblemStatement() {
+  // Stop autoplay
+  if (autoplayId !== null) {
+    window.clearInterval(autoplayId);
+    autoplayId = null;
+  }
+  isAutoplaying = false;
+
+  // Remove all event listeners
+  eventListeners.forEach(({ element, event, handler }) => {
+    element.removeEventListener(event, handler);
+  });
+  eventListeners = [];
+
+  // Reset DOM references
+  sliderRoot = null;
+  slides = [];
+  dots = [];
+  thumbs = [];
+  counterCurrent = null;
+  counterTotal = null;
+  nextButton = null;
+  prevButton = null;
+  playButton = null;
+  activeTitleEl = null;
+  activeDescriptionEl = null;
+  totalSlides = 0;
+  currentIndex = 0;
 }
+
+function initProblemStatement() {
+  // Cleanup existing listeners first
+  cleanupProblemStatement();
+
+  // Re-query all DOM elements
+  sliderRoot = document.querySelector('[data-ps-slider]');
+  slides = sliderRoot
+    ? Array.from(sliderRoot.querySelectorAll('.ps-slide'))
+    : [];
+  dots = Array.from(document.querySelectorAll('[data-ps-dot]'));
+  thumbs = Array.from(document.querySelectorAll('[data-ps-thumb]'));
+  counterCurrent = document.querySelector('[data-slide-current]');
+  counterTotal = document.querySelector('[data-slide-total]');
+  nextButton = document.querySelector('[data-ps-next]');
+  prevButton = document.querySelector('[data-ps-prev]');
+  playButton = document.querySelector('[data-ps-play]');
+  activeTitleEl = document.querySelector('[data-active-title]');
+  activeDescriptionEl = document.querySelector('[data-active-description]');
+  totalSlides = slides.length;
 
 /**
  * @param {boolean} isPlaying
@@ -583,52 +627,89 @@ function handleManualAdvance(targetIndex) {
   restartAutoplayIfNeeded();
 }
 
-if (totalSlides) {
-  updateActiveSlide(0);
+  if (counterTotal && totalSlides > 0) {
+    counterTotal.textContent = totalSlides.toString().padStart(2, '0');
+  }
 
-  nextButton?.addEventListener('click', () => {
-    handleManualAdvance(currentIndex + 1);
-  });
+  if (totalSlides) {
+    updateActiveSlide(0);
 
-  prevButton?.addEventListener('click', () => {
-    handleManualAdvance(currentIndex - 1);
-  });
+    // Next button
+    if (nextButton) {
+      const handler = () => handleManualAdvance(currentIndex + 1);
+      nextButton.addEventListener('click', handler);
+      eventListeners.push({ element: nextButton, event: 'click', handler });
+    }
 
-  dots.forEach((dot) => {
-    dot.addEventListener('click', () => {
-      const index = Number(dot.dataset.index) || 0;
-      handleManualAdvance(index);
+    // Prev button
+    if (prevButton) {
+      const handler = () => handleManualAdvance(currentIndex - 1);
+      prevButton.addEventListener('click', handler);
+      eventListeners.push({ element: prevButton, event: 'click', handler });
+    }
+
+    // Dots
+    dots.forEach((dot) => {
+      const handler = () => {
+        const index = Number(dot.dataset.index) || 0;
+        handleManualAdvance(index);
+      };
+      dot.addEventListener('click', handler);
+      eventListeners.push({ element: dot, event: 'click', handler });
     });
-  });
 
-  thumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => {
-      const index = Number(thumb.dataset.index) || 0;
-      handleManualAdvance(index);
+    // Thumbs
+    thumbs.forEach((thumb) => {
+      const handler = () => {
+        const index = Number(thumb.dataset.index) || 0;
+        handleManualAdvance(index);
+      };
+      thumb.addEventListener('click', handler);
+      eventListeners.push({ element: thumb, event: 'click', handler });
     });
-  });
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowRight') {
-      handleManualAdvance(currentIndex + 1);
-    }
+    // Keyboard navigation
+    const keydownHandler = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowRight') {
+        handleManualAdvance(currentIndex + 1);
+      }
+      if (event.key === 'ArrowLeft') {
+        handleManualAdvance(currentIndex - 1);
+      }
+    };
+    document.addEventListener('keydown', keydownHandler);
+    eventListeners.push({ element: document, event: 'keydown', handler: keydownHandler });
 
-    if (event.key === 'ArrowLeft') {
-      handleManualAdvance(currentIndex - 1);
+    // Play button
+    if (playButton) {
+      const handler = () => {
+        if (!playButton || playButton.hasAttribute('disabled')) return;
+        if (isAutoplaying) {
+          stopAutoplay();
+        } else {
+          startAutoplay();
+        }
+      };
+      playButton.addEventListener('click', handler);
+      eventListeners.push({ element: playButton, event: 'click', handler });
     }
-  });
-
-  playButton?.addEventListener('click', () => {
-    if (!playButton || playButton.hasAttribute('disabled')) return;
-    if (isAutoplaying) {
-      stopAutoplay();
-    } else {
-      startAutoplay();
-    }
-  });
+  }
 }
 
-window.addEventListener('beforeunload', () => {
-  stopAutoplay(false);
+// Initialize on load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initProblemStatement, 10);
+  });
+} else {
+  setTimeout(initProblemStatement, 10);
+}
+
+// Re-initialize on page navigation
+document.addEventListener('astro:page-load', () => {
+  setTimeout(initProblemStatement, 50);
 });
+
+// Cleanup before page swap
+document.addEventListener('astro:before-swap', cleanupProblemStatement);
 </script>
