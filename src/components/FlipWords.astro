@@ -9,13 +9,10 @@ const { words, duration = 2000, className = "" } = Astro.props;
 // Generate stable ID based on words content to avoid mismatches
 const wordsHash = words.join('-').replace(/[^a-z0-9-]/gi, '').substring(0, 20) || 'default';
 const uniqueId = `flip-words-${wordsHash}`;
+const wordsJson = JSON.stringify(words);
 ---
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-
-<div class={`flip-words-container ${className}`} id={uniqueId}>
+<div class={`flip-words-container ${className}`} id={uniqueId} data-words={wordsJson} data-duration={duration}>
   <span class="flip-words-wrapper">
     <span class="flip-words-sizer" aria-hidden="true">
       {words.reduce((longest, word) => word.length > longest.length ? word : longest, words[0])}
@@ -25,12 +22,11 @@ const uniqueId = `flip-words-${wordsHash}`;
         class={`flip-word ${index === 0 ? 'active' : ''}`}
         data-index={index}
       >
-        {word.split('').map((letter) => (
-          <span class="letter">{letter}</span>
-        ))}
+        {word}
       </span>
     ))}
   </span>
+  <span class="flip-words-underline"></span>
 </div>
 
 <style>
@@ -60,212 +56,159 @@ const uniqueId = `flip-words-${wordsHash}`;
     visibility: hidden;
     pointer-events: none;
     white-space: nowrap;
-    transform: translateY(20px) rotateX(-90deg);
-    transform-origin: center center;
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                visibility 0s 0.4s;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out,
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0s 0.5s;
     will-change: transform, opacity;
     z-index: 1;
-    color: #fbc10d;
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
   }
 
   .flip-word.active {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: translateY(0) rotateX(0deg);
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform: translateY(0);
+    transition: opacity 0.5s ease-in,
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
                 visibility 0s;
     z-index: 2;
   }
 
-  .flip-word .letter {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    will-change: transform, opacity;
+  .flip-words-underline {
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #fbc10d 0%, #ffd700 50%, #fbc10d 100%);
+    background-size: 200% 100%;
+    border-radius: 2px;
+    width: 0;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: shimmer 3s ease-in-out infinite;
+    z-index: 3;
   }
 
-  .flip-word.active .letter {
-    opacity: 1;
-    transform: translateY(0);
+  @keyframes shimmer {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
 </style>
 
-<script define:vars={{ words, duration, uniqueId }}>
-  let animationInterval: number | null = null;
-  let currentIndex = 0;
-  let isAnimating = false;
-  let observer: IntersectionObserver | null = null;
-  let container: HTMLElement | null = null;
-  let wordElements: NodeListOf<HTMLElement> | null = null;
-
+<script>
   function initFlipWords() {
-    // Cleanup existing interval
-    if (animationInterval !== null) {
-      clearInterval(animationInterval);
-      animationInterval = null;
-    }
-
-    // Cleanup existing observer
-    if (observer) {
-      observer.disconnect();
-      observer = null;
-    }
-
-    // Get container and word elements
-    container = document.getElementById(uniqueId);
-    if (!container) return;
-
-    wordElements = container.querySelectorAll('.flip-word');
-    if (!wordElements || wordElements.length === 0) return;
-
-    // Reset state
-    currentIndex = 0;
-    isAnimating = false;
-
-    // Reset all words to initial state
-    wordElements.forEach((word, index) => {
-      word.classList.remove('active');
-      const letters = word.querySelectorAll('.letter');
-      letters.forEach(letter => {
-        (letter as HTMLElement).style.transitionDelay = '';
-      });
-      if (index === 0) {
-        word.classList.add('active');
-        const letters = word.querySelectorAll('.letter');
-        letters.forEach((letter, letterIndex) => {
-          (letter as HTMLElement).style.transitionDelay = `${letterIndex * 0.03}s`;
-        });
-      }
-    });
-
-    function animateWord() {
-      if (isAnimating || !wordElements || wordElements.length === 0) return;
-      isAnimating = true;
-
-      const currentWord = wordElements[currentIndex];
-      const nextIndex = (currentIndex + 1) % words.length;
-      const nextWord = wordElements[nextIndex];
-
-      if (!currentWord || !nextWord) {
-        isAnimating = false;
-        return;
-      }
-
-      // Remove active class from current word (exit animation)
-      currentWord.classList.remove('active');
-
-      // Wait for exit transition to complete before showing next word
-      setTimeout(() => {
-        // Reset letter delays
-        const currentLetters = currentWord.querySelectorAll('.letter');
-        currentLetters.forEach(letter => {
-          (letter as HTMLElement).style.transitionDelay = '';
-        });
-
-        // Add active class to next word (enter animation)
-        nextWord.classList.add('active');
-        
-        // Stagger letter animations
-        const letters = nextWord.querySelectorAll('.letter');
-        letters.forEach((letter, index) => {
-          (letter as HTMLElement).style.transitionDelay = `${index * 0.03}s`;
-        });
-
-        currentIndex = nextIndex;
-        isAnimating = false;
-      }, 400); // Match transition duration
-    }
-
-    // Start animation loop
-    animationInterval = window.setInterval(animateWord, duration);
-
-    // Use Intersection Observer to pause animation when not visible
-    observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Resume animation if paused
-          if (!animationInterval) {
-            animationInterval = window.setInterval(animateWord, duration);
-          }
-        } else {
-          // Pause animation when not visible
-          if (animationInterval !== null) {
-            clearInterval(animationInterval);
-            animationInterval = null;
-          }
+    const containers = document.querySelectorAll('[id^="flip-words-"]');
+    
+    containers.forEach((container) => {
+      const wordsData = (container as HTMLElement).dataset.words;
+      const duration = parseInt((container as HTMLElement).dataset.duration || '2000', 10);
+      
+      if (!wordsData) return;
+      
+      const words: string[] = JSON.parse(wordsData);
+      const wordElements = container.querySelectorAll('.flip-word');
+      const underline = container.querySelector('.flip-words-underline') as HTMLElement;
+      
+      if (wordElements.length === 0 || words.length === 0) return;
+      
+      let currentIndex = 0;
+      let intervalId: number | null = null;
+      
+      // Initialize first word
+      wordElements.forEach((word, index) => {
+        (word as HTMLElement).classList.remove('active');
+        if (index === 0) {
+          (word as HTMLElement).classList.add('active');
+          container.classList.add('active');
         }
       });
-    }, {
-      threshold: 0.1
-    });
-
-    observer.observe(container);
-  }
-
-  function cleanupFlipWords() {
-    if (animationInterval !== null) {
-      clearInterval(animationInterval);
-      animationInterval = null;
-    }
-    if (observer) {
-      observer.disconnect();
-      observer = null;
-    }
-    container = null;
-    wordElements = null;
-  }
-
-  function tryInit() {
-    // Check if element exists before initializing
-    const element = document.getElementById(uniqueId);
-    if (element) {
-      initFlipWords();
-      return true;
-    }
-    return false;
-  }
-
-  // Initialize on load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      // Try multiple times if element not found immediately
-      if (!tryInit()) {
-        let attempts = 0;
-        const checkInterval = setInterval(() => {
-          attempts++;
-          if (tryInit() || attempts > 10) {
-            clearInterval(checkInterval);
+      
+      function updateUnderline() {
+        if (!underline) return;
+        const activeWord = container.querySelector('.flip-word.active') as HTMLElement;
+        if (activeWord && activeWord.offsetWidth > 0) {
+          underline.style.width = activeWord.offsetWidth + 'px';
+        }
+      }
+      
+      function animate() {
+        const currentWord = wordElements[currentIndex] as HTMLElement;
+        const nextIndex = (currentIndex + 1) % words.length;
+        const nextWord = wordElements[nextIndex] as HTMLElement;
+        
+        if (!currentWord || !nextWord) return;
+        
+        // Remove active from current
+        currentWord.classList.remove('active');
+        container.classList.remove('active');
+        
+        // After fade out, switch to next word
+        setTimeout(() => {
+          nextWord.classList.add('active');
+          container.classList.add('active');
+          currentIndex = nextIndex;
+          
+          // Update underline width to match new word
+          updateUnderline();
+        }, 500);
+      }
+      
+      // Start animation
+      intervalId = window.setInterval(animate, duration) as unknown as number;
+      
+      // Initialize underline width
+      updateUnderline();
+      setTimeout(updateUnderline, 200);
+      
+      // Intersection Observer to pause when not visible
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            if (!intervalId) {
+              intervalId = window.setInterval(animate, duration) as unknown as number;
+            }
+          } else {
+            if (intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
           }
-        }, 50);
+        });
+      }, { threshold: 0.1 });
+      
+      observer.observe(container);
+      
+      // Store cleanup function
+      (container as any)._flipCleanup = () => {
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+        observer.disconnect();
+      };
+    });
+  }
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFlipWords);
+  } else {
+    initFlipWords();
+  }
+  
+  // Re-initialize on Astro page transitions
+  document.addEventListener('astro:page-load', () => {
+    // Cleanup existing instances
+    document.querySelectorAll('[id^="flip-words-"]').forEach((container) => {
+      if ((container as any)._flipCleanup) {
+        (container as any)._flipCleanup();
       }
     });
-  } else {
-    if (!tryInit()) {
-      // Element might not be ready yet, try again after a short delay
-      setTimeout(() => tryInit(), 50);
-    }
-  }
-
-  // Re-initialize on page navigation (Astro transitions)
-  document.addEventListener('astro:page-load', () => {
-    cleanupFlipWords();
-    // Try multiple times if element not found immediately
-    let attempts = 0;
-    const checkInterval = setInterval(() => {
-      attempts++;
-      if (tryInit() || attempts > 20) {
-        clearInterval(checkInterval);
-      }
-    }, 50);
+    // Reinitialize
+    setTimeout(initFlipWords, 50);
   });
-
-  // Cleanup before page unload
-  document.addEventListener('astro:before-swap', cleanupFlipWords);
 </script>
