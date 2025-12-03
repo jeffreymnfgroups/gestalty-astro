@@ -15,31 +15,79 @@ const { enable, title, description, image, button } = (
 
 {
   enable && (
-    <section class="section mb-14">
+    <section class="section mb-14 cta-section">
       <div class="container">
-        <div class="bg-text-dark px-10 py-16 xl:p-20 rounded-[40px] relative overflow-hidden" style="background-color: #19254c;">
+        <div 
+          class="cta-card bg-text-dark px-10 py-16 xl:p-20 rounded-[40px] relative overflow-hidden" 
+          style="background-color: #19254c;"
+          data-aos="zoom-in"
+          data-aos-duration="800"
+          data-aos-easing="ease-out-back">
           <div
-            class="absolute !top-1/2 !-translate-y-1/2 !left-1/2 !-translate-x-1/2 rotate-[7.83deg] pointer-events-none"
+            class="cta-bg-image absolute !top-1/2 !-translate-y-1/2 !left-1/2 !-translate-x-1/2 rotate-[7.83deg] pointer-events-none"
             data-aos="fade-in"
             data-aos-delay="200">
-            <ImageMod class=" h-[641px] w-auto " src={image} alt="cta-image" />
+            <svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-[641px] w-auto">
+              <g opacity="0.15">
+                <path d="M150 250C150 250 200 230 400 230V650C200 650 150 630 150 630V250Z" fill="url(#grad1)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                <path d="M650 250C650 250 600 230 400 230V650C600 650 650 630 650 630V250Z" fill="url(#grad2)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                <path d="M400 230V650" stroke="rgba(255,255,255,0.4)" stroke-width="3"/>
+                <line x1="180" y1="300" x2="370" y2="300" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="180" y1="340" x2="370" y2="340" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="180" y1="380" x2="370" y2="380" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="180" y1="420" x2="370" y2="420" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="180" y1="460" x2="350" y2="460" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="180" y1="500" x2="370" y2="500" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="180" y1="540" x2="360" y2="540" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="430" y1="300" x2="620" y2="300" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="430" y1="340" x2="620" y2="340" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="430" y1="380" x2="620" y2="380" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="430" y1="420" x2="620" y2="420" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="430" y1="460" x2="600" y2="460" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="430" y1="500" x2="620" y2="500" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <line x1="430" y1="540" x2="610" y2="540" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                <circle cx="250" cy="150" r="3" fill="rgba(255,255,255,0.4)">
+                  <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="550" cy="170" r="2.5" fill="rgba(255,255,255,0.4)">
+                  <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="180" cy="680" r="2" fill="rgba(255,255,255,0.4)">
+                  <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="620" cy="700" r="3" fill="rgba(255,255,255,0.4)">
+                  <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.2s" repeatCount="indefinite"/>
+                </circle>
+                <path d="M400 220L400 100L420 120L400 140L380 120L400 100" fill="rgba(99, 102, 241, 0.3)" stroke="rgba(99, 102, 241, 0.5)" stroke-width="2"/>
+              </g>
+              <defs>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:rgba(255,255,255,0.1);stop-opacity:1"/>
+                  <stop offset="100%" style="stop-color:rgba(255,255,255,0.05);stop-opacity:1"/>
+                </linearGradient>
+                <linearGradient id="grad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:rgba(255,255,255,0.1);stop-opacity:1"/>
+                  <stop offset="100%" style="stop-color:rgba(255,255,255,0.05);stop-opacity:1"/>
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
           <div class="row items-center justify-center">
             <div class="lg:col-8 text-center">
               <h2
                 set:html={markdownify(title)}
-                class="text-text-light mb-4"
+                class="cta-title text-text-light mb-4"
                 data-aos="fade-up-sm"
               />
               <p
                 set:html={markdownify(description)}
-                class="text-text-light text-lg/[inherit] mb-6"
+                class="cta-description text-text-light text-lg/[inherit] mb-6"
                 data-aos="fade-up-sm"
                 data-aos-delay="50"
               />
               {button.enable && (
                 <a
-                  class="btn btn-outline-primary text-sm px-4 py-2 font-medium [&_.icon-wrapper]:h-9 [&_.icon-wrapper]:w-9 [&_.icon]:h-9 [&_.icon]:min-w-9 [&_svg]:h-4 [&_svg]:w-4"
+                  class="cta-button btn btn-outline-primary text-sm px-4 py-2 font-medium [&_.icon-wrapper]:h-9 [&_.icon-wrapper]:w-9 [&_.icon]:h-9 [&_.icon]:min-w-9 [&_svg]:h-4 [&_svg]:w-4"
                   href={button.link}
                   target={button.link.startsWith("http") ? "_blank" : "_self"}
                   rel="noopener"
@@ -47,7 +95,7 @@ const { enable, title, description, image, button } = (
                   data-aos-delay="200">
                   {button.label}
                   <span class="sr-only">Details</span>
-                  <span class="icon-wrapper">
+                  <span class="icon-wrapper cta-icon">
                     <span class="icon">
                       <DynamicIcon icon={"FaArrowRight"} />
                     </span>
@@ -64,3 +112,263 @@ const { enable, title, description, image, button } = (
     </section>
   )
 }
+
+<style>
+  /* Section Entry Animation */
+  .cta-section {
+    perspective: 1000px;
+  }
+
+  .cta-card {
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+  }
+
+  /* Card Hover Effect */
+  .cta-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Background Image Parallax & Float */
+  .cta-bg-image {
+    animation: float 6s ease-in-out infinite;
+    transition: transform 0.3s ease-out;
+    transform: translate(-50%, -50%) rotate(7.83deg);
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translate(-50%, -50%) rotate(7.83deg) translateY(0px);
+    }
+    50% {
+      transform: translate(-50%, -50%) rotate(7.83deg) translateY(-20px);
+    }
+  }
+
+  /* Title Animation - Gradient Shimmer */
+  .cta-title {
+    background: linear-gradient(
+      90deg,
+      #ffffff 0%,
+      #e0e7ff 25%,
+      #ffffff 50%,
+      #e0e7ff 75%,
+      #ffffff 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 0% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  /* Description Slide-up with Bounce */
+  .cta-description {
+    animation: slideUpBounce 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+  }
+
+  @keyframes slideUpBounce {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Advanced Button Animations */
+  .cta-button {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+  }
+
+  .cta-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .cta-button:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Button Hover Lift */
+  .cta-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+  }
+
+  .cta-button:active {
+    transform: translateY(-2px);
+  }
+
+  /* Icon Pulse Animation */
+  .cta-icon {
+    animation: iconPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes iconPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  .cta-button:hover .cta-icon {
+    animation: iconBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes iconBounce {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(5px);
+    }
+  }
+
+  /* Attention Pulse on Card */
+  .cta-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 40px;
+    opacity: 0;
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+    animation: cardPulse 3s ease-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes cardPulse {
+    0% {
+      opacity: 1;
+      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+    }
+    70% {
+      opacity: 0;
+      box-shadow: 0 0 0 30px rgba(99, 102, 241, 0);
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  // Parallax Effect on Scroll
+  const ctaSection = document.querySelector('.cta-section');
+  const bgImage = document.querySelector('.cta-bg-image');
+  const ctaCard = document.querySelector('.cta-card');
+
+  if (ctaSection && bgImage) {
+    window.addEventListener('scroll', () => {
+      const rect = ctaSection.getBoundingClientRect();
+      const scrollPercent = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+      
+      if (scrollPercent > 0 && scrollPercent < 1) {
+        const parallaxOffset = (scrollPercent - 0.5) * 30;
+        const scale = 1 + (scrollPercent * 0.03);
+        bgImage.style.transform = `translate(-50%, -50%) rotate(7.83deg) translateY(${parallaxOffset}px) scale(${scale})`;
+      }
+    });
+  }
+
+  // Magnetic Button Effect
+  const ctaButton = document.querySelector('.cta-button');
+  
+  if (ctaButton) {
+    ctaButton.addEventListener('mousemove', (e) => {
+      const rect = ctaButton.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      const distance = Math.sqrt(x * x + y * y);
+      const maxDistance = 100;
+      
+      if (distance < maxDistance) {
+        const strength = (maxDistance - distance) / maxDistance;
+        const moveX = (x / rect.width) * 20 * strength;
+        const moveY = (y / rect.height) * 20 * strength;
+        
+        ctaButton.style.transform = `translate(${moveX}px, ${moveY}px) translateY(-4px)`;
+      }
+    });
+    
+    ctaButton.addEventListener('mouseleave', () => {
+      ctaButton.style.transform = '';
+    });
+  }
+
+  // Cursor Following Gradient Effect
+  if (ctaCard) {
+    ctaCard.addEventListener('mousemove', (e) => {
+      const rect = ctaCard.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      
+      ctaCard.style.background = `
+        radial-gradient(circle at ${x}% ${y}%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        #19254c
+      `;
+    });
+    
+    ctaCard.addEventListener('mouseleave', () => {
+      ctaCard.style.background = '#19254c';
+    });
+  }
+
+  // Title fade-in animation without breaking HTML
+  const ctaTitle = document.querySelector('.cta-title');
+  
+  if (ctaTitle) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          ctaTitle.style.animation = 'titleFadeIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    observer.observe(ctaTitle);
+  }
+</script>
+
+<style is:global>
+  @keyframes titleFadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>
