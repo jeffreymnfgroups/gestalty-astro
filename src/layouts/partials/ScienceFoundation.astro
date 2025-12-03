@@ -9,62 +9,491 @@ const { title, subtitle, description, pillars } = (
     "science-foundation"
   )) as CollectionEntry<"scienceFoundationSection">
 ).data;
+
+// SVG icon paths for each pillar
+const iconPaths = [
+  "/images/icons/svg/detection.svg",
+  "/images/icons/svg/encryption.svg", 
+  "/images/icons/svg/code.svg",
+  "/images/icons/svg/like.svg"
+];
 ---
 
-<section class="section">
+<section class="section science-foundation-section">
   <div class="container">
-    <div class="row">
-      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        {title && <h2 class="mb-4" set:html={markdownify(title)} />}
-        {
-          subtitle && (
-            <p
-              class="mb-6 font-medium text-tertiary"
-              set:html={markdownify(subtitle)}
-            />
-          )
-        }
-        {
-          description && (
-            <p
-              class="mb-12 text-lg/[inherit]"
-              set:html={markdownify(description)}
-            />
-          )
-        }
-      </div>
-      <div class="col-12 pt-8">
-        <div class="row g-5">
-          {
-            pillars?.map((pillar, index) => (
-              <div
-                class="md:col-6 lg:col-6"
-                data-aos="fade-up-sm"
-                data-aos-delay={index * 150}>
-                <div class="min-h-full rounded-xl bg-light p-8 md:rounded-3xl">
-                  {pillar.title && (
-                    <h3 class="h5 mb-2" set:html={markdownify(pillar.title)} />
-                  )}
-                  {pillar.tagline && (
-                    <p
-                      class="mb-6 text-sm font-medium text-tertiary italic"
-                      set:html={markdownify(pillar.tagline)}
-                    />
-                  )}
-                  {pillar.list && (
-                    <ul class="list list-dark flex flex-col gap-3">
-                      {pillar.list.map((item) => (
-                        <li class="text-sm">{item}</li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+    <div class="two-column-layout">
+      <!-- Left Column: Intro Content -->
+      <div class="left-column" data-aos="fade-up-sm">
+        <div class="eyebrow">science-backed approach</div>
+        {title && <h2 class="main-heading" set:html={markdownify(title)} />}
+        {subtitle && (
+          <p class="subtitle-text" set:html={markdownify(subtitle)} />
+        )}
+        {description && (
+          <p class="description-text" set:html={markdownify(description)} />
+        )}
+        
+        <!-- Mini index of pillar titles -->
+        {pillars && pillars.length > 0 && (
+          <div class="pillar-index">
+            {pillars.map((pillar, index) => (
+              <div class="index-item" data-index={index}>
+                <span class="index-number">{String(index + 1).padStart(2, '0')}</span>
+                <span class="index-title">{pillar.title}</span>
               </div>
-            ))
-          }
+            ))}
+          </div>
+        )}
+      </div>
+
+      <!-- Right Column: Stacked Pillar Cards -->
+      <div class="right-column" data-aos="fade-up-sm" data-aos-delay="200">
+        <div class="pillar-cards-stack">
+          {pillars?.map((pillar, index) => (
+            <div 
+              class={`pillar-card ${index === 0 ? 'active' : ''}`}
+              data-pillar={index}
+            >
+              <div class="card-header">
+                <div class="icon-wrapper">
+                  <img src={iconPaths[index]} alt={pillar.title} class="pillar-icon" />
+                </div>
+                <h3 class="card-title">{pillar.title}</h3>
+              </div>
+              
+              <div class="card-content">
+                {pillar.tagline && (
+                  <p class="card-tagline">{pillar.tagline}</p>
+                )}
+                
+                {pillar.list && pillar.list.length > 0 && (
+                  <ul class="card-list">
+                    {pillar.list.map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<style>
+  .science-foundation-section {
+    padding: 4rem 0;
+    background: #fefefe;
+  }
+
+  @media (min-width: 1024px) {
+    .science-foundation-section {
+      padding: 6rem 0;
+    }
+  }
+
+  .two-column-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .two-column-layout {
+      grid-template-columns: 40% 60%;
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+
+  /* ========================================
+     LEFT COLUMN STYLES
+     ======================================== */
+
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .left-column {
+      position: sticky;
+      top: 2rem;
+    }
+  }
+
+  .eyebrow {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #6b7280;
+  }
+
+  .main-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #19254c;
+    margin: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .main-heading {
+      font-size: 2.5rem;
+    }
+  }
+
+  .subtitle-text {
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #4b5563;
+    margin: 0;
+  }
+
+  .description-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  /* Pillar Index */
+  .pillar-index {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .index-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+  }
+
+  .index-item:hover {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+
+  .index-item.active {
+    opacity: 1;
+  }
+
+  .index-number {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #19254c;
+    min-width: 2rem;
+  }
+
+  .index-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4b5563;
+  }
+
+  /* ========================================
+     RIGHT COLUMN: PILLAR CARDS
+     ======================================== */
+
+  .right-column {
+    width: 100%;
+  }
+
+  .pillar-cards-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .pillar-card {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.4s ease-in-out;
+    will-change: height, opacity, transform;
+    box-shadow: 0 2px 12px rgba(25, 37, 76, 0.08);
+    border: 2px solid transparent;
+  }
+
+  /* Solid backgrounds for each card - using website color palette */
+  .pillar-card[data-pillar="0"] {
+    background: #ffffff;
+    border-color: rgba(251, 193, 13, 0.3);
+  }
+
+  .pillar-card[data-pillar="1"] {
+    background: #ffffff;
+    border-color: rgba(25, 37, 76, 0.2);
+  }
+
+  .pillar-card[data-pillar="2"] {
+    background: #ffffff;
+    border-color: rgba(251, 193, 13, 0.3);
+  }
+
+  .pillar-card[data-pillar="3"] {
+    background: #ffffff;
+    border-color: rgba(25, 37, 76, 0.2);
+  }
+
+  /* Card Header - Always Visible */
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .icon-wrapper {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    background: #19254c;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .pillar-card.active .icon-wrapper {
+    transform: scale(1.05);
+    background: #fbc10d;
+  }
+
+  .pillar-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
+  .pillar-card.active .pillar-icon {
+    filter: brightness(0) saturate(100%) invert(12%) sepia(41%) saturate(1532%) hue-rotate(199deg) brightness(93%) contrast(93%);
+  }
+
+  .card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #19254c;
+    margin: 0;
+    line-height: 1.3;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .pillar-card.active .card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  /* Card Content - Expandable Section */
+  .card-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 2rem;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .pillar-card.active .card-content {
+    max-height: 800px;
+    opacity: 1;
+    padding: 0 2rem 2rem 2rem;
+  }
+
+  .card-tagline {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin: 0 0 1.5rem 0;
+    font-style: italic;
+  }
+
+  .card-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .card-list li {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #4b5563;
+    padding-left: 1.75rem;
+    position: relative;
+  }
+
+  .card-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: #fbc10d;
+    font-weight: 700;
+  }
+
+  /* Active/Expanded Card State */
+  .pillar-card.active {
+    box-shadow: 0 8px 32px rgba(25, 37, 76, 0.15);
+    border-color: #fbc10d;
+    transform: scale(1.02);
+  }
+
+  /* Mobile/Tablet Responsiveness */
+  @media (max-width: 1023px) {
+    .pillar-card {
+      border-radius: 20px;
+    }
+
+    .card-header {
+      padding: 1.5rem;
+    }
+
+    .icon-wrapper {
+      width: 56px;
+      height: 56px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+    }
+
+    .pillar-card.active .card-title {
+      font-size: 1.25rem;
+    }
+
+    .pillar-card.active .card-content {
+      padding: 0 1.5rem 1.5rem 1.5rem;
+    }
+  }
+
+  /* Smooth height transitions */
+  @media (prefers-reduced-motion: no-preference) {
+    .pillar-card,
+    .card-header,
+    .card-content,
+    .icon-wrapper,
+    .card-title {
+      transition-duration: 0.4s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pillar-card,
+    .card-header,
+    .card-content,
+    .icon-wrapper,
+    .card-title {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Scroll-based interactive behavior for pillar cards
+  if (typeof window !== 'undefined') {
+    const cards = document.querySelectorAll('.pillar-card');
+    const indexItems = document.querySelectorAll('.index-item');
+
+    // Function to activate a specific card
+    function activateCard(index: number) {
+      cards.forEach((card, i) => {
+        if (i === index) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+
+      // Update index items
+      indexItems.forEach((item, i) => {
+        if (i === index) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+    }
+
+    // Scroll observer for expanding cards as they come into view
+    const observerOptions = {
+      root: null,
+      rootMargin: '-40% 0px -40% 0px', // Trigger when card is in the middle 20% of viewport
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const card = entry.target as HTMLElement;
+          const index = parseInt(card.getAttribute('data-pillar') || '0');
+          activateCard(index);
+        }
+      });
+    }, observerOptions);
+
+    // Observe all cards
+    cards.forEach((card) => {
+      observer.observe(card);
+    });
+
+    // Index item click behavior - scroll to card
+    indexItems.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        const targetCard = cards[index];
+        if (targetCard) {
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // The intersection observer will handle expanding the card
+        }
+      });
+    });
+
+    // Mobile/Tablet: Click/tap behavior to toggle
+    cards.forEach((card, index) => {
+      card.addEventListener('click', () => {
+        if (window.innerWidth < 1024) {
+          const isActive = card.classList.contains('active');
+          
+          if (!isActive) {
+            activateCard(index);
+          }
+        }
+      });
+    });
+
+    // Keyboard navigation
+    cards.forEach((card, index) => {
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    // Initialize first card as active
+    activateCard(0);
+  }
+</script>
