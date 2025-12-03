@@ -1,6 +1,7 @@
 ---
 import { join } from "node:path";
 import TwSizeIndicator from "@/components/TwSizeIndicator.astro";
+import SmoothScroll from "@/components/SmoothScroll";
 import config from "@/config/config.json";
 import theme from "@/config/theme.json";
 import { plainify } from "@/lib/utils/textConverter";
@@ -209,12 +210,14 @@ const {
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <TwSizeIndicator />
-    <Header banner={Astro.url.pathname === "/"} errorPage={notFoundPage} />
-    <main id="main-content">
-      <slot />
-    </main>
-    <Footer />
+    <SmoothScroll client:load>
+      <TwSizeIndicator />
+      <Header banner={Astro.url.pathname === "/"} errorPage={notFoundPage} />
+      <main id="main-content">
+        <slot />
+      </main>
+      <Footer />
+    </SmoothScroll>
     <script>
       import AOS from "aos";
       import "aos/dist/aos.css";
@@ -277,12 +280,15 @@ const {
         scrollRef = 0;
 
         // Fix `not animating although in viewport` issue with throttling
+        // Works with both native scroll and Lenis smooth scroll
         aosScrollHandler = () => {
           scrollRef <= 10 ? scrollRef++ : AOS.refresh();
         };
 
         throttledAosHandler = throttleRAF(aosScrollHandler);
+        // Listen to scroll on both window (for Lenis) and document
         window.addEventListener("scroll", throttledAosHandler, { passive: true });
+        document.addEventListener("scroll", throttledAosHandler, { passive: true });
         aosScrollListenerAttached = true;
       }
 
@@ -290,6 +296,7 @@ const {
         // Remove scroll listener
         if (throttledAosHandler && aosScrollListenerAttached) {
           window.removeEventListener("scroll", throttledAosHandler, { passive: true } as EventListenerOptions);
+          document.removeEventListener("scroll", throttledAosHandler, { passive: true } as EventListenerOptions);
           aosScrollListenerAttached = false;
         }
 
