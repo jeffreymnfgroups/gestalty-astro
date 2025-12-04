@@ -55,88 +55,90 @@ const { title, subtitle, table } = (
       </div>
 
       <div class="col-12 mt-10 md:mt-12" data-aos="fade-up-sm" data-aos-delay="160">
-        <div class="mx-auto max-w-5xl space-y-6">
-          {table?.rows?.map((row, index) => (
-            <article
-              class="path-card group rounded-2xl border border-[#e5e5e5] bg-[#fefefe] p-6 shadow-sm transition-all duration-200 md:p-8"
-              data-aos="fade-up-sm"
-              data-aos-delay={180 + index * 80}
-            >
-              <div class="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
-                {/* Area / Pill */}
-                <div class="md:w-1/4">
-                  <div class="mb-3 flex items-center gap-2">
-                    <div class="path-hex inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#19254c] to-[#2a3a6b] px-3 py-1.5 text-[11px] font-['Satoshi',system-ui,sans-serif] font-semibold uppercase tracking-[0.16em] text-[#fefefe] shadow-sm">
-                      {row.area}
-                    </div>
-                  </div>
-                  <p class="text-xs font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#6a7188]">
-                    Focus Area
-                  </p>
-                </div>
-
-                {/* Visualization & Comparison */}
-                <div class="flex-1 space-y-5">
-                  {/* Chart.js Visualization */}
-                  <div class="chart-container rounded-2xl bg-[#fafafa] border border-[#e8e8e8] p-5 shadow-sm">
-                    <div class="mb-4 flex items-center justify-between">
-                      <span class="text-sm font-['Satoshi',system-ui,sans-serif] font-semibold text-[#19254c]">
-                        Transformation Progress
-                      </span>
-                      <div class="flex items-center gap-5 text-[11px] font-['Satoshi',system-ui,sans-serif] font-medium">
-                        <span class="flex items-center gap-2">
-                          <span class="block h-2.5 w-2.5 rounded-full bg-[#6a7188] shadow-sm" />
-                          <span class="text-[#6a7188]">Before</span>
-                        </span>
-                        <span class="flex items-center gap-2">
-                          <span class="block h-2.5 w-2.5 rounded-full bg-[#fbc10d] shadow-sm" />
-                          <span class="text-[#19254c]">With Gestalty</span>
-                        </span>
+        <div class="mx-auto max-w-7xl">
+          {table?.rows && table.rows.length > 0 && (
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              {table.rows.map((row, index) => (
+                <article
+                  class="path-card group rounded-2xl border border-[#e5e5e5] bg-[#fefefe] p-6 shadow-sm transition-all duration-200 md:p-8"
+                  data-aos="fade-up-sm"
+                  data-aos-delay={180 + index * 80}
+                >
+                  {/* Area / Pill Header */}
+                  <div class="mb-6">
+                    <div class="mb-2 flex items-center gap-2">
+                      <div class="path-hex inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#19254c] to-[#2a3a6b] px-3 py-1.5 text-[11px] font-['Satoshi',system-ui,sans-serif] font-semibold uppercase tracking-[0.16em] text-[#fefefe] shadow-sm">
+                        {row.area}
                       </div>
                     </div>
-                    <div class="chart-wrapper relative h-32 w-full">
-                      <TransformationChart client:load area={row.area} />
-                    </div>
+                    <p class="text-xs font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#6a7188]">
+                      Focus Area
+                    </p>
                   </div>
 
-                  {/* Comparison Text */}
-                  <div class="grid gap-4 md:grid-cols-2">
-                    {/* Before */}
-                    <div class="flex flex-col gap-2">
-                      <div class="flex items-center justify-between gap-2">
-                        <p class="text-xs font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#6a7188]">
-                          Before
-                        </p>
-                        <span class="inline-flex items-center gap-1 rounded-full bg-[#f5f5f5] px-2 py-0.5 text-[10px] font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#6a7188]">
-                          <span class="block h-1 w-1 rounded-full bg-[#6a7188]" />
-                          Current
+                  {/* Visualization & Comparison */}
+                  <div class="space-y-5">
+                    {/* Chart.js Visualization */}
+                    <div class="chart-container rounded-2xl bg-[#fafafa] border border-[#e8e8e8] p-4 shadow-sm">
+                      <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <span class="text-sm font-['Satoshi',system-ui,sans-serif] font-semibold text-[#19254c]">
+                          Transformation Progress
                         </span>
+                        <div class="flex items-center gap-3 text-[10px] font-['Satoshi',system-ui,sans-serif] font-medium sm:text-[11px] sm:gap-5">
+                          <span class="flex items-center gap-1.5">
+                            <span class="block h-2 w-2 rounded-full bg-[#6a7188] shadow-sm" />
+                            <span class="text-[#6a7188]">Before</span>
+                          </span>
+                          <span class="flex items-center gap-1.5">
+                            <span class="block h-2 w-2 rounded-full bg-[#fbc10d] shadow-sm" />
+                            <span class="text-[#19254c]">With Gestalty</span>
+                          </span>
+                        </div>
                       </div>
-                      <div class="rounded-xl bg-[#f5f5f5] px-4 py-3 text-[13px] font-['Satoshi',system-ui,sans-serif] leading-relaxed text-[#464646]">
-                        {row.before}
+                      <div class="chart-wrapper relative h-28 w-full">
+                        <TransformationChart client:load area={row.area} />
                       </div>
                     </div>
 
-                    {/* After */}
-                    <div class="flex flex-col gap-2">
-                      <div class="flex items-center justify-between gap-2">
-                        <p class="text-xs font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#19254c] font-semibold">
-                          After
-                        </p>
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#fff7d6] to-[#fff9e6] px-2.5 py-1 text-[10px] font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#7a5a02] shadow-sm border border-[#fbc10d20]">
-                          <span class="block h-1.5 w-1.5 rounded-full bg-[#fbc10d]" />
-                          Enhanced
-                        </span>
+                    {/* Comparison Text */}
+                    <div class="grid gap-4">
+                      {/* Before */}
+                      <div class="flex flex-col gap-2">
+                        <div class="flex items-center justify-between gap-2">
+                          <p class="text-xs font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#6a7188]">
+                            Before
+                          </p>
+                          <span class="inline-flex items-center gap-1 rounded-full bg-[#f5f5f5] px-2 py-0.5 text-[10px] font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#6a7188]">
+                            <span class="block h-1 w-1 rounded-full bg-[#6a7188]" />
+                            Current
+                          </span>
+                        </div>
+                        <div class="rounded-xl bg-[#f5f5f5] px-4 py-3 text-[13px] font-['Satoshi',system-ui,sans-serif] leading-relaxed text-[#464646]">
+                          {row.before}
+                        </div>
                       </div>
-                      <div class="rounded-xl border border-[#fbc10d33] bg-gradient-to-br from-[#fffdf6] to-[#fffef9] px-4 py-3 text-[13px] font-['Satoshi',system-ui,sans-serif] leading-relaxed text-[#19254c] shadow-sm">
-                        {row.after}
+
+                      {/* After */}
+                      <div class="flex flex-col gap-2">
+                        <div class="flex items-center justify-between gap-2">
+                          <p class="text-xs font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#19254c] font-semibold">
+                            After
+                          </p>
+                          <span class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#fff7d6] to-[#fff9e6] px-2.5 py-1 text-[10px] font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#7a5a02] shadow-sm border border-[#fbc10d20]">
+                            <span class="block h-1.5 w-1.5 rounded-full bg-[#fbc10d]" />
+                            Enhanced
+                          </span>
+                        </div>
+                        <div class="rounded-xl border border-[#fbc10d33] bg-gradient-to-br from-[#fffdf6] to-[#fffef9] px-4 py-3 text-[13px] font-['Satoshi',system-ui,sans-serif] leading-relaxed text-[#19254c] shadow-sm">
+                          {row.after}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </article>
-          ))}
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -179,6 +181,12 @@ const { title, subtitle, table } = (
         border-radius: 18px;
       }
       
+      .chart-wrapper {
+        height: 100px;
+      }
+    }
+
+    @media (min-width: 1024px) {
       .chart-wrapper {
         height: 120px;
       }
