@@ -20,99 +20,134 @@ const pillarLotties = [
 ];
 ---
 
-<section class="sf-section relative isolate overflow-hidden bg-light text-body py-16 sm:py-20 lg:py-24">
+<section class="sf-section relative isolate overflow-hidden bg-light text-body py-16 sm:py-20 lg:py-24 sf-section-animate">
+  <!-- Soft gradient background -->
   <div
-    class="absolute inset-0 opacity-[0.05]"
-    style={{
-      backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd' opacity='.35'%3E%3Cg fill='%2319254c' fill-opacity='1'%3E%3Cpath d='M54 40v-6h-3v6h-6v3h6v6h3v-6h6v-3h-6zm0-30V0h-3v10h-6v3h6v10h3V13h6v-3h-6zM13 40v-6H7v6H0v3h7v6h6v-6h6v-3h-6zM13 10V0H7v10H0v3h7v10h6V13h6v-3h-6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-    }}
-  />
+    class="pointer-events-none absolute inset-0 opacity-[0.9]"
+    aria-hidden="true"
+  >
+    <div class="absolute -top-40 -left-24 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,_rgba(63,99,233,0.18),_transparent_60%)]" />
+    <div class="absolute -bottom-40 -right-10 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,_rgba(252,178,59,0.22),_transparent_60%)]" />
+  </div>
 
   <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 xl:px-12">
     <div class="mx-auto max-w-[1400px]">
-      <div class="sf-grid grid gap-8 xl:gap-10 items-center lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-        <!-- Left Column: Text Content -->
-        <div class="sf-copy mx-auto max-w-xl space-y-6 text-center lg:text-left">
-          <div class="sf-eyebrow">
-            <p class="text-xs font-semibold uppercase tracking-[0.4em] text-secondary/80">
-              science-backed approach
-            </p>
+      <div class="sf-shell rounded-3xl border border-white/60 bg-white/80 shadow-[0_18px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+        <div class="sf-grid grid gap-10 lg:gap-14 items-center lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.1fr)] px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+          
+          <!-- Left Column: Text Content -->
+          <div class="sf-copy mx-auto max-w-xl space-y-6 text-center lg:text-left sf-copy-animate" data-aos="fade-up-sm">
+            <div class="sf-eyebrow inline-flex items-center justify-center lg:justify-start gap-2 rounded-full border border-secondary/20 bg-secondary/5 px-3.5 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-secondary">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-secondary" />
+              <span>Science-backed approach</span>
+            </div>
+
+            <div class="sf-heading-block space-y-3">
+              {title && (
+                <h2
+                  class="text-3xl sm:text-4xl lg:text-[2.7rem] font-bold leading-tight text-[#0d1b3d]"
+                  set:html={markdownify(title)}
+                />
+              )}
+
+              {subtitle && (
+                <p
+                  class="text-base sm:text-lg font-semibold text-tertiary"
+                  set:html={markdownify(subtitle)}
+                />
+              )}
+
+              {description && (
+                <p
+                  class="text-sm sm:text-base/[1.7] font-medium text-slate-700"
+                  set:html={markdownify(description)}
+                />
+              )}
+            </div>
+
+            {pillars && pillars.length > 0 && (
+              <div class="sf-meta text-xs sm:text-sm text-slate-500 flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
+                <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  {pillars.length} core pillars
+                </span>
+                <span class="hidden sm:inline-block h-[1px] w-6 bg-slate-200" />
+                <span>Tap a pillar to see the underlying system in action.</span>
+              </div>
+            )}
+
+            <!-- Pillar Buttons -->
+            {pillars && pillars.length > 0 && (
+              <div class="sf-buttons">
+                {pillars.map((pillar, index) => (
+                  <button
+                    class={`sf-button ${index === 0 ? "active" : ""}`}
+                    data-pillar={index}
+                    type="button"
+                  >
+                    <span class="sf-button-pill-index">0{index + 1}</span>
+                    <span class="sf-button-pill-label">{pillar.title}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <!-- Pillar Details Display -->
+            {pillars && pillars.length > 0 && (
+              <div class="sf-details">
+                {pillars.map((pillar, index) => (
+                  <div
+                    class={`sf-detail-content ${index === 0 ? "active" : ""}`}
+                    data-pillar-detail={index}
+                  >
+                    <h3 class="sf-detail-title">{pillar.title}</h3>
+
+                    {pillar.tagline && (
+                      <p class="sf-detail-tagline">{pillar.tagline}</p>
+                    )}
+
+                    {pillar.list && pillar.list.length > 0 && (
+                      <ul class="sf-detail-list">
+                        {pillar.list.map((item) => (
+                          <li>{item}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {title && (
-            <h2 class="text-3xl sm:text-4xl lg:text-[2.9rem] font-bold leading-tight text-[#0d1b3d]" set:html={markdownify(title)} />
-          )}
-
-          {subtitle && (
-            <p class="text-lg font-bold text-tertiary" set:html={markdownify(subtitle)} />
-          )}
-
-          {description && (
-            <p class="text-base/[1.7] font-semibold text-[#0d1b3d]" set:html={markdownify(description)} />
-          )}
-
-          <!-- Pillar Buttons -->
-          {pillars && pillars.length > 0 && (
-            <div class="sf-buttons">
-              {pillars.map((pillar, index) => (
-                <button 
-                  class={`sf-button ${index === 0 ? 'active' : ''}`}
-                  data-pillar={index}
-                  type="button"
-                >
-                  <span>Pillar {index + 1}</span>
-                </button>
-              ))}
-            </div>
-          )}
-
-          <!-- Pillar Details Display -->
-          {pillars && pillars.length > 0 && (
-            <div class="sf-details">
-              {pillars.map((pillar, index) => (
-                <div 
-                  class={`sf-detail-content ${index === 0 ? 'active' : ''}`}
-                  data-pillar-detail={index}
-                >
-                  <h3 class="sf-detail-title">{pillar.title}</h3>
-                  {pillar.tagline && (
-                    <p class="sf-detail-tagline">{pillar.tagline}</p>
-                  )}
-                  {pillar.list && pillar.list.length > 0 && (
-                    <ul class="sf-detail-list">
-                      {pillar.list.map((item) => (
-                        <li>{item}</li>
-                      ))}
-                    </ul>
-                  )}
+          <!-- Right Column: Lottie Animations -->
+          <div class="sf-media w-full flex items-center justify-center">
+            {pillars && pillars.length > 0 && (
+              <div class="sf-media-card sf-media-card-animate">
+                <div class="sf-media-header">
+                  <p>Each pillar tells a story.</p>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <!-- Right Column: Small Lottie Animations -->
-        <div class="sf-media w-full">
-          {pillars && pillars.length > 0 && (
-            <div class="sf-lottie-container">
-              {pillars.map((pillar, index) => (
-                <div 
-                  class={`sf-lottie-wrapper ${index === 0 ? 'active' : ''}`}
-                  data-pillar-lottie={index}
-                >
-                  <LottieAnimation 
-                    src={pillarLotties[index]}
-                    client:only="react"
-                    className="w-full h-auto"
-                  />
-                  <div class="sf-lottie-label">
-                    <span class="sf-pillar-number">Pillar {index + 1}</span>
-                    <span class="sf-pillar-name">{pillar.title}</span>
-                  </div>
+                <div class="sf-lottie-container">
+                  {pillars.map((pillar, index) => (
+                    <div
+                      class={`sf-lottie-wrapper ${index === 0 ? "active" : ""}`}
+                      data-pillar-lottie={index}
+                    >
+                      <LottieAnimation
+                        src={pillarLotties[index]}
+                        client:only="react"
+                        className="w-full h-auto"
+                      />
+                      <div class="sf-lottie-label">
+                        <span class="sf-pillar-number">Pillar {index + 1}</span>
+                        <span class="sf-pillar-name">{pillar.title}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
     </div>
@@ -120,51 +155,171 @@ const pillarLotties = [
 </section>
 
 <style>
+  /* Intro animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(26px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUpSmall {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUpLarge {
+    from {
+      opacity: 0;
+      transform: translateY(32px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .sf-section-animate {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .sf-copy-animate > * {
+    opacity: 0;
+    animation: fadeInUpSmall 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .sf-copy-animate > *:nth-child(1) { animation-delay: 0.1s; }
+  .sf-copy-animate > *:nth-child(2) { animation-delay: 0.18s; }
+  .sf-copy-animate > *:nth-child(3) { animation-delay: 0.26s; }
+  .sf-copy-animate > *:nth-child(4) { animation-delay: 0.34s; }
+  .sf-copy-animate > *:nth-child(5) { animation-delay: 0.42s; }
+  .sf-copy-animate > *:nth-child(6) { animation-delay: 0.5s; }
+
+  .sf-media-card-animate {
+    opacity: 0;
+    animation: fadeInUpLarge 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+  }
+
+  .sf-shell {
+    transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sf-shell:hover {
+    transform: translateY(-3px);
+    border-color: rgba(148, 163, 184, 0.9);
+    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.2);
+  }
+
   /* Buttons Container */
   .sf-buttons {
     display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
     flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
   }
 
   .sf-button {
-    flex: 1;
-    min-width: 120px;
-    padding: 0.75rem 1.25rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #0d1b3d;
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(25, 37, 76, 0.15);
-    border-radius: 8px;
+    position: relative;
+    flex: 1 1 48%;
+    min-width: 150px;
+    padding: 0.7rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid rgba(30, 58, 138, 0.7);
+    background: rgba(255, 255, 255, 0.9);
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-align: left;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sf-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, rgba(30, 58, 138, 0.09), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: -1;
   }
 
   .sf-button:hover {
-    background: rgba(255, 255, 255, 1);
-    border-color: var(--color-secondary, #fcb23b);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(25, 37, 76, 0.1);
+    transform: translateY(-1px);
+    background: #ffffff;
+    border-color: rgba(30, 58, 138, 0.85);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+  }
+
+  .sf-button:hover::before {
+    opacity: 1;
   }
 
   .sf-button.active {
-    background: var(--color-secondary, #fcb23b);
-    color: #0d1b3d;
-    border-color: var(--color-secondary, #fcb23b);
-    box-shadow: 0 4px 16px rgba(252, 178, 59, 0.3);
+    background: linear-gradient(120deg, #fbc10d, #fcb23b);
+    border-color: transparent;
+    box-shadow: 0 14px 32px rgba(251, 193, 13, 0.4);
+    color: #0b1022;
+    transform: translateY(-1px);
+  }
+
+  .sf-button-pill-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(15, 23, 42, 0.05);
+    color: #0f172a;
+  }
+
+  .sf-button.active .sf-button-pill-index {
+    background: rgba(15, 23, 42, 0.1);
+    color: #111827;
+  }
+
+  .sf-button-pill-label {
+    flex: 1;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sf-button.active .sf-button-pill-label {
+    color: #0b1022;
   }
 
   /* Details Display */
   .sf-details {
     position: relative;
-    min-height: 200px;
-    margin-top: 2rem;
-    border-top: 1px solid rgba(25, 37, 76, 0.12);
-    padding-top: 1.5rem;
+    min-height: 210px;
+    margin-top: 1.9rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.3);
+    padding-top: 1.2rem;
   }
 
   .sf-detail-content {
@@ -174,9 +329,12 @@ const pillarLotties = [
     width: 100%;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.4s ease;
-    padding: 1rem 0;
+    transform: translateY(12px);
+    padding: 0.75rem 0 0.5rem;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .sf-detail-content.active {
@@ -184,22 +342,23 @@ const pillarLotties = [
     visibility: visible;
     transform: translateY(0);
     position: relative;
+    pointer-events: auto;
   }
 
   .sf-detail-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: #0d1b3d;
-    margin: 0 0 0.75rem 0;
+    margin: 0 0 0.5rem 0;
     line-height: 1.3;
   }
 
   .sf-detail-tagline {
-    font-size: 1rem;
+    font-size: 0.92rem;
     font-weight: 500;
-    color: rgba(13, 27, 61, 0.8);
-    margin: 0 0 1rem 0;
-    line-height: 1.6;
+    color: rgba(15, 23, 42, 0.76);
+    margin: 0 0 0.9rem 0;
+    line-height: 1.55;
   }
 
   .sf-detail-list {
@@ -208,247 +367,275 @@ const pillarLotties = [
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.6rem;
   }
 
   .sf-detail-list li {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    color: #0d1b3d;
-    padding-left: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: #0f172a;
+    padding-left: 1.6rem;
     position: relative;
   }
 
   .sf-detail-list li::before {
-    content: "→";
+    content: "●";
     position: absolute;
     left: 0;
-    color: var(--color-secondary, #fcb23b);
-    font-weight: 700;
-    font-size: 1rem;
-    top: 0;
+    top: 0.28rem;
+    color: #fbc10d;
+    font-size: 0.5rem;
   }
 
-  /* Media Column - Lottie Animations */
-  .sf-media {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Media Column - Card + Lottie */
+  .sf-media-card {
+    width: 100%;
+    max-width: 540px;
+    border-radius: 24px;
+    border: 1px solid rgba(25, 37, 76, 0.2);
+    background:
+      radial-gradient(circle at top, rgba(25, 37, 76, 0.12), transparent 55%),
+      #19254c;
+    box-shadow: 0 20px 50px rgba(25, 37, 76, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    padding: 1.4rem 1.3rem 1.8rem;
+    color: #f9fafb;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .sf-media-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 60px rgba(25, 37, 76, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+
+  .sf-media-header {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .sf-media-header p {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(249, 193, 13, 0.9);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    margin: 0;
+    padding: 0.5rem 0;
   }
 
   .sf-lottie-container {
     position: relative;
     width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    min-height: 400px;
+    min-height: 360px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    padding: 0.5rem;
   }
 
   @media (min-width: 640px) {
     .sf-lottie-container {
-      min-height: 550px;
+      min-height: 460px;
+      padding: 0.75rem;
     }
   }
 
   @media (min-width: 1024px) {
     .sf-lottie-container {
-      min-height: 650px;
-      padding: 0;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    .sf-lottie-container {
-      min-height: 750px;
+      min-height: 520px;
+      padding: 1rem;
     }
   }
 
   .sf-lottie-wrapper {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transform-origin: center;
+    transform: scale(0.96) translateY(16px);
+    pointer-events: none;
+    transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .sf-lottie-wrapper.active {
     opacity: 1;
     visibility: visible;
     position: relative;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
   }
 
-
   .sf-lottie-label {
-    margin-top: 1.25rem;
+    margin-top: 1.1rem;
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.3rem;
   }
 
   .sf-pillar-number {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: rgba(13, 27, 61, 0.6);
+    color: rgba(249, 193, 13, 0.8);
   }
 
   .sf-pillar-name {
-    font-size: 1.125rem;
+    font-size: 1.05rem;
     font-weight: 700;
-    color: #0d1b3d;
+    color: #f9fafb;
   }
 
-  /* Mobile/Tablet Responsiveness */
+  /* Responsive tweaks */
   @media (max-width: 1023px) {
     .sf-buttons {
       flex-direction: column;
-      gap: 0.5rem;
     }
 
     .sf-button {
       width: 100%;
     }
 
-    .sf-lottie-stage {
-      max-width: 100%;
-    }
-
-
     .sf-detail-content {
-      padding: 0.75rem 0;
+      padding: 0.35rem 0;
     }
 
     .sf-detail-title {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
     }
 
     .sf-detail-tagline {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .sf-detail-list li {
-      font-size: 0.875rem;
+      font-size: 0.85rem;
+    }
+
+    .sf-media-card {
+      max-width: 460px;
     }
   }
 
-  /* Smooth transitions */
-  @media (prefers-reduced-motion: no-preference) {
-    .sf-button,
-    .sf-detail-content,
-    .sf-lottie-wrapper {
-      transition-duration: 0.3s;
-    }
-  }
-
+  /* Motion preference */
   @media (prefers-reduced-motion: reduce) {
     .sf-button,
     .sf-detail-content,
-    .sf-lottie-wrapper {
-      transition: none;
+    .sf-lottie-wrapper,
+    .sf-shell,
+    .sf-section-animate,
+    .sf-copy-animate > *,
+    .sf-media-card-animate {
+      animation: none !important;
+      transition: none !important;
+    }
+    
+    .sf-section-animate,
+    .sf-copy-animate > *,
+    .sf-media-card-animate {
+      opacity: 1 !important;
+      transform: none !important;
     }
   }
 </style>
 
 <script>
-  let eventListeners: Array<{ element: Element; event: string; handler: (e?: any) => void }> = [];
-  let buttons: NodeListOf<Element> | null = null;
-  let detailContents: NodeListOf<Element> | null = null;
-  let lottieWrappers: NodeListOf<Element> | null = null;
+  interface EventListener {
+    element: Element;
+    event: string;
+    handler: (e: Event) => void;
+  }
+
+  let eventListeners: EventListener[] = [];
+  let buttons: NodeListOf<HTMLElement> | null = null;
+  let detailContents: NodeListOf<HTMLElement> | null = null;
+  let lottieWrappers: NodeListOf<HTMLElement> | null = null;
 
   function cleanupScienceFoundation() {
-    // Remove all event listeners
     eventListeners.forEach(({ element, event, handler }) => {
       element.removeEventListener(event, handler);
     });
     eventListeners = [];
 
-    // Reset references
     buttons = null;
     detailContents = null;
     lottieWrappers = null;
   }
 
+  function activatePillar(index: number) {
+    if (!buttons || !detailContents || !lottieWrappers) return;
+
+    // Update button states
+    buttons.forEach((button: HTMLElement, i: number) => {
+      if (i === index) {
+        button.classList.add("active");
+        button.setAttribute("aria-selected", "true");
+      } else {
+        button.classList.remove("active");
+        button.setAttribute("aria-selected", "false");
+      }
+    });
+
+    // Update detail content - CSS transitions handle the animation
+    detailContents.forEach((detail: HTMLElement, i: number) => {
+      if (i === index) {
+        detail.classList.add("active");
+      } else {
+        detail.classList.remove("active");
+      }
+    });
+
+    // Update lottie wrappers - CSS transitions handle the animation
+    lottieWrappers.forEach((wrapper: HTMLElement, i: number) => {
+      if (i === index) {
+        wrapper.classList.add("active");
+      } else {
+        wrapper.classList.remove("active");
+      }
+    });
+  }
+
   function initScienceFoundation() {
     cleanupScienceFoundation();
 
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    buttons = document.querySelectorAll('.sf-button');
-    detailContents = document.querySelectorAll('.sf-detail-content');
-    lottieWrappers = document.querySelectorAll('.sf-lottie-wrapper');
+    buttons = document.querySelectorAll(".sf-button");
+    detailContents = document.querySelectorAll(".sf-detail-content");
+    lottieWrappers = document.querySelectorAll(".sf-lottie-wrapper");
 
     if (!buttons || buttons.length === 0) return;
 
-    // Function to activate a specific pillar
-    function activatePillar(index: number) {
-      if (!buttons || !detailContents || !lottieWrappers) return;
-      
-      // Update buttons
-      buttons.forEach((button, i) => {
-        if (i === index) {
-          button.classList.add('active');
-          button.setAttribute('aria-selected', 'true');
-        } else {
-          button.classList.remove('active');
-          button.setAttribute('aria-selected', 'false');
-        }
-      });
+    buttons.forEach((button: HTMLElement, index: number) => {
+      button.setAttribute("tabindex", "0");
+      button.setAttribute("role", "tab");
+      button.setAttribute("aria-selected", index === 0 ? "true" : "false");
 
-      // Update detail contents
-      detailContents.forEach((detail, i) => {
-        if (i === index) {
-          detail.classList.add('active');
-        } else {
-          detail.classList.remove('active');
-        }
-      });
-
-      // Update lottie wrappers
-      lottieWrappers.forEach((wrapper, i) => {
-        if (i === index) {
-          wrapper.classList.add('active');
-        } else {
-          wrapper.classList.remove('active');
-        }
-      });
-    }
-
-    // Add click handlers to buttons
-    buttons.forEach((button, index) => {
-      button.setAttribute('tabindex', '0');
-      button.setAttribute('role', 'button');
-      button.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
-
-      const clickHandler = () => {
-        activatePillar(index);
-      };
+      const clickHandler = () => activatePillar(index);
 
       const keydownHandler = (e: Event) => {
         const keyEvent = e as KeyboardEvent;
-        if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
+        if (keyEvent.key === "Enter" || keyEvent.key === " ") {
           keyEvent.preventDefault();
           activatePillar(index);
         }
       };
 
-      button.addEventListener('click', clickHandler);
-      button.addEventListener('keydown', keydownHandler);
-      
+      button.addEventListener("click", clickHandler);
+      button.addEventListener("keydown", keydownHandler);
+
       eventListeners.push(
-        { element: button, event: 'click', handler: clickHandler },
-        { element: button, event: 'keydown', handler: keydownHandler }
+        { element: button, event: "click", handler: clickHandler },
+        { element: button, event: "keydown", handler: keydownHandler }
       );
     });
 
@@ -456,22 +643,19 @@ const pillarLotties = [
     activatePillar(0);
   }
 
-  // Initialize on load
-  if (typeof window !== 'undefined') {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initScienceFoundation, 10);
+  if (typeof window !== "undefined") {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(initScienceFoundation, 30);
       });
     } else {
-      setTimeout(initScienceFoundation, 10);
+      setTimeout(initScienceFoundation, 30);
     }
 
-    // Re-initialize on page navigation
-    document.addEventListener('astro:page-load', () => {
-      setTimeout(initScienceFoundation, 50);
+    document.addEventListener("astro:page-load", () => {
+      setTimeout(initScienceFoundation, 60);
     });
 
-    // Cleanup before page swap
-    document.addEventListener('astro:before-swap', cleanupScienceFoundation);
+    document.addEventListener("astro:before-swap", cleanupScienceFoundation);
   }
 </script>
