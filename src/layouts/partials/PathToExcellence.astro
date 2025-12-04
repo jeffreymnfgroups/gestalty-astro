@@ -2,6 +2,7 @@
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
+import TransformationChart from "@/layouts/components/TransformationChart";
 
 const { title, subtitle, table } = (
   (await getEntry(
@@ -11,50 +12,176 @@ const { title, subtitle, table } = (
 ).data;
 ---
 
-<section class="section">
+<section class="section bg-[#f8f8f8] py-16 md:py-20">
   <div class="container">
     <div class="row">
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        {title && <h2 class="mb-4" set:html={markdownify(title)} />}
-        {
-          subtitle && (
-            <p
-              class="mb-12 text-lg/[inherit]"
-              set:html={markdownify(subtitle)}
-            />
-          )
-        }
+        {title && (
+          <h2
+            class="mb-4 font-['Clash_Grotesk',system-ui,sans-serif] text-2xl font-semibold tracking-tight text-[#19254c] sm:text-3xl md:text-4xl"
+            set:html={markdownify(title)}
+          />
+        )}
+
+        {subtitle && (
+          <p
+            class="mx-auto mb-10 max-w-2xl font-['Satoshi',system-ui,sans-serif] text-[15px] leading-relaxed text-[#6a7188] sm:text-base"
+            set:html={markdownify(subtitle)}
+          />
+        )}
+
+        {table?.headers && table.headers.length === 3 && (
+          <div
+            class="inline-flex items-center gap-4 rounded-full border border-[#e0e0e0] bg-[#fefefe] px-5 py-2.5 text-[11px] font-['Satoshi',system-ui,sans-serif] font-medium uppercase tracking-[0.16em] text-[#6a7188]"
+            data-aos="fade-up-sm"
+            data-aos-delay="80"
+          >
+            <span class="inline-flex items-center gap-2">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#19254c]" />
+              {table.headers[0]}
+            </span>
+            <span class="h-3 w-px bg-[#e0e0e0]" />
+            <span class="inline-flex items-center gap-2">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#6a7188]" />
+              {table.headers[1]}
+            </span>
+            <span class="h-3 w-px bg-[#e0e0e0]" />
+            <span class="inline-flex items-center gap-2">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#fbc10d]" />
+              {table.headers[2]}
+            </span>
+          </div>
+        )}
       </div>
-      <div class="col-12" data-aos="fade-up-sm" data-aos-delay="200">
-        <div class="overflow-x-auto rounded-xl bg-light p-6 md:p-8">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b border-border">
-                {
-                  table.headers.map((header) => (
-                    <th class="pb-4 text-left font-bold text-text-dark">
-                      {header}
-                    </th>
-                  ))
-                }
-              </tr>
-            </thead>
-            <tbody>
-              {
-                table.rows.map((row, index) => (
-                  <tr
-                    class={`${index < table.rows.length - 1 ? "border-b border-border" : ""}`}>
-                    <td class="py-4 pr-4 font-bold text-text-dark">{row.area}</td>
-                    <td class="py-4 pr-4 text-red-600">{row.before}</td>
-                    <td class="py-4 font-medium text-green-600">{row.after}</td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
+
+      <div class="col-12 mt-10 md:mt-12" data-aos="fade-up-sm" data-aos-delay="160">
+        <div class="mx-auto max-w-5xl space-y-6">
+          {table?.rows?.map((row, index) => (
+            <article
+              class="path-card group rounded-2xl border border-[#e5e5e5] bg-[#fefefe] p-6 shadow-sm transition-all duration-200 md:p-8"
+              data-aos="fade-up-sm"
+              data-aos-delay={180 + index * 80}
+            >
+              <div class="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
+                {/* Area / Pill */}
+                <div class="md:w-1/4">
+                  <div class="mb-3 flex items-center gap-2">
+                    <div class="path-hex inline-flex items-center justify-center rounded-md bg-gradient-to-r from-[#19254c] to-[#2a3a6b] px-3 py-1.5 text-[11px] font-['Satoshi',system-ui,sans-serif] font-semibold uppercase tracking-[0.16em] text-[#fefefe] shadow-sm">
+                      {row.area}
+                    </div>
+                  </div>
+                  <p class="text-xs font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#6a7188]">
+                    Focus Area
+                  </p>
+                </div>
+
+                {/* Visualization & Comparison */}
+                <div class="flex-1 space-y-5">
+                  {/* Chart.js Visualization */}
+                  <div class="chart-container rounded-2xl bg-[#fafafa] border border-[#e8e8e8] p-5 shadow-sm">
+                    <div class="mb-4 flex items-center justify-between">
+                      <span class="text-sm font-['Satoshi',system-ui,sans-serif] font-semibold text-[#19254c]">
+                        Transformation Progress
+                      </span>
+                      <div class="flex items-center gap-5 text-[11px] font-['Satoshi',system-ui,sans-serif] font-medium">
+                        <span class="flex items-center gap-2">
+                          <span class="block h-2.5 w-2.5 rounded-full bg-[#6a7188] shadow-sm" />
+                          <span class="text-[#6a7188]">Before</span>
+                        </span>
+                        <span class="flex items-center gap-2">
+                          <span class="block h-2.5 w-2.5 rounded-full bg-[#fbc10d] shadow-sm" />
+                          <span class="text-[#19254c]">With Gestalty</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="chart-wrapper relative h-32 w-full">
+                      <TransformationChart client:load area={row.area} />
+                    </div>
+                  </div>
+
+                  {/* Comparison Text */}
+                  <div class="grid gap-4 md:grid-cols-2">
+                    {/* Before */}
+                    <div class="flex flex-col gap-2">
+                      <div class="flex items-center justify-between gap-2">
+                        <p class="text-xs font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#6a7188]">
+                          Before
+                        </p>
+                        <span class="inline-flex items-center gap-1 rounded-full bg-[#f5f5f5] px-2 py-0.5 text-[10px] font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#6a7188]">
+                          <span class="block h-1 w-1 rounded-full bg-[#6a7188]" />
+                          Current
+                        </span>
+                      </div>
+                      <div class="rounded-xl bg-[#f5f5f5] px-4 py-3 text-[13px] font-['Satoshi',system-ui,sans-serif] leading-relaxed text-[#464646]">
+                        {row.before}
+                      </div>
+                    </div>
+
+                    {/* After */}
+                    <div class="flex flex-col gap-2">
+                      <div class="flex items-center justify-between gap-2">
+                        <p class="text-xs font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#19254c] font-semibold">
+                          After
+                        </p>
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#fff7d6] to-[#fff9e6] px-2.5 py-1 text-[10px] font-['Satoshi',system-ui,sans-serif] uppercase tracking-[0.16em] text-[#7a5a02] shadow-sm border border-[#fbc10d20]">
+                          <span class="block h-1.5 w-1.5 rounded-full bg-[#fbc10d]" />
+                          Enhanced
+                        </span>
+                      </div>
+                      <div class="rounded-xl border border-[#fbc10d33] bg-gradient-to-br from-[#fffdf6] to-[#fffef9] px-4 py-3 text-[13px] font-['Satoshi',system-ui,sans-serif] leading-relaxed text-[#19254c] shadow-sm">
+                        {row.after}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </div>
   </div>
-</section>
 
+  <style>
+    .path-card {
+      font-family: "Satoshi", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .path-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 32px rgba(25, 37, 76, 0.12);
+      border-color: #c8c8c8;
+    }
+
+    .chart-container {
+      transition: all 0.3s ease;
+    }
+
+    .chart-container:hover {
+      box-shadow: 0 8px 20px rgba(25, 37, 76, 0.08);
+      border-color: #d8d8d8;
+    }
+
+    /* Simple hex-like feel without loud visuals */
+    .path-hex {
+      clip-path: polygon(
+        8% 0%,
+        92% 0%,
+        100% 50%,
+        92% 100%,
+        8% 100%,
+        0% 50%
+      );
+    }
+
+    @media (max-width: 767px) {
+      .path-card {
+        border-radius: 18px;
+      }
+      
+      .chart-wrapper {
+        height: 120px;
+      }
+    }
+  </style>
+</section>
