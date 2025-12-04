@@ -30,17 +30,71 @@ interface TransformationChartProps {
 export default function TransformationChart({ area }: TransformationChartProps) {
   const chartRef = useRef<ChartJS<"line">>(null);
 
+  // Unique chart data for each area with distinct progression patterns
+  const getChartData = (areaName: string) => {
+    const chartDataMap: Record<string, { before: number[]; after: number[]; tension?: number }> = {
+      "Planning": {
+        // Steady decline before, quick improvement then steady after
+        before: [100, 68, 38, 25],
+        after: [100, 82, 90, 94],
+        tension: 0.5,
+      },
+      "Self-Control": {
+        // Rapid decline before, gradual but consistent improvement after
+        before: [100, 72, 48, 30],
+        after: [100, 75, 84, 91],
+        tension: 0.3,
+      },
+      "Strategy": {
+        // Moderate decline before, exponential improvement after
+        before: [100, 65, 42, 28],
+        after: [100, 88, 94, 96],
+        tension: 0.6,
+      },
+      "Progress": {
+        // Fluctuating decline before, linear steady growth after
+        before: [100, 70, 45, 32],
+        after: [100, 79, 87, 93],
+        tension: 0.4,
+      },
+      "Personalization": {
+        // Steep initial drop, then slow decline before; rapid early gains after
+        before: [100, 60, 35, 22],
+        after: [100, 92, 95, 97],
+        tension: 0.55,
+      },
+      "Support": {
+        // Gradual decline before, steady improvement with acceleration after
+        before: [100, 75, 50, 35],
+        after: [100, 83, 88, 94],
+        tension: 0.45,
+      },
+    };
+
+    // Default data if area not found
+    const defaultData = {
+      before: [100, 70, 45, 35],
+      after: [100, 88, 90, 93],
+      tension: 0.4,
+    };
+
+    return chartDataMap[areaName] || defaultData;
+  };
+
+  const chartData = getChartData(area);
+  const customTension = chartData.tension || 0.4;
+
   const data = {
     labels: ["Start", "Week 1", "Month 1", "Month 3"],
     datasets: [
       {
         label: "Before",
-        data: [100, 75, 50, 35],
+        data: chartData.before,
         borderColor: "#6a7188",
         backgroundColor: "rgba(106, 113, 136, 0.05)",
         borderWidth: 2.5,
         fill: false,
-        tension: 0.4,
+        tension: customTension,
         pointRadius: 0,
         pointHoverRadius: 5,
         pointHoverBackgroundColor: "#6a7188",
@@ -49,12 +103,12 @@ export default function TransformationChart({ area }: TransformationChartProps) 
       },
       {
         label: "With Gestalty",
-        data: [100, 95, 88, 92],
+        data: chartData.after,
         borderColor: "#fbc10d",
         backgroundColor: "rgba(251, 193, 13, 0.1)",
         borderWidth: 3,
         fill: true,
-        tension: 0.4,
+        tension: customTension,
         pointRadius: 0,
         pointHoverRadius: 6,
         pointHoverBackgroundColor: "#fbc10d",

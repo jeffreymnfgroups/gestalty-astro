@@ -2,6 +2,7 @@
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
+import LottieAnimation from "@/components/LottieAnimation";
 
 const { title, subtitle, description, tiers } = (
   (await getEntry(
@@ -13,6 +14,7 @@ const { title, subtitle, description, tiers } = (
 
 <section class="section">
   <div class="container">
+    <!-- Centered Heading Section -->
     <div class="row">
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
         {
@@ -30,22 +32,36 @@ const { title, subtitle, description, tiers } = (
           )
         }
       </div>
-      <div class="col-12 pt-12">
-        <div class="row g-4 justify-center">
+    </div>
+
+    <!-- Two Column Layout: Lottie Left, Tiers Right -->
+    <div class="row items-center pt-12">
+      <!-- Left Side: Lottie Animation -->
+      <div class="col-12 lg:col-6 mb-8 lg:mb-0" data-aos="fade-right">
+        <LottieAnimation 
+          client:load
+          src="/images/education.lottie"
+          className="w-full h-auto"
+          loop={true}
+          autoplay={true}
+        />
+      </div>
+
+      <!-- Right Side: Tiers Cards -->
+      <div class="col-12 lg:col-6 lg:pl-8" data-aos="fade-left">
+        <div class="space-y-6">
           {
             tiers?.map((tier, index) => (
               <div
-                class="md:col-6 lg:col-4"
+                class="rounded-xl bg-light px-6 py-6 md:rounded-2xl"
                 data-aos="fade-up-sm"
                 data-aos-delay={200 + index * 50}>
-                <div class="min-h-full rounded-xl bg-light px-6 py-8 md:rounded-3xl">
-                  {tier.title && (
-                    <h3 class="h5 mb-3" set:html={markdownify(tier.title)} />
-                  )}
-                  {tier.description && (
-                    <p set:html={markdownify(tier.description)} />
-                  )}
-                </div>
+                {tier.title && (
+                  <h3 class="h5 mb-3" set:html={markdownify(tier.title)} />
+                )}
+                {tier.description && (
+                  <p set:html={markdownify(tier.description)} />
+                )}
               </div>
             ))
           }

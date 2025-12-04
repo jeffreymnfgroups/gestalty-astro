@@ -1,5 +1,4 @@
 ---
-import ImageMod from "@/components/ImageMod.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
@@ -10,6 +9,14 @@ const { title, subtitle, description, list } = (
     "parental-partnership"
   )) as CollectionEntry<"parentalPartnershipSection">
 ).data;
+
+// Unsplash images for backgrounds (open source, free to use)
+// Using specific family/education themed photos from Unsplash
+const backgroundImages = {
+  large: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=1200&h=600&fit=crop&q=80&auto=format", // Family studying together
+  card1: "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800&h=600&fit=crop&q=80&auto=format", // Parent and child reading
+  card2: "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800&h=600&fit=crop&q=80&auto=format" // Family learning at home
+};
 ---
 
 <section class="section">
@@ -31,34 +38,70 @@ const { title, subtitle, description, list } = (
           )
         }
       </div>
+      
       <div class="col-12 pt-12">
-        <div class="row g-4 justify-center">
-          {
-            list?.map((item, index) => (
+        {/* One large card at the top */}
+        {list && list[0] && (
+          <div
+            class="mb-8 overflow-hidden rounded-3xl md:mb-12"
+            data-aos="fade-up-sm"
+            data-aos-delay={200}>
+            <div
+              class="relative min-h-[400px] overflow-hidden rounded-3xl bg-cover bg-center bg-no-repeat md:min-h-[500px]"
+              style={`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${backgroundImages.large}');`}>
+              <div class="absolute inset-0 flex flex-col justify-center p-8 text-white md:p-12 lg:p-16">
+                {list[0].title && (
+                  <h3 class="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl" set:html={markdownify(list[0].title)} />
+                )}
+                {list[0].description && (
+                  <p class="max-w-2xl text-lg text-white/90 md:text-xl" set:html={markdownify(list[0].description)} />
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Two cards below */}
+        <div class="row g-4 md:g-6">
+          {list && list[1] && (
+            <div
+              class="md:col-6"
+              data-aos="fade-up-sm"
+              data-aos-delay={300}>
               <div
-                class="md:col-6 lg:col-4"
-                data-aos="fade-up-sm"
-                data-aos-delay={200 + index * 50}>
-                <div class="min-h-full rounded-xl bg-light px-6 py-8 md:rounded-3xl">
-                  {item.icon && (
-                    <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-tertiary">
-                      <ImageMod
-                        class="h-6 w-6 object-cover"
-                        src={item.icon}
-                        alt={`icon related to ${item.title}`}
-                      />
-                    </div>
+                class="relative min-h-[350px] overflow-hidden rounded-3xl bg-cover bg-center bg-no-repeat transition-transform duration-300 hover:scale-105"
+                style={`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${backgroundImages.card1}');`}>
+                <div class="absolute inset-0 flex flex-col justify-end p-8 text-white md:p-10">
+                  {list[1].title && (
+                    <h3 class="mb-3 text-2xl font-bold text-white md:text-3xl" set:html={markdownify(list[1].title)} />
                   )}
-                  {item.title && (
-                    <h3 class="h5 mb-3" set:html={markdownify(item.title)} />
-                  )}
-                  {item.description && (
-                    <p set:html={markdownify(item.description)} />
+                  {list[1].description && (
+                    <p class="text-base text-white/90 md:text-lg" set:html={markdownify(list[1].description)} />
                   )}
                 </div>
               </div>
-            ))
-          }
+            </div>
+          )}
+          
+          {list && list[2] && (
+            <div
+              class="md:col-6"
+              data-aos="fade-up-sm"
+              data-aos-delay={400}>
+              <div
+                class="relative min-h-[350px] overflow-hidden rounded-3xl bg-cover bg-center bg-no-repeat transition-transform duration-300 hover:scale-105"
+                style={`background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${backgroundImages.card2}');`}>
+                <div class="absolute inset-0 flex flex-col justify-end p-8 text-white md:p-10">
+                  {list[2].title && (
+                    <h3 class="mb-3 text-2xl font-bold text-white md:text-3xl" set:html={markdownify(list[2].title)} />
+                  )}
+                  {list[2].description && (
+                    <p class="text-base text-white/90 md:text-lg" set:html={markdownify(list[2].description)} />
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -31,27 +31,81 @@ const { title, subtitle, description, outcomes } = (
         }
       </div>
       <div class="col-12 pt-12">
-        <div class="row g-4 justify-center">
-          {
-            outcomes?.map((outcome, index) => (
-              <div
-                class="md:col-6 lg:col-4"
-                data-aos="fade-up-sm"
-                data-aos-delay={200 + index * 50}>
-                <div class="min-h-full rounded-xl bg-light px-6 py-8 text-center md:rounded-3xl">
-                  {outcome.title && (
-                    <h3 class="h5 mb-3" set:html={markdownify(outcome.title)} />
-                  )}
-                  {outcome.description && (
-                    <p set:html={markdownify(outcome.description)} />
-                  )}
-                </div>
-              </div>
-            ))
-          }
+        <div class="overflow-hidden">
+          <div class="infinite-scroll-container">
+            <div class="infinite-scroll-track">
+              {
+                [...Array(3)].map(() => 
+                  outcomes?.map((outcome, index) => (
+                    <div class="outcome-card">
+                      <div class="min-h-full rounded-xl bg-light px-6 py-8 text-center md:rounded-3xl">
+                        {outcome.title && (
+                          <h3 class="h5 mb-3" set:html={markdownify(outcome.title)} />
+                        )}
+                        {outcome.description && (
+                          <p set:html={markdownify(outcome.description)} />
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )
+              }
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  .infinite-scroll-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .infinite-scroll-track {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: max-content;
+    animation: scroll-horizontal 60s linear infinite;
+    will-change: transform;
+  }
+
+  .infinite-scroll-track:hover {
+    animation-play-state: paused;
+  }
+
+  .outcome-card {
+    flex: 0 0 auto;
+    width: calc(100% - 0.5rem);
+    min-width: 280px;
+    max-width: 350px;
+  }
+
+  @media (min-width: 768px) {
+    .outcome-card {
+      width: calc(50% - 0.5rem);
+      min-width: 300px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .outcome-card {
+      width: calc(33.333% - 0.67rem);
+      min-width: 320px;
+    }
+  }
+
+  @keyframes scroll-horizontal {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-100% / 3));
+    }
+  }
+</style>
 
