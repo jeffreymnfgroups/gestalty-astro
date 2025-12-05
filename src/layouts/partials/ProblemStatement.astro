@@ -21,57 +21,60 @@ const slideCount = cards.length;
 ---
 
 <section class="ps-section relative isolate overflow-hidden bg-light text-body py-16 sm:py-20 lg:py-24">
-  <div
-    class="absolute inset-0 opacity-[0.05]"
-    style={{
-      backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd' opacity='.35'%3E%3Cg fill='%2319254c' fill-opacity='1'%3E%3Cpath d='M54 40v-6h-3v6h-6v3h6v6h3v-6h6v-3h-6zm0-30V0h-3v10h-6v3h6v10h3V13h6v-3h-6zM13 40v-6H7v6H0v3h7v6h6v-6h6v-3h-6zM13 10V0H7v10H0v3h7v10h6V13h6v-3h-6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-    }}
-  />
-
   <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 xl:px-12">
     <div class="mx-auto max-w-[1400px]">
       <div class="ps-grid grid gap-8 xl:gap-10 items-center lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
         <!-- Left Copy Column -->
-        <div class="ps-copy mx-auto max-w-xl space-y-6 text-center lg:text-left">
+        <div class="ps-copy mx-auto max-w-xl text-center sm:text-left">
           {tagline && (
-            <p class="text-xs font-semibold uppercase tracking-[0.4em] text-secondary/80">
-              {tagline}
-            </p>
+            <div class="ps-tagline mb-4">
+              <p class="text-xs font-bold uppercase tracking-[0.4em] text-secondary text-center sm:text-left">
+                {tagline}
+              </p>
+            </div>
           )}
 
           {title && (
-            <h2 class="text-3xl sm:text-4xl lg:text-[2.9rem] font-bold leading-tight" set:html={markdownify(title)} />
+            <div class="ps-title mb-5">
+              <h2 class="text-3xl sm:text-4xl lg:text-[2.9rem] font-bold leading-[1.15] tracking-tight text-[#0d1b3d] text-center sm:text-left" set:html={markdownify(title)} />
+            </div>
           )}
 
           {subtitle && (
-            <p class="text-lg font-bold text-tertiary" set:html={markdownify(subtitle)} />
+            <div class="ps-subtitle mb-6">
+              <p class="text-lg sm:text-xl font-semibold text-[#4a5568] leading-relaxed text-center sm:text-left" set:html={markdownify(subtitle)} />
+            </div>
           )}
 
           {slideCount > 0 && (
-            <div class="ps-active-card space-y-3">
-              <p class="ps-active-label text-[0.6rem] uppercase tracking-[0.4em] text-secondary/60 font-bold">
+            <div class="ps-active-card space-y-3 text-center sm:text-left mb-6">
+              <p class="ps-active-label text-[0.75rem] uppercase tracking-[0.35em] text-secondary font-bold text-center sm:text-left">
                 Currently highlighting
               </p>
-              <h4 class="ps-active-title text-2xl font-bold text-[#0d1b3d]" data-active-title>
+              <h4 class="ps-active-title text-xl sm:text-2xl font-bold text-[#0d1b3d] leading-tight text-center sm:text-left" data-active-title>
                 {cards[0]?.name || ""}
               </h4>
-              <p class="ps-active-description text-base font-semibold text-[#0d1b3d]" data-active-description>
+              <p class="ps-active-description text-sm sm:text-base font-normal text-[#4a5568] leading-relaxed text-center sm:text-left" data-active-description>
                 {cards[0]?.description || ""}
               </p>
             </div>
           )}
 
           {description && (
-            <p class="text-base/[1.7] font-semibold text-[#0d1b3d]" set:html={markdownify(description)} />
+            <div class="ps-description mb-6">
+              <p class="text-base sm:text-lg leading-relaxed text-[#2d3748] font-normal text-center sm:text-left" set:html={markdownify(description)} />
+            </div>
           )}
 
           {slideCount > 0 && (
-            <p class="text-sm font-semibold uppercase tracking-[0.35em] text-secondary/70">
-              {String(slideCount).padStart(2, "0")} invisible blockers uncovered
-            </p>
+            <div class="ps-counter-text mb-6">
+              <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] text-secondary text-center sm:text-left">
+                {String(slideCount).padStart(2, "0")} invisible blockers uncovered
+              </p>
+            </div>
           )}
 
-          <div>
+          <div class="text-center sm:text-left">
             <a
               href={ctaHref || "/how-it-works"}
               class="inline-flex items-center justify-center gap-2 rounded-full border border-transparent bg-secondary px-6 py-3 text-sm font-semibold uppercase tracking-wide text-body shadow-lg shadow-secondary/30 transition hover:-translate-y-0.5 hover:bg-tertiary hover:text-light"
@@ -217,9 +220,63 @@ const slideCount = cards.length;
 </section>
 
 <style>
+  .ps-copy {
+    line-height: 1.7;
+  }
+
+  .ps-tagline p {
+    color: var(--color-secondary, #fcb23b);
+    font-weight: 700;
+  }
+
+  .ps-title h2 {
+    color: #0d1b3d;
+    font-weight: 800;
+  }
+
+  .ps-subtitle p {
+    color: #4a5568;
+    font-weight: 600;
+  }
+
   .ps-active-card {
-    border-top: 1px solid rgba(25, 37, 76, 0.12);
-    padding-top: 1.5rem;
+    border-top: 2px solid rgba(252, 178, 59, 0.2);
+    padding-top: 1.75rem;
+    margin-top: 0;
+  }
+
+  .ps-active-label {
+    letter-spacing: 0.35em;
+    color: var(--color-secondary, #fcb23b);
+    font-weight: 700;
+  }
+
+  .ps-active-title {
+    color: #0d1b3d;
+    font-weight: 800;
+  }
+
+  .ps-active-description {
+    line-height: 1.75;
+    color: #4a5568;
+    font-weight: 400;
+  }
+
+  .ps-description p {
+    color: #2d3748;
+    font-weight: 400;
+    line-height: 1.75;
+  }
+
+  .ps-counter-text p {
+    color: var(--color-secondary, #fcb23b);
+    font-weight: 700;
+  }
+
+  @media (min-width: 640px) {
+    .ps-copy {
+      max-width: 100%;
+    }
   }
 
   .ps-media {
@@ -243,7 +300,7 @@ const slideCount = cards.length;
     border-radius: 24px;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+    background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 20px 50px rgba(11, 11, 33, 0.12);
   }
 
@@ -279,7 +336,7 @@ const slideCount = cards.length;
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(15, 19, 36, 0.05) 0%, rgba(15, 19, 36, 0.8) 100%);
+    background: rgba(15, 19, 36, 0.4);
     z-index: 1;
   }
 

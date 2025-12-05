@@ -48,21 +48,15 @@ const icons: Record<string, string> = {
                   </div>
                   
                   <div class="problem-section">
-                    <div class="section-badge problem-badge">
-                      <svg class="badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                      </svg>
-                      <span class="badge-text">Problem</span>
+                    <div class="section-label problem-label">
+                      <span class="label-text">Problem:</span>
                     </div>
                     <h3 class="card-title">{card.title}</h3>
                   </div>
 
                   <div class="impact-section">
-                    <div class="section-badge impact-badge">
-                      <svg class="badge-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                      </svg>
-                      <span class="badge-text">Impact</span>
+                    <div class="section-label impact-label">
+                      <span class="label-text">Impact:</span>
                     </div>
                     <p class="card-description">{card.description}</p>
                   </div>
@@ -75,7 +69,9 @@ const icons: Record<string, string> = {
                   </div>
                 </div>
                 <div class="card-solution">
-                  <div class="solution-header">Gestalty Solution</div>
+                  <div class="solution-header">
+                    <span class="solution-label-text">Gestalty Solution:</span>
+                  </div>
                   <p class="solution-text">{card.solution}</p>
                 </div>
               </div>
@@ -202,20 +198,36 @@ const icons: Record<string, string> = {
     background-color: #f5f5f5;
   }
 
+  .service-card-brown {
+    background-color: #8b6f47;
+  }
+
   /* White text for dark backgrounds */
   .service-card-blue .card-title,
   .service-card-purple .card-title,
+  .service-card-brown .card-title,
   .service-card-blue .card-description,
   .service-card-purple .card-description,
+  .service-card-brown .card-description,
   .service-card-blue .hint-text,
-  .service-card-purple .hint-text {
+  .service-card-purple .hint-text,
+  .service-card-brown .hint-text {
     color: #ffffff;
   }
 
-  /* Solution background color adjustments for dark cards */
-  .service-card-blue .card-solution,
-  .service-card-purple .card-solution {
+  /* Solution background color adjustments - each card keeps its own color */
+  .service-card-blue .card-solution {
     background: rgba(26, 40, 71, 0.95);
+    color: #ffffff;
+  }
+
+  .service-card-purple .card-solution {
+    background: rgba(45, 45, 45, 0.95);
+    color: #ffffff;
+  }
+
+  .service-card-brown .card-solution {
+    background: rgba(139, 111, 71, 0.95);
     color: #ffffff;
   }
 
@@ -252,6 +264,7 @@ const icons: Record<string, string> = {
   .service-card-peach .card-icon { color: #f59e0b; }
   .service-card-blue .card-icon { color: #ffd54f; }
   .service-card-purple .card-icon { color: #ffd54f; }
+  .service-card-brown .card-icon { color: #ffd54f; }
   .service-card-yellow .card-icon { color: #1a2847; }
   .service-card-mint .card-icon { color: #2d2d2d; }
 
@@ -259,66 +272,50 @@ const icons: Record<string, string> = {
 
   /* Problem and Impact Sections */
   .problem-section {
-    margin-bottom: 1.75rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  }
-
-  .service-card-blue .problem-section,
-  .service-card-purple .problem-section {
-    border-bottom-color: rgba(255, 255, 255, 0.15);
+    margin-bottom: 1.5rem;
   }
 
   .impact-section {
     margin-bottom: 1.5rem;
   }
 
-  .section-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.75rem;
-    border-radius: 8px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
+  .section-label {
     margin-bottom: 0.75rem;
   }
 
-  .badge-icon {
-    width: 0.95rem;
-    height: 0.95rem;
-    stroke-width: 2.5;
+  .label-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    padding-bottom: 0.4rem;
+    position: relative;
   }
 
-  .problem-badge {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(220, 38, 38, 0.08));
+  .problem-label .label-text {
     color: #dc2626;
-    border: 1.5px solid rgba(239, 68, 68, 0.25);
-    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.08);
+    border-bottom: 2px solid #dc2626;
   }
 
-  .impact-badge {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(217, 119, 6, 0.08));
+  .impact-label .label-text {
     color: #d97706;
-    border: 1.5px solid rgba(245, 158, 11, 0.25);
-    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.08);
+    border-bottom: 2px solid #d97706;
   }
 
-  /* Badge styles for dark backgrounds */
-  .service-card-blue .problem-badge,
-  .service-card-purple .problem-badge {
-    background: linear-gradient(135deg, rgba(252, 165, 165, 0.18), rgba(239, 68, 68, 0.12));
+  /* Label styles for dark backgrounds */
+  .service-card-blue .problem-label .label-text,
+  .service-card-purple .problem-label .label-text,
+  .service-card-brown .problem-label .label-text {
     color: #fca5a5;
-    border-color: rgba(239, 68, 68, 0.35);
+    border-bottom-color: #fca5a5;
   }
 
-  .service-card-blue .impact-badge,
-  .service-card-purple .impact-badge {
-    background: linear-gradient(135deg, rgba(252, 211, 77, 0.18), rgba(245, 158, 11, 0.12));
+  .service-card-blue .impact-label .label-text,
+  .service-card-purple .impact-label .label-text,
+  .service-card-brown .impact-label .label-text {
     color: #fcd34d;
-    border-color: rgba(245, 158, 11, 0.35);
+    border-bottom-color: #fcd34d;
   }
 
   .card-title {
@@ -348,7 +345,8 @@ const icons: Record<string, string> = {
   }
 
   .service-card-blue .card-hover-hint,
-  .service-card-purple .card-hover-hint {
+  .service-card-purple .card-hover-hint,
+  .service-card-brown .card-hover-hint {
     border-top-color: rgba(255, 255, 255, 0.2);
   }
 
@@ -364,17 +362,25 @@ const icons: Record<string, string> = {
   }
 
   .solution-header {
-    font-size: 1.125rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     margin-bottom: 1.5rem;
-    color: #10b981;
   }
 
-  .service-card-blue .solution-header,
-  .service-card-purple .solution-header {
+  .solution-label-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    padding-bottom: 0.4rem;
+    color: #10b981;
+    border-bottom: 2px solid #10b981;
+  }
+
+  .service-card-blue .solution-label-text,
+  .service-card-purple .solution-label-text,
+  .service-card-brown .solution-label-text {
     color: #6ee7b7;
+    border-bottom-color: #6ee7b7;
   }
 
   .solution-text {
@@ -385,7 +391,8 @@ const icons: Record<string, string> = {
   }
 
   .service-card-blue .solution-text,
-  .service-card-purple .solution-text {
+  .service-card-purple .solution-text,
+  .service-card-brown .solution-text {
     color: #ffffff;
   }
 
@@ -403,19 +410,8 @@ const icons: Record<string, string> = {
       font-size: 0.9rem;
     }
 
-    .section-badge {
-      font-size: 0.65rem;
-      padding: 0.35rem 0.65rem;
-    }
-
-    .badge-icon {
-      width: 0.85rem;
-      height: 0.85rem;
-    }
-
     .problem-section {
-      margin-bottom: 1.5rem;
-      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
     }
 
     .impact-section {
