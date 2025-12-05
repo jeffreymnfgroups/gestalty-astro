@@ -2,6 +2,7 @@
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
+import ComparisonChart from "@/components/ComparisonChart";
 
 const { quote, table, supporting_quote } = (
   (await getEntry(
@@ -24,34 +25,7 @@ const { quote, table, supporting_quote } = (
         }
       </div>
       <div class="col-12" data-aos="fade-up-sm" data-aos-delay="200">
-        <div class="overflow-x-auto rounded-xl bg-light p-6 md:p-8">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b border-border">
-                {
-                  table.headers.map((header) => (
-                    <th class="pb-4 text-left font-bold text-text-dark">
-                      {header}
-                    </th>
-                  ))
-                }
-              </tr>
-            </thead>
-            <tbody>
-              {
-                table.rows.map((row, index) => (
-                  <tr
-                    class={`${index < table.rows.length - 1 ? "border-b border-border" : ""}`}>
-                    <td class="py-4 pr-4">{row.traditional}</td>
-                    <td class="py-4 font-medium text-tertiary">
-                      {row.gestalty}
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </div>
+        <ComparisonChart client:load rows={table.rows} />
       </div>
       <div class="mx-auto text-center lg:col-10 pt-12" data-aos="fade-up-sm">
         {
