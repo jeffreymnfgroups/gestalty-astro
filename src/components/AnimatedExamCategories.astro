@@ -1,0 +1,388 @@
+---
+const categories = ["NEET", "UPSC", "JEE"];
+const animatedWords = ["Preparation", "Coaching", "Excellence"];
+const uniqueId = `exam-categories-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="animated-exam-categories" id={uniqueId} data-aos="fade-up-sm">
+  <div class="categories-container">
+    {categories.map((category, index) => {
+      const startIndex = index % animatedWords.length;
+      return (
+        <div 
+          class="category-column" 
+          data-category={category}
+          data-aos="fade-up-sm"
+          data-aos-delay={100 + index * 50}
+        >
+          <div class="category-label">{category}</div>
+          <div class="animated-text-wrapper">
+            <span class="animated-text-sizer" aria-hidden="true">
+              {animatedWords.reduce((longest, word) => word.length > longest.length ? word : longest, animatedWords[0])}
+            </span>
+            {animatedWords.map((word, wordIndex) => (
+              <span 
+                class={`animated-text ${wordIndex === startIndex ? 'active' : ''}`}
+                data-word-index={wordIndex}
+              >
+                {word}
+              </span>
+            ))}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+<style>
+  .animated-exam-categories {
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .categories-container {
+    max-width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+
+  .category-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    position: relative;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .category-column:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 15%;
+    bottom: 15%;
+    width: 1px;
+    background-color: #e0e0e0;
+  }
+
+  .category-label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1d1d1d;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+  }
+
+  .animated-text-wrapper {
+    position: relative;
+    min-height: 1.2em;
+    display: inline-block;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .animated-text-sizer {
+    visibility: hidden;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 0.6875rem;
+    height: 0;
+    width: auto;
+  }
+
+  .animated-text {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(15px);
+    opacity: 0;
+    visibility: hidden;
+    white-space: nowrap;
+    font-size: 0.6875rem;
+    color: #6a7188;
+    font-weight: 500;
+    will-change: transform, opacity;
+    transition: none;
+    line-height: 1.2;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .animated-text.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    z-index: 2;
+  }
+
+  @media (max-width: 768px) {
+    .animated-exam-categories {
+      padding: 0.5rem 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .categories-container {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .category-column {
+      padding: 0.375rem 0.5rem;
+    }
+
+    .category-column:not(:last-child)::after {
+      display: none;
+    }
+
+    .category-column:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      bottom: -0.25rem;
+      left: 20%;
+      right: 20%;
+      height: 1px;
+      background-color: #e0e0e0;
+    }
+
+    .category-label {
+      font-size: 0.8125rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .animated-text {
+      font-size: 0.625rem;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  function initAnimatedExamCategories() {
+    const containers = document.querySelectorAll('[id^="exam-categories-"]');
+    if (containers.length === 0) return;
+
+    containers.forEach((container) => {
+      if ((container as any)._examCategoriesInitialized) return;
+      (container as any)._examCategoriesInitialized = true;
+
+      const columns = container.querySelectorAll('.category-column');
+      const words = ["Preparation", "Coaching", "Excellence"];
+      const duration = 2500;
+      
+      if (columns.length === 0) return;
+
+      const columnData: Array<{
+        currentIndex: number;
+        intervalId: number | null;
+        currentAnimation: gsap.core.Tween | null;
+        textWrapper: HTMLElement;
+      }> = [];
+
+      // Initialize each column independently
+      columns.forEach((column, columnIndex) => {
+        const textWrapper = column.querySelector('.animated-text-wrapper') as HTMLElement;
+        if (!textWrapper) return;
+
+        // Each column starts at a different index (0, 1, 2)
+        const currentIndex = columnIndex % words.length;
+        let intervalId: number | null = null;
+        let currentAnimation: gsap.core.Tween | null = null;
+
+        // Initialize first word for this column
+        const textElements = textWrapper.querySelectorAll('.animated-text');
+        textElements.forEach((text, index) => {
+          const textEl = text as HTMLElement;
+          if (index === currentIndex) {
+            textEl.classList.add('active');
+            textEl.style.opacity = '1';
+            textEl.style.visibility = 'visible';
+            textEl.style.transform = 'translateX(-50%) translateY(0)';
+          } else {
+            textEl.classList.remove('active');
+            textEl.style.opacity = '0';
+            textEl.style.visibility = 'hidden';
+            textEl.style.transform = 'translateX(-50%) translateY(20px)';
+          }
+        });
+
+        const columnState = {
+          currentIndex,
+          intervalId,
+          currentAnimation,
+          textWrapper
+        };
+        columnData.push(columnState);
+
+        function animateTransition() {
+          // Kill any ongoing animation
+          if (columnState.currentAnimation) {
+            columnState.currentAnimation.kill();
+            columnState.currentAnimation = null;
+          }
+
+          const nextIndex = (columnState.currentIndex + 1) % words.length;
+
+          const currentText = columnState.textWrapper.querySelector(`.animated-text[data-word-index="${columnState.currentIndex}"]`) as HTMLElement;
+          const nextText = columnState.textWrapper.querySelector(`.animated-text[data-word-index="${nextIndex}"]`) as HTMLElement;
+
+          if (!currentText || !nextText) return;
+
+          // Prepare next text - start from hidden state
+          nextText.style.visibility = 'visible';
+          nextText.style.opacity = '0';
+          nextText.style.transform = 'translateX(-50%) translateY(20px)';
+
+          // Create timeline for this column's animation
+          const tl = gsap.timeline({
+            onComplete: () => {
+              currentText.style.visibility = 'hidden';
+              currentText.classList.remove('active');
+              nextText.classList.add('active');
+              columnState.currentIndex = nextIndex;
+            }
+          });
+
+          // Animate current word out
+          tl.to(currentText, {
+            opacity: 0,
+            y: -20,
+            duration: 0.5,
+            ease: 'power2.in'
+          });
+
+          // Animate next word in
+          tl.to(nextText, {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'power2.out'
+          }, '-=0.3');
+
+          columnState.currentAnimation = tl;
+        }
+
+        // Start animation for this column with slight delay variation
+        const delay = columnIndex * 300; // Stagger start times
+        setTimeout(() => {
+          animateTransition();
+          columnState.intervalId = window.setInterval(animateTransition, duration) as unknown as number;
+        }, delay);
+      });
+
+      // Intersection Observer to pause when not visible
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Restart animations for all columns
+            columnData.forEach((columnState, columnIndex) => {
+              if (!columnState.intervalId) {
+                function animateTransition() {
+                  if (columnState.currentAnimation) {
+                    columnState.currentAnimation.kill();
+                    columnState.currentAnimation = null;
+                  }
+
+                  const nextIndex = (columnState.currentIndex + 1) % words.length;
+                  const currentText = columnState.textWrapper.querySelector(`.animated-text[data-word-index="${columnState.currentIndex}"]`) as HTMLElement;
+                  const nextText = columnState.textWrapper.querySelector(`.animated-text[data-word-index="${nextIndex}"]`) as HTMLElement;
+
+                  if (!currentText || !nextText) return;
+
+                  // Prepare next text - start from hidden state
+                  nextText.style.visibility = 'visible';
+                  nextText.style.opacity = '0';
+                  nextText.style.transform = 'translateX(-50%) translateY(20px)';
+
+                  const tl = gsap.timeline({
+                    onComplete: () => {
+                      currentText.style.visibility = 'hidden';
+                      currentText.classList.remove('active');
+                      nextText.classList.add('active');
+                      columnState.currentIndex = nextIndex;
+                    }
+                  });
+
+                  tl.to(currentText, {
+                    opacity: 0,
+                    y: -20,
+                    duration: 0.5,
+                    ease: 'power2.in'
+                  });
+
+                  tl.to(nextText, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    ease: 'power2.out'
+                  }, '-=0.3');
+
+                  columnState.currentAnimation = tl;
+                }
+
+                const delay = columnIndex * 300;
+                setTimeout(() => {
+                  animateTransition();
+                  columnState.intervalId = window.setInterval(animateTransition, duration) as unknown as number;
+                }, delay);
+              }
+            });
+          } else {
+            // Pause all columns
+            columnData.forEach((columnState) => {
+              if (columnState.intervalId) {
+                clearInterval(columnState.intervalId);
+                columnState.intervalId = null;
+              }
+              if (columnState.currentAnimation) {
+                columnState.currentAnimation.kill();
+                columnState.currentAnimation = null;
+              }
+            });
+          }
+        });
+      }, { threshold: 0.1 });
+
+      observer.observe(container);
+
+      // Store cleanup function
+      (container as any)._examCategoriesCleanup = () => {
+        columnData.forEach((columnState) => {
+          if (columnState.intervalId) {
+            clearInterval(columnState.intervalId);
+          }
+          if (columnState.currentAnimation) {
+            columnState.currentAnimation.kill();
+          }
+        });
+        observer.disconnect();
+        (container as any)._examCategoriesInitialized = false;
+      };
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAnimatedExamCategories);
+  } else {
+    initAnimatedExamCategories();
+  }
+
+  // Re-initialize on Astro page transitions
+  document.addEventListener('astro:page-load', () => {
+    const containers = document.querySelectorAll('[id^="exam-categories-"]');
+    containers.forEach((container) => {
+      if ((container as any)._examCategoriesCleanup) {
+        (container as any)._examCategoriesCleanup();
+      }
+    });
+    setTimeout(initAnimatedExamCategories, 50);
+  });
+</script>

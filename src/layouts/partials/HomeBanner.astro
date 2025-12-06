@@ -1,6 +1,7 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
 import FlipWords from "@/components/FlipWords.astro";
+import ContainerTextFlip from "@/components/ContainerTextFlip.astro";
 import DynamicIcon from "@/helpers/DynamicIcon";
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
@@ -14,17 +15,35 @@ const { title, description, buttons, images } = (
 ).data;
 
 const flipWords = ["Scientifically", "Strategically", "Psychologically", "Statistically"];
+
+// Process title to insert ContainerTextFlip before "Exam"
+let processedTitle = title;
+if (title && title.includes("Exam")) {
+  // Split title to extract parts before and after "Exam"
+  // Handle case-insensitive search
+  const titleLower = title.toLowerCase();
+  const examIndex = titleLower.indexOf("exam");
+  if (examIndex !== -1) {
+    const beforeExam = title.substring(0, examIndex);
+    const afterExam = title.substring(examIndex); // Keep "Exam" and everything after
+    processedTitle = { beforeExam, afterExam, hasExam: true };
+  } else {
+    processedTitle = { beforeExam: title, afterExam: "", hasExam: false };
+  }
+} else {
+  processedTitle = { beforeExam: title, afterExam: "", hasExam: false };
+}
 ---
 
 {
   (
-    <section id="hero-section" class="pb-20 pt-40 pl-2 relative overflow-x-clip">
-      <div class="container relative z-10">
-        <div class="row">
-          <div class="col-12 lg:col-6">
-            <div class="mb-16 lg:mb-0">
+    <section id="hero-section" class="h-screen flex items-center pb-4 pt-12 lg:pt-10 pl-2 relative overflow-x-clip">
+      <div class="container relative z-10 w-full">
+        <div class="row items-center">
+          <div class="col-12 lg:col-7">
+            <div class="mb-8 lg:mb-0">
               <div 
-                class="mb-5 text-lg lg:text-xl font-medium tracking-tight"
+                class="mb-3 lg:mb-4 text-base lg:text-lg font-medium tracking-tight"
                 data-aos="fade-up-sm"
               >
                 <span>A System That Thinks with You </span>
@@ -36,30 +55,37 @@ const flipWords = ["Scientifically", "Strategically", "Psychologically", "Statis
               </div>
               {title && (
                 <h1
-                  set:html={markdownify(title)}
                   data-aos="fade-up-sm"
-                  class="mb-6 text-h4 lg:text-h2 leading-[1.2] font-semibold"
-                />
+                  class="mb-4 lg:mb-5 text-h5 lg:text-h3 leading-[1.25] font-semibold"
+                >
+                  {processedTitle.hasExam ? (
+                    <>
+                      <span set:html={markdownify(processedTitle.beforeExam)} />
+                      <ContainerTextFlip 
+                        words={["JEE", "NEET", "UPSC"]}
+                        interval={3000}
+                        className="inline-block align-middle mx-1"
+                      />
+                      <span set:html={markdownify(processedTitle.afterExam)} />
+                    </>
+                  ) : (
+                    <span set:html={markdownify(title)} />
+                  )}
+                </h1>
               )}
               {description && (
                 <p
-                  set:html={markdownify(description)}
+                  set:html={markdownify(description.split('<br><br>')[0])}
                   data-aos="fade-up-sm"
-                  class="mb-8 text-[15px] lg:text-base leading-relaxed text-text/90"
+                  class="mb-4 text-sm lg:text-[15px] leading-relaxed text-text/90"
                 />
               )}
-              <p
-                data-aos="fade-up-sm"
-                class="mb-8 text-base lg:text-lg leading-relaxed text-text/80 italic"
-              >
-                Gestalty isn't just a learning tool—it's a cognitive scaffolding system grounded in proven educational science
-              </p>
               {buttons && (
-                <ul class="flex flex-wrap gap-3">
+                <ul class="flex flex-wrap gap-3 mb-5">
                   {buttons.map(({ label, link }, index) => (
                     <li data-aos="fade-up-sm" data-aos-delay={100 + index * 50}>
                       <a
-                        class="btn btn-outline-primary text-sm px-4 py-2 font-medium [&_.icon-wrapper]:h-9 [&_.icon-wrapper]:w-9 [&_.icon]:h-9 [&_.icon]:min-w-9 [&_svg]:h-4 [&_svg]:w-4"
+                        class="btn btn-outline-primary text-sm px-4 py-2 font-medium [&_.icon-wrapper]:h-8 [&_.icon-wrapper]:w-8 [&_.icon]:h-8 [&_.icon]:min-w-8 [&_svg]:h-4 [&_svg]:w-4"
                         href={link}
                         target={link.startsWith("http") ? "_blank" : "_self"}
                         rel="noopener">
@@ -78,16 +104,31 @@ const flipWords = ["Scientifically", "Strategically", "Psychologically", "Statis
                   ))}
                 </ul>
               )}
+              {description && description.includes('<br><br>') && (
+                <p
+                  set:html={markdownify(description.split('<br><br>')[1])}
+                  data-aos="fade-up-sm"
+                  class="mb-3 text-sm lg:text-[15px] leading-relaxed text-text/90 [&_em]:not-italic [&_i]:not-italic"
+                />
+              )}
+              <p
+                data-aos="fade-up-sm"
+                class="text-sm lg:text-[15px] leading-relaxed text-text/90"
+                set:html={markdownify("Gestalty isn't just a learning tool—it's a **cognitive scaffolding** system grounded in **proven educational science**")}
+              >
+              </p>
+            </div>
+          </div>
+          <div class="col-12 lg:col-5 hidden lg:flex items-center justify-end lg:pl-8">
+            <div class="w-[320%] max-w-none h-screen max-h-screen flex items-center justify-end translate-x-6" data-aos="fade-left">
+              <ImageMod 
+                src="/images/banner-main1.png" 
+                alt="Platform Dashboard" 
+                class="w-full h-full object-contain object-right scale-[1.15]"
+              />
             </div>
           </div>
         </div>
-      </div>
-      <div class="hidden lg:block absolute top-0 right-0 w-[48%] h-screen -mr-12" data-aos="fade-left">
-        <ImageMod 
-          src="/images/banner-hero.png" 
-          alt="Platform Dashboard" 
-          class="w-full h-full object-cover"
-        />
       </div>
     </section>
   )
