@@ -16,32 +16,63 @@ const { title, description, buttons, images } = (
 
 const flipWords = ["Scientifically", "Strategically", "Psychologically", "Statistically"];
 
-// Process title to insert ContainerTextFlip before "Exam"
-let processedTitle = title;
-if (title && title.includes("Exam")) {
-  // Split title to extract parts before and after "Exam"
-  // Handle case-insensitive search
-  const titleLower = title.toLowerCase();
-  const examIndex = titleLower.indexOf("exam");
-  if (examIndex !== -1) {
-    const beforeExam = title.substring(0, examIndex);
-    const afterExam = title.substring(examIndex); // Keep "Exam" and everything after
-    processedTitle = { beforeExam, afterExam, hasExam: true };
-  } else {
-    processedTitle = { beforeExam: title, afterExam: "", hasExam: false };
-  }
-} else {
-  processedTitle = { beforeExam: title, afterExam: "", hasExam: false };
-}
+type ProcessedTitle = { beforeExam: string; afterExam: string; hasExam: boolean };
+let processedTitle: ProcessedTitle = {
+  beforeExam: title ?? "",
+  afterExam: "",
+  hasExam: false,
+};
+const examSegments = [
+  { title: "NEET", subtitle: "Preparation" },
+  { title: "UPSC", subtitle: "Coaching" },
+  { title: "JEE", subtitle: "Excellence" },
+];
+const shuffleSequences = [
+  [0, 1, 2],
+  [2, 1, 0],
+  [1, 0, 2],
+];
 ---
 
 {
   (
-    <section id="hero-section" class="h-screen flex items-center pb-4 pt-12 lg:pt-10 pl-2 relative overflow-x-clip">
+    <section
+      id="hero-section"
+      class="h-screen flex items-center pt-[7.5rem] sm:pt-[8.5rem] md:pt-[9.5rem] lg:pt-[10.5rem] pb-6 md:pb-8 pl-2 relative overflow-x-clip">
       <div class="container relative z-10 w-full">
         <div class="row items-center">
           <div class="col-12 lg:col-7">
             <div class="mb-8 lg:mb-0">
+              <div class="mb-5" data-aos="fade-up-sm">
+                <div
+                  data-shuffle
+                  data-segments={JSON.stringify(examSegments)}
+                  data-sequences={JSON.stringify(shuffleSequences)}
+                  class="flex items-center justify-start gap-5 lg:gap-7 text-text"
+                >
+                  {examSegments.map((segment, index) => (
+                    <div class="flex items-center gap-5 lg:gap-7">
+                      <div
+                        class="flex flex-col min-w-[6rem] text-center transition-[transform,opacity] duration-300 ease-out"
+                        data-shuffle-item
+                      >
+                        <span
+                          class="text-base lg:text-lg font-semibold tracking-tight"
+                          data-shuffle-title
+                        >
+                          {segment.title}
+                        </span>
+                        <span class="text-xs lg:text-sm text-text/70" data-shuffle-subtitle>
+                          {segment.subtitle}
+                        </span>
+                      </div>
+                      {index !== examSegments.length - 1 && (
+                        <span class="hidden lg:block h-10 w-px bg-slate-200/80" aria-hidden="true"></span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div 
                 class="mb-3 lg:mb-4 text-base lg:text-lg font-medium tracking-tight"
                 data-aos="fade-up-sm"
@@ -77,13 +108,16 @@ if (title && title.includes("Exam")) {
                 <p
                   set:html={markdownify(description.split('<br><br>')[0])}
                   data-aos="fade-up-sm"
-                  class="mb-4 text-sm lg:text-[15px] leading-relaxed text-text/90"
+                  class="mb-4 text-base lg:text-[17px] leading-relaxed text-text/90"
                 />
               )}
               {buttons && (
-                <ul class="flex flex-wrap gap-3 mb-5">
+                <ul class="flex flex-wrap items-center gap-5 lg:gap-6 mb-5 pl-1">
                   {buttons.map(({ label, link }, index) => (
-                    <li data-aos="fade-up-sm" data-aos-delay={100 + index * 50}>
+                    <li
+                      class="first:ml-3"
+                      data-aos="fade-up-sm"
+                      data-aos-delay={100 + index * 50}>
                       <a
                         class="btn btn-outline-primary text-sm px-4 py-2 font-medium [&_.icon-wrapper]:h-8 [&_.icon-wrapper]:w-8 [&_.icon]:h-8 [&_.icon]:min-w-8 [&_svg]:h-4 [&_svg]:w-4"
                         href={link}
@@ -108,12 +142,12 @@ if (title && title.includes("Exam")) {
                 <p
                   set:html={markdownify(description.split('<br><br>')[1])}
                   data-aos="fade-up-sm"
-                  class="mb-3 text-sm lg:text-[15px] leading-relaxed text-text/90 [&_em]:not-italic [&_i]:not-italic"
+                  class="mb-3 text-base lg:text-[17px] leading-relaxed text-text/90 [&_em]:not-italic [&_i]:not-italic"
                 />
               )}
               <p
                 data-aos="fade-up-sm"
-                class="text-sm lg:text-[15px] leading-relaxed text-text/90"
+                class="text-base lg:text-[17px] leading-relaxed text-text/90"
                 set:html={markdownify("Gestalty isn't just a learning tool—it's a **cognitive scaffolding** system grounded in **proven educational science**")}
               >
               </p>
@@ -133,3 +167,83 @@ if (title && title.includes("Exam")) {
     </section>
   )
 }
+
+<style>
+  [data-shuffle-subtitle] {
+    display: block;
+    transition: opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease;
+    will-change: opacity, transform, filter;
+  }
+  [data-shuffle-subtitle].is-swapping {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(6px);
+  }
+  [data-shuffle-subtitle].has-swapped {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const container = document.querySelector("[data-shuffle]");
+    if (!container) return;
+
+    const itemsData = JSON.parse(container.getAttribute("data-segments") || "[]");
+    const sequences = JSON.parse(container.getAttribute("data-sequences") || "[]");
+    if (!Array.isArray(itemsData) || !Array.isArray(sequences) || !sequences.length) return;
+
+    const items = Array.from(container.querySelectorAll("[data-shuffle-item]"));
+    if (items.length !== itemsData.length) return;
+
+    const subtitles = itemsData.map((item) => item.subtitle);
+
+    let sequenceIndex = 0;
+    let intervalId;
+
+    const applySequence = (order) => {
+      items.forEach((itemEl, idx) => {
+        const subtitleEl = itemEl.querySelector("[data-shuffle-subtitle]");
+        if (!subtitleEl) return;
+
+        subtitleEl.classList.add("is-swapping");
+
+        const swap = () => {
+          subtitleEl.textContent = subtitles[order[idx]];
+          subtitleEl.classList.remove("is-swapping");
+          subtitleEl.classList.add("has-swapped");
+          setTimeout(() => subtitleEl.classList.remove("has-swapped"), 320);
+        };
+
+        // use animation frame for smoother timing before swap
+        requestAnimationFrame(() => {
+          setTimeout(swap, 90);
+        });
+      });
+    };
+
+    const cycle = () => {
+      sequenceIndex = (sequenceIndex + 1) % sequences.length;
+      applySequence(sequences[sequenceIndex]);
+    };
+
+    const start = () => {
+      if (intervalId) clearInterval(intervalId);
+      intervalId = setInterval(cycle, 2000);
+    };
+
+    applySequence(sequences[0]);
+    start();
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        clearInterval(intervalId);
+      } else {
+        start();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+  })();
+</script>

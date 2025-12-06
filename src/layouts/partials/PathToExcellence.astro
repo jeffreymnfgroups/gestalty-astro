@@ -2,7 +2,6 @@
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
-import TransformationChart from "@/layouts/components/TransformationChart";
 
 const { title, subtitle, table } = (
   (await getEntry(
@@ -10,196 +9,543 @@ const { title, subtitle, table } = (
     "path-to-excellence"
   )) as CollectionEntry<"pathToExcellenceSection">
 ).data;
+
+const contentByArea =
+  table?.rows?.reduce((acc, row) => {
+    if (row?.area) {
+      acc[row.area] = row;
+    }
+    return acc;
+  }, {} as Record<string, { area: string; before: string; after: string }>) || {};
+
+const navItems = [
+  {
+    key: "Planning",
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18"/><path d="M8 3v4"/><path d="M16 3v4"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 12h4"/></svg>`,
+    accent: "#fbc10d",
+    illustration: "/images/one.webp",
+  },
+  {
+    key: "Self-Control",
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
+    accent: "#fbc10d",
+    illustration: "/images/two.webp",
+  },
+  {
+    key: "Strategy",
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7 7-7 7"/><path d="M14 19l7-7-7-7"/><path d="M14 12h0"/></svg>`,
+    accent: "#fbc10d",
+    illustration: "/images/three.webp",
+  },
+  {
+    key: "Progress",
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h6l2 7 4-14 2 7h4"/><circle cx="3" cy="12" r="1"/></svg>`,
+    accent: "#fbc10d",
+    illustration: "/images/four.webp",
+  },
+  {
+    key: "Personalization",
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4Z"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>`,
+    accent: "#fbc10d",
+    illustration: "/images/five.webp",
+  },
+  {
+    key: "Support",
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><path d="M4 21v-2a4 4 0 0 1 4-4h0"/><path d="M20 21v-2a4 4 0 0 0-4-4h0"/><path d="M12 10v1"/></svg>`,
+    accent: "#fbc10d",
+    illustration: "/images/six.webp",
+  },
+];
 ---
 
-<section class="section bg-[#f8f8f8] py-16 md:py-20">
-  <div class="container">
-    <div class="row">
-      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        {title && (
-          <h2
-            class="mb-4 font-['Clash_Grotesk',system-ui,sans-serif] text-2xl font-semibold tracking-tight text-[#19254c] sm:text-3xl md:text-4xl"
-            set:html={markdownify(title)}
-          />
-        )}
+<section class="gx-section">
+  <div class="gx-shell">
+    <header class="gx-header">
+      {title && (
+        <h2 class="gx-title" set:html={markdownify(title)} />
+      )}
+      {subtitle && (
+        <p class="gx-subtitle" set:html={markdownify(subtitle)} />
+      )}
+    </header>
 
-        {subtitle && (
-          <p
-            class="mx-auto mb-10 max-w-2xl font-['Satoshi',system-ui,sans-serif] text-[15px] leading-relaxed text-[#6a7188] sm:text-base"
-            set:html={markdownify(subtitle)}
-          />
-        )}
+    <div class="gx-grid">
+      <nav class="gx-nav" aria-label="Transformation areas" role="tablist">
+        {navItems.map((item, index) => {
+          const row = contentByArea[item.key] || { before: "", after: "" };
+          return (
+            <button
+              class="gx-nav-item"
+              type="button"
+              role="tab"
+              aria-selected={index === 0 ? "true" : "false"}
+              aria-controls="gx-panel"
+              data-area={item.key}
+              data-before={row.before}
+              data-after={row.after}
+              data-accent={item.accent}
+              data-tab-index={index}
+            >
+              <span class="gx-nav-pill">
+                <span class="gx-nav-label">{item.key}</span>
+              </span>
+            </button>
+          );
+        })}
+      </nav>
 
-        {table?.headers && table.headers.length === 3 && (
-          <div
-            class="inline-flex items-center gap-4 rounded-full border border-[#e0e0e0] bg-[#fefefe] px-5 py-2.5 text-[11px] font-['Satoshi',system-ui,sans-serif] font-medium uppercase tracking-[0.16em] text-[#6a7188]"
-            data-aos="fade-up-sm"
-            data-aos-delay="80"
-          >
-            <span class="inline-flex items-center gap-2">
-              <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#19254c]" />
-              {table.headers[0]}
-            </span>
-            <span class="h-3 w-px bg-[#e0e0e0]" />
-            <span class="inline-flex items-center gap-2">
-              <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#6a7188]" />
-              {table.headers[1]}
-            </span>
-            <span class="h-3 w-px bg-[#e0e0e0]" />
-            <span class="inline-flex items-center gap-2">
-              <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#fbc10d]" />
-              {table.headers[2]}
-            </span>
-          </div>
-        )}
-      </div>
-
-      <div class="col-12 mt-10 md:mt-12" data-aos="fade-up-sm" data-aos-delay="160">
-        <div class="mx-auto max-w-7xl">
-          {table?.rows && table.rows.length > 0 && (
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {table.rows.map((row, index) => (
-                <article
-                  class="path-card group rounded-3xl border border-[#e8e8e8] bg-white p-7 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300 md:p-9"
-                  data-aos="fade-up-sm"
-                  data-aos-delay={180 + index * 80}
-                >
-                  {/* Area / Pill Header */}
-                  <div class="mb-7">
-                    <div class="mb-3 flex items-center gap-2">
-                      <div class="path-hex inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#19254c] via-[#1f2f5a] to-[#2a3a6b] px-4 py-2 text-[11px] font-['Inter',system-ui,sans-serif] font-bold uppercase tracking-[0.2em] text-white shadow-[0_2px_8px_rgba(25,37,76,0.2)]">
-                        {row.area}
-                      </div>
-                    </div>
-                    <p class="text-[10px] font-['Inter',system-ui,sans-serif] font-medium uppercase tracking-[0.2em] text-[#8b92a8]">
-                      Focus Area
-                    </p>
+      <div class="gx-content-grid" id="gx-panel" role="tabpanel" aria-live="polite">
+        {navItems.map((item, index) => {
+          const row = contentByArea[item.key] || { before: "", after: "" };
+          return (
+            <div
+              class="gx-feature-card"
+              data-area={item.key}
+              data-index={index}
+              style={index === 0 ? "" : "display: none;"}
+            >
+              <div class="gx-illustration-wrapper">
+                <img class="gx-feature-illustration" src={item.illustration} alt={`${item.key} illustration`} />
+              </div>
+              
+              <div class="gx-comparison-container">
+                <div class="gx-comparison-before">
+                  <div class="gx-comparison-header">
+                    <span class="gx-comparison-badge gx-badge-before">Before Gestalty</span>
                   </div>
-
-                  {/* Visualization & Comparison */}
-                  <div class="space-y-6">
-                    {/* Chart.js Visualization */}
-                    <div class="chart-container rounded-2xl bg-gradient-to-br from-[#fafbfc] to-[#f5f6f8] border border-[#eaecef] p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-                      <div class="mb-4 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-                        <span class="text-[14px] font-['Inter',system-ui,sans-serif] font-semibold tracking-tight text-[#19254c]">
-                          Transformation Progress
-                        </span>
-                        <div class="flex items-center gap-4 text-[10px] font-['Inter',system-ui,sans-serif] font-medium sm:text-[11px]">
-                          <span class="flex items-center gap-2">
-                            <span class="block h-2.5 w-2.5 rounded-full bg-[#6a7188] shadow-[0_1px_2px_rgba(106,113,136,0.3)]" />
-                            <span class="text-[#6a7188] tracking-wide">Before</span>
-                          </span>
-                          <span class="flex items-center gap-2">
-                            <span class="block h-2.5 w-2.5 rounded-full bg-[#fbc10d] shadow-[0_1px_2px_rgba(251,193,13,0.3)]" />
-                            <span class="text-[#19254c] font-semibold tracking-wide">With Gestalty</span>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="chart-wrapper relative h-32 w-full">
-                        <TransformationChart client:load area={row.area} />
-                      </div>
-                    </div>
-
-                    {/* Comparison Text */}
-                    <div class="grid gap-5">
-                      {/* Before */}
-                      <div class="flex flex-col gap-3">
-                        <div class="flex items-center justify-between gap-2">
-                          <p class="text-[11px] font-['Inter',system-ui,sans-serif] font-semibold uppercase tracking-[0.2em] text-[#8b92a8]">
-                            Before
-                          </p>
-                          <span class="inline-flex items-center gap-1.5 rounded-full bg-[#f1f3f5] px-3 py-1 text-[10px] font-['Inter',system-ui,sans-serif] font-medium uppercase tracking-[0.15em] text-[#6a7188]">
-                            <span class="block h-1.5 w-1.5 rounded-full bg-[#6a7188]" />
-                            Current
-                          </span>
-                        </div>
-                        <div class="rounded-2xl bg-[#f8f9fa] px-5 py-4 text-[14px] font-['Inter',system-ui,sans-serif] font-normal leading-[1.7] text-[#495057]">
-                          {row.before}
-                        </div>
-                      </div>
-
-                      {/* After */}
-                      <div class="flex flex-col gap-3">
-                        <div class="flex items-center justify-between gap-2">
-                          <p class="text-[11px] font-['Inter',system-ui,sans-serif] font-bold uppercase tracking-[0.2em] text-[#19254c]">
-                            After
-                          </p>
-                          <span class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#fff8dc] to-[#fffbe6] px-3 py-1 text-[10px] font-['Inter',system-ui,sans-serif] font-semibold uppercase tracking-[0.15em] text-[#856404] shadow-[0_1px_3px_rgba(251,193,13,0.15)] border border-[#fbc10d]/20">
-                            <span class="block h-2 w-2 rounded-full bg-[#fbc10d] shadow-[0_1px_2px_rgba(251,193,13,0.4)]" />
-                            Enhanced
-                          </span>
-                        </div>
-                        <div class="rounded-2xl border border-[#fbc10d]/25 bg-gradient-to-br from-[#fffef8] via-[#fffdf5] to-[#fffcf0] px-5 py-4 text-[14px] font-['Inter',system-ui,sans-serif] font-medium leading-[1.7] text-[#19254c] shadow-[0_1px_3px_rgba(251,193,13,0.08)]">
-                          {row.after}
-                        </div>
-                      </div>
-                    </div>
+                  <div class="gx-comparison-content">
+                    <p class="gx-comparison-text">{row.before}</p>
                   </div>
-                </article>
-              ))}
+                </div>
+                
+                <div class="gx-comparison-divider"></div>
+                
+                <div class="gx-comparison-after">
+                  <div class="gx-comparison-header">
+                    <span class="gx-comparison-badge gx-badge-after">With Gestalty</span>
+                  </div>
+                  <div class="gx-comparison-content">
+                    <p class="gx-comparison-text">{row.after}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
-        </div>
+          );
+        })}
       </div>
     </div>
   </div>
-
-  <style>
-    .path-card {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    .path-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(25, 37, 76, 0.1), 0 2px 8px rgba(0, 0, 0, 0.04);
-      border-color: #d4d6da;
-    }
-
-    .chart-container {
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .chart-container:hover {
-      box-shadow: 0 4px 16px rgba(25, 37, 76, 0.06);
-      border-color: #dde0e4;
-      transform: translateY(-1px);
-    }
-
-    /* Refined hex-like badge */
-    .path-hex {
-      clip-path: polygon(
-        10% 0%,
-        90% 0%,
-        100% 50%,
-        90% 100%,
-        10% 100%,
-        0% 50%
-      );
-      transition: all 0.2s ease;
-    }
-
-    .path-card:hover .path-hex {
-      transform: scale(1.02);
-      box-shadow: 0 4px 12px rgba(25, 37, 76, 0.25);
-    }
-
-    @media (max-width: 767px) {
-      .path-card {
-        border-radius: 24px;
-        padding: 1.5rem;
-      }
-      
-      .chart-wrapper {
-        height: 110px;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .chart-wrapper {
-        height: 128px;
-      }
-    }
-  </style>
 </section>
+
+<style>
+  :global(:root) {
+    --gx-bg: #151316;
+    --gx-surface: #1d1d1d;
+    --gx-surface-alt: #19254c;
+    --gx-text: #f6f6f6;
+    --gx-muted: #6a7188;
+    --gx-accent: #fbc10d;
+    --gx-border: #e0e0e0;
+    --gx-shadow: 0 16px 48px rgba(29, 29, 29, 0.45);
+    --gx-radius: 14px;
+    --gx-font-title: "Clash Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+    --gx-font-body: "Satoshi", "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  .gx-section {
+    background: var(--gx-bg);
+    padding: 5rem 1.25rem 5rem;
+    color: var(--gx-text);
+  }
+
+  .gx-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  .gx-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .gx-title {
+    font-family: var(--gx-font-title);
+    font-size: clamp(1.9rem, 3vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--gx-text);
+    margin-bottom: 0.6rem;
+  }
+
+  .gx-subtitle {
+    max-width: 760px;
+    margin: 0 auto;
+    font-family: var(--gx-font-body);
+    font-size: 1rem;
+    color: var(--gx-muted);
+    line-height: 1.65;
+  }
+
+  .gx-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 260px) 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .gx-nav {
+    position: sticky;
+    top: 1rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .gx-nav-item {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--gx-text);
+    cursor: pointer;
+    font-family: var(--gx-font-body);
+    padding: 0;
+    position: relative;
+  }
+
+  .gx-nav-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .gx-nav-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-radius: 0;
+    border: none;
+    background: transparent;
+    transition: color 0.2s ease;
+    width: 100%;
+  }
+
+  .gx-nav-item[aria-selected="true"] .gx-nav-pill {
+    background: #3b82f6;
+    color: var(--gx-text);
+  }
+
+  .gx-nav-item[aria-selected="true"] .gx-nav-label {
+    font-weight: 600;
+  }
+
+  .gx-nav-item:not([aria-selected="true"]) .gx-nav-pill {
+    color: var(--gx-muted);
+  }
+
+  .gx-nav-item:not([aria-selected="true"]) .gx-nav-pill:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .gx-nav-label {
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    font-size: 0.875rem;
+    text-transform: none;
+  }
+
+  .gx-icon {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    color: currentColor;
+  }
+
+  .gx-content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .gx-feature-card {
+    background: #1a181b;
+    border-radius: 6px;
+    border: none;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.3s ease;
+  }
+
+  .gx-feature-card[style*="display: none"] {
+    opacity: 0;
+  }
+
+  .gx-illustration-wrapper {
+    width: 100%;
+    padding: 0 0 2.5rem;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gx-feature-illustration {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    min-height: 200px;
+    max-height: 240px;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 0;
+    margin: 0;
+    display: block;
+    opacity: 0.6;
+  }
+
+  .gx-comparison-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 3rem;
+    padding: 0;
+    align-items: start;
+    margin-top: 0.5rem;
+  }
+
+  .gx-comparison-before,
+  .gx-comparison-after {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .gx-comparison-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .gx-comparison-badge {
+    font-family: var(--gx-font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0;
+    border-radius: 0;
+    display: inline-block;
+    color: var(--gx-muted);
+  }
+
+  .gx-badge-before {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.4);
+    border: none;
+  }
+
+  .gx-badge-after {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    border: none;
+  }
+
+  .gx-comparison-content {
+    flex: 1;
+  }
+
+  .gx-comparison-text {
+    font-family: var(--gx-font-body);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+  }
+
+  .gx-comparison-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.08);
+    margin-top: 1.5rem;
+    width: 1px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    position: relative;
+  }
+
+  .gx-comparison-divider svg {
+    display: none;
+  }
+
+  .gx-feature-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: transparent;
+  }
+
+  @media (max-width: 1023px) {
+    .gx-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .gx-nav {
+      position: relative;
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 0;
+      margin-bottom: 2rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .gx-nav-item {
+      flex-shrink: 0;
+    }
+
+    .gx-nav-item:not(:last-child)::after {
+      display: none;
+    }
+
+    .gx-nav-pill {
+      padding: 0.75rem 1rem;
+      white-space: nowrap;
+    }
+
+    .gx-content-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .gx-feature-card {
+      padding: 2rem;
+    }
+
+    .gx-illustration-wrapper {
+      padding: 0 0 2rem;
+    }
+
+    .gx-feature-illustration {
+      max-width: 100%;
+      max-height: 200px;
+      min-height: 160px;
+      height: auto;
+    }
+
+    .gx-comparison-container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 0;
+      margin-top: 0.5rem;
+    }
+
+    .gx-comparison-divider {
+      width: 100%;
+      height: 1px;
+      margin: 0.5rem 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .gx-section {
+      padding: 4rem 1rem 4rem;
+    }
+
+    .gx-feature-card {
+      padding: 1.75rem;
+    }
+
+    .gx-illustration-wrapper {
+      padding: 0 0 1.75rem;
+    }
+
+    .gx-feature-illustration {
+      max-width: 100%;
+      max-height: 180px;
+      min-height: 140px;
+      height: auto;
+    }
+
+    .gx-comparison-container {
+      padding: 0;
+      gap: 1.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .gx-comparison-badge {
+      font-size: 0.65rem;
+    }
+
+    .gx-comparison-text {
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .gx-content-grid {
+      gap: 1rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    const buttons = Array.from(document.querySelectorAll(".gx-nav-item"));
+    const cards = Array.from(document.querySelectorAll(".gx-feature-card"));
+
+    if (!buttons.length || !cards.length) {
+      return;
+    }
+
+    function setActive(nextBtn) {
+      const area = nextBtn.getAttribute("data-area") || "";
+      const index = parseInt(nextBtn.getAttribute("data-tab-index") || "0");
+
+      buttons.forEach((btn) => {
+        const isActive = btn === nextBtn;
+        btn.setAttribute("aria-selected", isActive ? "true" : "false");
+        btn.setAttribute("tabindex", isActive ? "0" : "-1");
+      });
+
+      // Hide all cards, then show only the selected one
+      cards.forEach(card => {
+        if (card.getAttribute("data-area") === area) {
+          card.style.display = "flex";
+          card.style.opacity = "1";
+        } else {
+          card.style.display = "none";
+          card.style.opacity = "0";
+        }
+      });
+
+      nextBtn.focus({ preventScroll: true });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => setActive(btn));
+      btn.addEventListener("keydown", (e) => {
+        const currentIndex = buttons.indexOf(btn);
+        if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+          e.preventDefault();
+          const next = buttons[(currentIndex + 1) % buttons.length];
+          setActive(next);
+        }
+        if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+          e.preventDefault();
+          const prev = buttons[(currentIndex - 1 + buttons.length) % buttons.length];
+          setActive(prev);
+        }
+      });
+    });
+
+    setActive(buttons[0]);
+  })();
+</script>

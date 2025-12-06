@@ -34,7 +34,7 @@ function highlightSolutionText(text: string): string {
   if (match) {
     const highlighted = match[1]; // The label part without colon
     const rest = text.slice(match[0].length); // Rest of the text
-    return `<span class="solution-highlight"><em>${highlighted}:</em></span> ${rest}`;
+    return `<span class="solution-highlight"><strong>${highlighted}:</strong></span> ${rest}`;
   }
   
   return text;
@@ -45,7 +45,12 @@ function highlightSolutionText(text: string): string {
   <div class="container">
     <div class="row">
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        {title && <h2 class="mb-4" set:html={markdownify(title)} />}
+        {title && (
+          <h2
+            class="mb-4 text-3xl sm:text-4xl lg:text-[2.9rem] font-bold leading-[1.15] tracking-tight text-[#0d1b3d]"
+            set:html={markdownify(title)}
+          />
+        )}
         {
           subtitle && (
             <p
@@ -164,12 +169,12 @@ function highlightSolutionText(text: string): string {
 
   .service-card {
     position: relative;
-    padding: 1.5rem 1.25rem;
+    padding: 1.25rem 1.1rem;
     border-radius: 16px 16px 16px 48px;
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="88" height="34" viewBox="0 0 88 34"><rect x="6" y="5" width="76" height="24" rx="6" fill="%2390ee90" stroke="%23000" stroke-width="2"/><rect x="4" y="3" width="76" height="24" rx="6" fill="%2390ee90" stroke="%23000" stroke-width="2"/><text x="42" y="18.5" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="%23000" text-anchor="middle">SOLUTION</text></svg>') 44 17, pointer;
     display: flex;
     flex-direction: column;
-    min-height: 220px;
+    min-height: 200px;
     max-height: 100%;
     overflow: hidden;
     will-change: transform;
@@ -199,8 +204,8 @@ function highlightSolutionText(text: string): string {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
     opacity: 0;
     pointer-events: none;
     backdrop-filter: blur(10px);
@@ -440,6 +445,8 @@ function highlightSolutionText(text: string): string {
     line-height: 1.8;
     font-weight: 500;
     color: #1d1d1d;
+    text-align: left;
+    width: 100%;
   }
 
   .solution-highlight {
@@ -448,7 +455,7 @@ function highlightSolutionText(text: string): string {
     padding: 0.25rem 0.625rem;
     border-radius: 6px;
     font-weight: 700;
-    font-style: italic;
+    font-style: normal;
     color: #1a1a1a;
     display: inline-block;
     box-shadow: 
@@ -475,7 +482,7 @@ function highlightSolutionText(text: string): string {
   .solution-highlight em,
   .solution-highlight strong {
     font-weight: 700;
-    font-style: italic;
+    font-style: normal;
     display: inline-block;
   }
 
@@ -534,8 +541,8 @@ function highlightSolutionText(text: string): string {
   /* Mobile responsive adjustments */
   @media (max-width: 1023px) {
     .service-card {
-      min-height: 240px;
-      padding: 1.25rem 1rem;
+      min-height: 210px;
+      padding: 1.15rem 0.95rem;
     }
 
     .card-solution {

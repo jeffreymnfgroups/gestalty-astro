@@ -377,7 +377,7 @@ const cardIcons = [
 ];
 ---
 
-<section class="ps-section relative isolate overflow-hidden bg-light text-body py-16 sm:py-20 lg:py-24">
+<section class="ps-section relative isolate overflow-hidden bg-light text-body py-8 sm:py-10 lg:py-12">
   <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 xl:px-12">
     <div class="mx-auto max-w-[1400px]">
       <!-- Header Section -->
@@ -411,7 +411,11 @@ const cardIcons = [
 
       <!-- Cards Grid -->
       <div class="ps-media w-full">
-        <div class="ps-cards-grid">
+        <div class="ps-controls" aria-hidden="false">
+          <button class="ps-nav-btn ps-nav-btn--prev" type="button" aria-label="Previous cards">←</button>
+          <button class="ps-nav-btn ps-nav-btn--next" type="button" aria-label="Next cards">→</button>
+        </div>
+        <div class="ps-cards-grid" id="ps-cards-grid">
           {cards.map((card, index) => {
             const colorScheme = cardColors[index % cardColors.length];
             const isDark = colorScheme.bg === "#1C1C1E";
@@ -492,42 +496,87 @@ const cardIcons = [
     width: 100%;
     display: flex;
     justify-content: center;
+    position: relative;
+  }
+
+  .ps-controls {
+    position: absolute;
+    right: 0;
+    top: -3.75rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 20;
+    pointer-events: none;
+    padding-inline: 0.25rem;
+  }
+
+  .ps-nav-btn {
+    pointer-events: auto;
+    background: #0d1b3d;
+    color: #ffffff;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+
+  .ps-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: scale(0.95);
+  }
+
+  .ps-nav-btn:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 639px) {
+    .ps-controls {
+      top: -3.25rem;
+      right: 0.25rem;
+    }
+
+    .ps-nav-btn {
+      width: 30px;
+      height: 30px;
+      font-size: 0.9rem;
+    }
   }
 
   .ps-cards-grid {
     width: 100%;
-    max-width: 750px;
+    max-width: none;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.25rem 0.5rem 0.75rem;
     gap: 1.5rem;
-  }
-
-  @media (max-width: 1023px) {
-    .ps-cards-grid {
-      grid-template-columns: repeat(2, 1fr);
-      max-width: 500px;
-  }
-  }
-
-  @media (max-width: 639px) {
-    .ps-cards-grid {
-      grid-template-columns: 1fr;
-      max-width: 100%;
-    }
+    cursor: grab;
   }
 
   .ps-card-container {
     perspective: 1000px;
-    width: 100%;
-    height: 350px;
+    flex: 0 0 calc(33.333% - 1rem);
+    min-width: 210px;
+    max-width: 300px;
+    height: 300px;
+    scroll-snap-align: start;
   }
 
   .ps-card {
-    --ps-icon-size: clamp(110px, 18vw, 160px);
+    --ps-icon-size: clamp(78px, 11vw, 110px);
     width: 100%;
-    min-height: 350px;
-    height: 350px;
+    min-height: 300px;
+    height: 300px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
@@ -568,7 +617,7 @@ const cardIcons = [
   .ps-card-icon {
     margin-top: auto;
     padding-top: 1rem;
-    min-height: 180px;
+    min-height: 120px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -596,6 +645,44 @@ const cardIcons = [
 
   .ps-card-container[data-card-index="8"] .ps-icon-wrapper {
     margin-top: -70px;
+  }
+
+  /* Carousel responsiveness */
+  @media (max-width: 1023px) {
+    .ps-cards-grid {
+      gap: 1.25rem;
+    }
+
+    .ps-card-container {
+      flex-basis: calc(50% - 0.75rem);
+      max-width: 400px;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .ps-card-container {
+      flex-basis: 100%;
+      min-width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  /* Optional subtle scrollbar styling */
+  .ps-cards-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .ps-cards-grid {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .ps-media {
+    position: relative;
+    align-items: flex-start;
+  }
+
+  .ps-cards-grid.ps-dragging {
+    cursor: grabbing;
   }
 </style>
 
@@ -654,10 +741,96 @@ const cardIcons = [
       });
     }
 
+    function initDragScroll() {
+      var grid = document.getElementById('ps-cards-grid');
+      if (!grid) return;
+
+      var isDown = false;
+      var startX = 0;
+      var scrollLeft = 0;
+
+      function getPageX(e) {
+        if (e.touches && e.touches.length) return e.touches[0].pageX;
+        return e.pageX;
+      }
+
+      function handleDown(e) {
+        isDown = true;
+        startX = getPageX(e);
+        scrollLeft = grid.scrollLeft;
+        grid.classList.add('ps-dragging');
+      }
+
+      function handleMove(e) {
+        if (!isDown) return;
+        var x = getPageX(e);
+        var walk = x - startX;
+        grid.scrollLeft = scrollLeft - walk;
+        if (e.cancelable !== false) e.preventDefault();
+      }
+
+      function handleUp() {
+        isDown = false;
+        grid.classList.remove('ps-dragging');
+      }
+
+      grid.addEventListener('mousedown', handleDown);
+      grid.addEventListener('touchstart', handleDown, { passive: true });
+      window.addEventListener('mousemove', handleMove, { passive: false });
+      window.addEventListener('touchmove', handleMove, { passive: false });
+      window.addEventListener('mouseup', handleUp);
+      window.addEventListener('touchend', handleUp);
+      window.addEventListener('touchcancel', handleUp);
+    }
+
+    function initNavButtons() {
+      var grid = document.getElementById('ps-cards-grid');
+      var prevBtn = document.querySelector('.ps-nav-btn--prev');
+      var nextBtn = document.querySelector('.ps-nav-btn--next');
+      if (!grid || !prevBtn || !nextBtn) return;
+
+      var defaultGap = 24; // 1.5rem fallback
+
+      function getStep() {
+        var card = grid.querySelector('.ps-card-container');
+        if (!card) return 320;
+        var style = window.getComputedStyle(grid);
+        var gap = parseFloat(style.columnGap || style.gap || defaultGap);
+        return card.getBoundingClientRect().width + gap;
+      }
+
+      function updateDisabled() {
+        var maxScroll = grid.scrollWidth - grid.clientWidth - 2;
+        prevBtn.disabled = grid.scrollLeft <= 0;
+        nextBtn.disabled = grid.scrollLeft >= maxScroll;
+      }
+
+      function scrollByStep(direction) {
+        var step = getStep();
+        grid.scrollBy({ left: direction * step, behavior: 'smooth' });
+        setTimeout(updateDisabled, 260);
+      }
+
+      prevBtn.addEventListener('click', function() {
+        scrollByStep(-1);
+      });
+
+      nextBtn.addEventListener('click', function() {
+        scrollByStep(1);
+      });
+
+      grid.addEventListener('scroll', updateDisabled);
+      updateDisabled();
+    }
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init3DCards);
+      document.addEventListener('DOMContentLoaded', initDragScroll);
+      document.addEventListener('DOMContentLoaded', initNavButtons);
     } else {
       init3DCards();
+      initDragScroll();
+      initNavButtons();
     }
   })();
 </script>

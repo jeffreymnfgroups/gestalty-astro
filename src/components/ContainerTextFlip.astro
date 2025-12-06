@@ -47,29 +47,31 @@ const wordsJson = JSON.stringify(words);
 
 <style>
   .container-text-flip {
-    display: inline-block;
+    display: inline-flex;
+    align-items: baseline;
     position: relative;
+    background: transparent;
+    color: #000;
   }
 
   .container-text-flip-wrapper {
     position: relative;
     display: inline-block;
     margin: 0;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #000;
-    background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
-    box-shadow: 
-      inset 0 -1px #d1d5db,
-      inset 0 0 0 1px #d1d5db,
-      0 4px 8px #d1d5db;
+    padding: 0;
+    border-radius: 0;
+    text-align: left;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    background: transparent;
+    box-shadow: none;
     transition: width 0.35s ease-in-out;
     overflow: hidden;
     white-space: nowrap;
-    min-width: fit-content;
+    min-width: auto;
   }
 
   @media (min-width: 768px) {
@@ -78,31 +80,21 @@ const wordsJson = JSON.stringify(words);
     }
   }
 
-  @media (prefers-color-scheme: dark) {
-    .container-text-flip-wrapper {
-      color: #fff;
-      background: linear-gradient(to bottom, #374151, #1f2937);
-      box-shadow: 
-        inset 0 -1px #10171e,
-        inset 0 0 0 1px hsla(205, 89%, 46%, 0.24),
-        0 4px 8px rgba(0, 0, 0, 0.32);
-    }
-  }
-
   .container-text-flip-sizer {
     visibility: hidden;
     display: inline-block;
     white-space: nowrap;
-    padding: 0 15px;
+    padding: 0;
   }
 
   .container-text-flip-text {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    transform: none;
     display: inline-block;
     white-space: nowrap;
+    color: inherit;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -152,12 +144,12 @@ const wordsJson = JSON.stringify(words);
       
       let currentIndex = 0;
       let intervalId: number | null = null;
-      let currentAnimation: gsap.core.Tween | null = null;
+      let currentAnimation: gsap.core.Timeline | null = null;
       
       function updateWidth() {
         const activeText = container.querySelector('.container-text-flip-text.active') as HTMLElement;
         if (activeText) {
-          const textWidth = activeText.offsetWidth + 30; // Add padding
+          const textWidth = activeText.offsetWidth;
           gsap.to(wrapper, {
             width: textWidth,
             duration: duration / 1000,
@@ -238,7 +230,7 @@ const wordsJson = JSON.stringify(words);
       // Set initial width immediately
       const firstActiveText = textElements[0] as HTMLElement;
       if (firstActiveText) {
-        const initialWidth = firstActiveText.offsetWidth + 30;
+        const initialWidth = firstActiveText.offsetWidth;
         wrapper.style.width = `${initialWidth}px`;
       }
       
