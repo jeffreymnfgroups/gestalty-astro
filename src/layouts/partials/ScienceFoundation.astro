@@ -58,7 +58,12 @@ const pillarLotties = [
 <section class="sf-section">
   <div class="sf-shell">
     <header class="sf-header">
-      {title && <h2 class="sf-title" set:html={markdownify(title)} />}
+      {title && (
+        <h2
+          class="sf-title font-NeueMontreal"
+          set:html={markdownify(title)}
+        />
+      )}
       {subtitle && <p class="sf-subtitle" set:html={markdownify(subtitle)} />}
       {description && (
         <p class="sf-description" set:html={markdownify(description)} />

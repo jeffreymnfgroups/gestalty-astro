@@ -1,5 +1,5 @@
 ---
-import ImageMod from "@/components/ImageMod.astro";
+import MiniComparisonChart from "@/components/MiniComparisonChart";
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
@@ -36,14 +36,14 @@ if (visible_testimonial) {
 }
 ---
 
-<section class="section pt-16 pb-12 min-h-screen flex items-center">
+<section class="ps-section relative isolate bg-white text-body py-10 sm:py-12 lg:py-16">
   <div class="container">
-    <div class="row">
+    <div class="row items-center">
       <div class="mx-auto text-center lg:col-8 xl:col-9" data-aos="fade-up-sm">
         {
           subtitle && (
             <p
-              class="mb-2 font-medium text-tertiary"
+              class="mb-2 inline-flex items-center justify-center gap-2 rounded-full bg-light px-4 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-tertiary"
               set:html={markdownify(subtitle)}
             />
           )
@@ -52,66 +52,72 @@ if (visible_testimonial) {
         {
           title &&
             (largeHeading ? (
-              <h1 class="h2 md:h1 mb-6" set:html={markdownify(title)} />
+              <h1 class="h2 md:h1 mb-4 text-primary" set:html={markdownify(title)} />
             ) : (
-              <h2 class="mb-6" set:html={markdownify(title)} />
+              <h2 class="mb-4 text-primary" set:html={markdownify(title)} />
             ))
         }
         {
           description && (
-            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+            <p class="mx-auto max-w-3xl text-lg text-primary/80" set:html={markdownify(description)} />
           )
         }
       </div>
 
-      <div class="col-12 pt-16" data-aos="fade-up-sm" data-aos-delay="150">
-        <div class="grid items-stretch gap-10 lg:grid-cols-[1.2fr_1fr]">
-          <div class="space-y-8 rounded-3xl border border-border/60 bg-white p-8 shadow-sm md:p-10">
-            <p class="text-sm font-semibold uppercase tracking-[0.08em] text-tertiary">
-              Supporting quote
-            </p>
-            <p class="text-2xl font-semibold leading-snug text-primary md:text-3xl">
-              “What gets scheduled gets done. What gets tracked gets optimized.”
-            </p>
-            <div class="space-y-4 rounded-2xl border border-border/60 bg-light px-5 py-5">
-              <div class="grid gap-4 text-sm text-primary/85 sm:grid-cols-2">
-                <div class="space-y-2 rounded-xl border border-border/60 bg-white px-4 py-3 shadow-xs">
-                  <p class="text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">
-                    Traditional Method
-                  </p>
-                  <p>“I studied 8 hours” → 8% real progress.</p>
-                  <p>Focus on quantity.</p>
-                </div>
-                <div class="space-y-2 rounded-xl border border-border/60 bg-white px-4 py-3 shadow-xs">
-                  <p class="text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">
-                    Gestalty
-                  </p>
-                  <p>8 hours in balanced knowledge acquisition → 68% progress.</p>
-                  <p>Focus on quality, retention, and application.</p>
-                </div>
+      <div class="col-12 pt-12" data-aos="fade-up-sm" data-aos-delay="120">
+        <div class="flex justify-center">
+          <div class="flex w-full max-w-5xl flex-col gap-8 rounded-xl border border-border/80 bg-white p-8 shadow-xs md:p-12">
+            <div class="flex items-center gap-3">
+              <span class="flex h-12 w-12 items-center justify-center rounded-md border border-border/70 bg-light/70 text-xl font-bold text-primary">
+                “
+              </span>
+              <div class="space-y-1">
+                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-tertiary">
+                  Quotes
+                </p>
+                <p class="text-xl font-semibold text-primary md:text-2xl">
+                  What gets scheduled gets done. What gets tracked gets optimized.
+                </p>
               </div>
             </div>
-          </div>
 
-          <div class="relative w-full max-w-[460px] justify-self-center overflow-hidden rounded-3xl border border-border/60 bg-light shadow-sm lg:justify-self-end">
-            <div class="h-full">
-              <ImageMod
-                class="h-full w-full object-cover"
-                src="/images/ten.webp"
-                alt="Calm workspace with notes and schedule"
-              />
+            <div class="rounded-lg border border-border/70 bg-light/70 p-4 shadow-xxs">
+              <MiniComparisonChart client:load rows={comparisonRows} />
             </div>
-            <div class="absolute bottom-4 left-4 right-4 flex flex-col gap-2 rounded-2xl bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
-              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">
-                Snapshot
-              </p>
-              <p class="text-sm text-primary/80">
-                Consistent practice blocks, reflection notes, and clear next steps.
-              </p>
+
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="rounded-lg border border-border/70 bg-light/70 p-5 shadow-xxs">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-tertiary">
+                  Traditional
+                </p>
+                <ul class="space-y-2 text-sm text-primary/80">
+                  {
+                    comparisonRows.map((row) => (
+                      <li>{row.traditional}</li>
+                    ))
+                  }
+                </ul>
+              </div>
+              <div class="rounded-lg border border-border/70 bg-white p-5 shadow-xxs">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-primary">
+                  Gestalty
+                </p>
+                <ul class="space-y-2 text-sm text-primary/85">
+                  {
+                    comparisonRows.map((row) => (
+                      <li>{row.gestalty}</li>
+                    ))
+                  }
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+    </div>
+  </div>
+</section>
 
     </div>
   </div>

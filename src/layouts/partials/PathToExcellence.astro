@@ -68,7 +68,7 @@ const navItems = [
   <div class="gx-shell">
     <header class="gx-header">
       {title && (
-        <h2 class="gx-title" set:html={markdownify(title)} />
+        <h2 class="gx-title font-NeueMontreal" set:html={markdownify(title)} />
       )}
       {subtitle && (
         <p class="gx-subtitle" set:html={markdownify(subtitle)} />
@@ -157,7 +157,7 @@ const navItems = [
     --gx-border: #1f3a63;
     --gx-shadow: 0 16px 48px rgba(11, 20, 48, 0.55);
     --gx-radius: 14px;
-    --gx-font-title: "Clash Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+    --gx-font-title: var(--font-primary), sans-serif;
     --gx-font-body: "Satoshi", "Inter", system-ui, -apple-system, sans-serif;
   }
 
