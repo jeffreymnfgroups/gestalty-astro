@@ -26,7 +26,7 @@ const { pathname } = Astro.url;
 ---
 
 <div
-  class={`header-wrapper ${Astro.url.pathname === "/" ? "relative" : !errorPage && "pb-6"}`}>
+  class={`header-wrapper ${Astro.url.pathname === "/" ? "relative" : !errorPage && "pb-4"}`}>
   <!-- Scroll Progress Indicator -->
   <div 
     id="scroll-progress-bar" 
@@ -37,9 +37,9 @@ const { pathname } = Astro.url;
   <header 
     id="main-header"
     class={`header-modern fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${banner ? 'header-home' : ''}`}>
-    <div class="w-full max-w-[75rem] mx-auto px-5 sm:px-7 py-2">
+    <div class="w-full max-w-[75rem] mx-auto px-4 sm:px-6 py-1.5">
       <nav
-        class="navbar-modern flex items-center justify-between transition-all duration-300 rounded-full shadow-sm bg-body/95 backdrop-blur-md px-3 py-2"
+        class="navbar-modern flex items-center justify-between transition-all duration-300 rounded-full shadow-sm bg-body/95 backdrop-blur-md px-3 py-1.5"
         id="header-nav">
         <!-- Logo -->
         <div class="flex items-center">
@@ -47,8 +47,8 @@ const { pathname } = Astro.url;
         </div>
         
         <!-- Desktop Navigation Menu - visible from 1024px (lg) and above -->
-        <div class="hidden lg:flex bg-primary/5 rounded-3xl py-2 px-1">
-          <ul class="flex gap-0 2xl:gap-1.5">
+        <div class="hidden lg:flex bg-primary/5 rounded-3xl py-1.5 px-1">
+          <ul class="flex gap-0 2xl:gap-1">
             {
               main.map((item) => (
                 <li>
@@ -72,7 +72,7 @@ const { pathname } = Astro.url;
           {
             login_button.enable && (
               <a
-                class="btn btn-dark hidden lg:flex px-4 py-0.5 text-xs shadow-lg login-button"
+                class="btn btn-dark hidden lg:flex px-4 py-1 text-xs shadow-lg login-button"
                 href={login_button.link}>
                 {login_button.label}
                 <span class="icon-wrapper">
@@ -91,7 +91,7 @@ const { pathname } = Astro.url;
           {
             navigation_button.enable && (
               <a
-                class="btn btn-dark hidden lg:flex px-4 py-0.5 text-xs shadow-lg navigation-button"
+                class="btn btn-dark hidden lg:flex px-4 py-1 text-xs shadow-lg navigation-button"
                 href={navigation_button.link}>
                 {navigation_button.label}
                 <span class="icon-wrapper">
