@@ -1,78 +1,316 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
-import { markdownify } from "@/lib/utils/textConverter";
-import type { CollectionEntry } from "astro:content";
-import { getEntry } from "astro:content";
 
-const { title, subtitle, description, list, core_problem } = (
-  (await getEntry(
-    "hiddenCrisisSection",
-    "hidden-crisis"
-  )) as CollectionEntry<"hiddenCrisisSection">
-).data;
+const subtitle = "The Hidden Crisis We Discovered";
+const title = "We Noticed: The Real Hidden Reasons Students Miss Success";
+const description = "Across streams—whether a Class 12 student preparing for NEET, a graduate aiming for UPSC or State PSC, or professionals targeting skill development—we observed the same recurring patterns:";
+
+const list = [
+  {
+    icon: "/images/strategy.svg",
+    title: "1. Effort Without Strategy",
+    description: [
+      "Students were studying intensely, but not strategically",
+      "Hard work was abundant; smart work was missing"
+    ]
+  },
+  {
+    icon: "/images/information.svg",
+    title: "2. Information Overload",
+    description: [
+      "Deviation from the syllabus caused information fragmentation",
+      "Over-reliance on multiple sources created confusion instead of mastery"
+    ]
+  },
+  {
+    icon: "/images/learning.svg",
+    title: "3. Shallow Learning",
+    description: [
+      "Minimal synthesis, review, or consolidation",
+      "Weak recall and superficial understanding became the norm"
+    ]
+  },
+  {
+    icon: "/images/bariers.svg",
+    title: "4. Unaddressed Psychological Barriers",
+    description: [
+      "Fear, overwhelm, and self-doubt went unrecognized",
+      "These silent forces eroded performance day by day"
+    ]
+  },
+  {
+    icon: "/images/invisible.svg",
+    title: "5. Invisible Learning Behaviors",
+    description: [
+      "Students' critical learning traits went unnoticed and unassessed: <span style=\"border-bottom: 2px solid #fbc10d; display: inline; padding-bottom: 2px; font-weight: bold;\">confidence levels, recall strength, study consistency, conceptual clarity, analytical depth</span>",
+      "These invisible behaviors make or break exam success, yet no system captured them"
+    ]
+  },
+  {
+    icon: "/images/progress.svg",
+    title: "6. Unmeasured Progress",
+    description: [
+      "<span style=\"border-bottom: 2px solid #fbc10d; display: inline; padding-bottom: 2px; font-weight: bold;\">Learning remained invisible</span>—no way to track syllabus completion",
+      "<span style=\"border-bottom: 2px solid #fbc10d; display: inline; padding-bottom: 2px; font-weight: bold;\">Habits were fragmented</span>, leading to inconsistency",
+      "<span style=\"border-bottom: 2px solid #fbc10d; display: inline; padding-bottom: 2px; font-weight: bold;\">Confidence fluctuated wildly</span>, creating constant self-doubt",
+      "<span style=\"border-bottom: 2px solid #fbc10d; display: inline; padding-bottom: 2px; font-weight: bold;\">Progress couldn't be</span> quantified, making improvement unclear"
+    ]
+  }
+];
+
+const core_problem = "Students weren't just battling the syllabus—they were battling uncertainty, inconsistency, and the invisible pressure that comes with high-stakes exams.";
 ---
 
-<section class="section">
+<section class="section relative overflow-hidden">
   <div class="container">
     <div class="row">
+      <!-- Header Section -->
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        {
-          subtitle && (
-            <p
-              class="mb-2 font-medium text-tertiary"
-              set:html={markdownify(subtitle)}
-            />
-          )
-        }
-        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
+        {title && <h2 class="mb-12">{title}</h2>}
         {
           description && (
-            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
-          )
-        }
-      </div>
-      <div class="col-12 pt-20">
-        <div class="row g-4 justify-center">
-          {
-            list?.map((item, index) => (
-              <div
-                class="md:col-6 lg:col-4"
-                data-aos="fade-up-sm"
-                data-aos-delay={200 + index * 50}>
-                <div class="min-h-full rounded-xl bg-light px-6 py-8 md:rounded-3xl">
-                  {item.icon && (
-                    <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-tertiary">
-                      <ImageMod
-                        class="h-6 w-6 object-cover"
-                        src={item.icon}
-                        alt={`icon related to ${item.title}`}
-                      />
-                    </div>
-                  )}
-                  {item.title && (
-                    <h3 class="h5 mb-3" set:html={markdownify(item.title)} />
-                  )}
-                  {item.description && (
-                    <p set:html={markdownify(item.description)} />
-                  )}
-                </div>
-              </div>
-            ))
-          }
-        </div>
-        {
-          core_problem && (
-            <div class="row pt-16">
-              <div class="mx-auto lg:col-10" data-aos="fade-up-sm">
-                <div class="rounded-xl bg-tertiary p-8 text-center text-text-light md:rounded-3xl md:p-12">
-                  <h3 class="h4 mb-0 text-inherit" set:html={markdownify(core_problem)} />
-                </div>
-              </div>
+            <div class="mx-auto max-w-3xl text-left [&_ul]:list-disc [&_ul]:space-y-2.5 [&_ul]:ml-6 [&_li]:text-base [&_li]:leading-relaxed [&_li]:text-text [&_li]:marker:text-tertiary">
+              {description}
             </div>
           )
         }
+      </div>
+
+      <!-- Combined Cards and Core Problem Section -->
+      <div class="col-12 pt-16">
+        <div class="relative">
+          <!-- Cards Grid -->
+          <div class="row g-5 justify-center">
+            {
+              list?.map((item, index) => (
+                <div
+                  class="md:col-6 lg:col-4"
+                  data-aos="fade-up-sm"
+                  data-aos-delay={150 + index * 50}>
+                  <div class="crisis-card group relative min-h-full overflow-hidden bg-white transition-all duration-200 hover:-translate-y-1">
+                    {/* Upper container with icon */}
+                    <div class="crisis-card-upper">
+                      {item.icon && (
+                        <div class="crisis-card-icon">
+                          <ImageMod
+                            class="crisis-icon-img"
+                            src={item.icon}
+                            alt={`icon related to ${item.title}`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Lower container with content */}
+                    <div class="crisis-card-lower">
+                      {item.title && (
+                        <h3 class="crisis-card-title">{item.title}</h3>
+                      )}
+                      {item.description && (
+                        <div class="crisis-card-description">
+                          <ul>
+                            {item.description.map((desc) => (
+                              <li set:html={desc}></li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+
+          {/* Core Problem - Integrated Design */}
+          {
+            core_problem && (
+              <div class="row pt-12">
+                <div class="mx-auto lg:col-10" data-aos="fade-up-sm" data-aos-delay="400">
+                  <div class="core-problem-card">
+                    <div class="core-problem-content">
+                      <h3 class="core-problem-title">The Core Problem</h3>
+                      <blockquote class="core-problem-quote">
+                        "{core_problem}"
+                      </blockquote>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
+        </div>
       </div>
     </div>
   </div>
 </section>
 
+<style>
+  .crisis-card {
+    width: 100%;
+    background: #ffffff;
+    border: 4px solid #1d1d1d;
+    box-shadow: 8px 8px 0 #1d1d1d;
+    position: relative;
+  }
+
+  .crisis-card:hover {
+    box-shadow: 12px 12px 0 #1d1d1d;
+    transform: translate(-2px, -2px);
+  }
+
+  .crisis-card-upper {
+    height: 140px;
+    background: #fbc10d;
+    border-bottom: 4px solid #1d1d1d;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: relative;
+  }
+
+  .crisis-card-icon {
+    width: 100px;
+    height: 100px;
+    background: #ffffff;
+    border: 4px solid #1d1d1d;
+    transform: translateY(50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+
+  .crisis-card:hover .crisis-card-icon {
+    transform: translateY(50%) scale(1.05);
+    box-shadow: 4px 4px 0 #1d1d1d;
+  }
+
+  .crisis-icon-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%);
+    background-color: #ffffff;
+    border-radius: 4px;
+  }
+  
+  .crisis-icon-img img {
+    filter: brightness(0) saturate(100%);
+  }
+
+  .crisis-card-lower {
+    padding: 60px 20px 30px;
+    text-align: center;
+  }
+
+  .crisis-card-title {
+    margin: 0 0 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #1d1d1d;
+    line-height: 1.3;
+  }
+
+  .crisis-card-description {
+    font-size: 14px;
+    color: #1d1d1d;
+    border: 2px dashed #1d1d1d;
+    padding: 15px;
+    background: #fafafa;
+    margin-bottom: 0;
+    text-align: left;
+  }
+
+  .crisis-card-description ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .crisis-card-description li {
+    position: relative;
+    padding-left: 20px;
+    line-height: 1.6;
+  }
+
+  .crisis-card-description li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #19254c;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .yellow-underline {
+    border-bottom: 2px solid #fbc10d;
+    display: inline;
+    padding-bottom: 2px;
+  }
+
+  @media (min-width: 768px) {
+    .crisis-card-lower {
+      padding: 60px 25px 30px;
+    }
+    
+    .crisis-card-title {
+      font-size: 22px;
+    }
+    
+    .crisis-card-description {
+      font-size: 15px;
+      padding: 18px;
+    }
+  }
+
+  .core-problem-card {
+    background: #19254c;
+    border: 4px solid #1d1d1d;
+    box-shadow: 10px 10px 0 #1d1d1d;
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+  }
+
+  .core-problem-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .core-problem-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0 0 20px;
+  }
+
+  .core-problem-quote {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #f6f6f6;
+    margin: 0;
+    font-style: italic;
+    border: 2px dashed #ffffff;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  @media (min-width: 768px) {
+    .core-problem-card {
+      padding: 50px 40px;
+    }
+    
+    .core-problem-title {
+      font-size: 32px;
+    }
+    
+    .core-problem-quote {
+      font-size: 20px;
+      padding: 25px;
+    }
+  }
+</style>
