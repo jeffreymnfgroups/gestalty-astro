@@ -13,7 +13,7 @@ const { title, subtitle, description, pillars } = (
 
 const accentPalette = [
   {
-    surface: "#1d1d1d",
+    surface: "#0f3d5c",
     text: "#f7fafc",
     muted: "#cfd5e2",
     accent: "#fbc10d",
@@ -204,7 +204,14 @@ const pillarLotties = [
 
   .sf-card-title {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 0.14em;
+    text-underline-offset: 0.22em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
     margin: 0;
     color: var(--text, #f8fafc);
   }

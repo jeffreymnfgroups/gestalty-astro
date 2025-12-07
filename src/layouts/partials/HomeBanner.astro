@@ -38,17 +38,17 @@ const shuffleSequences = [
   (
     <section
       id="hero-section"
-      class="h-screen flex items-center pt-[7.5rem] sm:pt-[8.5rem] md:pt-[9.5rem] lg:pt-[10.5rem] pb-6 md:pb-8 pl-2 relative overflow-x-clip">
+      class="min-h-screen flex items-center pt-[3.75rem] sm:pt-[4.5rem] md:pt-[5.5rem] lg:pt-[6rem] 2xl:pt-[4.25rem] pb-6 sm:pb-8 md:pb-10 px-4 sm:px-6 relative overflow-hidden">
       <div class="container relative z-10 w-full">
         <div class="row items-center">
-          <div class="col-12 lg:col-7">
+          <div class="col-12 lg:col-7 max-w-3xl">
             <div class="mb-8 lg:mb-0">
               <div class="mb-5" data-aos="fade-up-sm">
                 <div
                   data-shuffle
                   data-segments={JSON.stringify(examSegments)}
                   data-sequences={JSON.stringify(shuffleSequences)}
-                  class="flex items-center justify-start gap-5 lg:gap-7 text-text"
+                  class="flex w-full items-center justify-center gap-5 lg:gap-7 text-text"
                 >
                   {examSegments.map((segment, index) => (
                     <div class="flex items-center gap-5 lg:gap-7">
