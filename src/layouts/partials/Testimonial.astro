@@ -1,6 +1,5 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
-import DynamicIcon from "@/helpers/DynamicIcon";
 import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
@@ -15,6 +14,17 @@ const contentEntry = (
 ).data;
 
 let { title, subtitle, description, list } = contentEntry;
+
+const comparisonRows = [
+  {
+    traditional: `"I studied 8 hours" → 8% real progress`,
+    gestalty: "8 hours in balanced knowledge acquisition → 68% progress",
+  },
+  {
+    traditional: "Focus on quantity",
+    gestalty: "Focus on quality, retention, and application",
+  },
+];
 
 // Override default blog data (Title, Subtitle & Description) with props if provided
 if (content) {
@@ -53,68 +63,82 @@ if (visible_testimonial) {
           )
         }
       </div>
-      <div class="col-12 pt-20" data-aos="fade-up-sm" data-aos-delay="200">
-        <div class="row g-4 justify-center">
-          {
-            list?.map((item) => (
-              <div class="md:col-6 lg:col-4">
-                <div class="flex min-h-full flex-col justify-start gap-8 rounded-xl bg-light p-6 md:rounded-3xl">
-                  <div class="flex justify-start gap-x-2">
-                    <DynamicIcon
-                      icon="FaStar"
-                      className="text-yellow-500 text-2xl"
-                    />
-                    <DynamicIcon
-                      icon="FaStar"
-                      className="text-yellow-500 text-2xl"
-                    />
-                    <DynamicIcon
-                      icon="FaStar"
-                      className="text-yellow-500 text-2xl"
-                    />
-                    <DynamicIcon
-                      icon="FaStar"
-                      className="text-yellow-500 text-2xl"
-                    />
-                    <DynamicIcon
-                      icon="FaStar"
-                      className="text-yellow-500 text-2xl"
-                    />
-                  </div>
-                  {item.content && (
-                    <div
-                      class="content prose-strong:text-xl"
-                      set:html={markdownify(item.content, true)}
-                    />
-                  )}
-                  <div class="flex flex-col gap-4 sm:flex-row">
-                    {item.avatar && (
-                      <div class="flex h-16 w-16 items-center overflow-hidden rounded-full">
-                        <ImageMod
-                          class="h-full w-full object-cover"
-                          src={item.avatar}
-                          alt={`avatar of the ${item.name}`}
-                        />
-                      </div>
-                    )}
-                    <div>
-                      {item.name && (
-                        <strong
-                          class="mb-2 text-lg/[inherit] font-medium"
-                          set:html={markdownify(item.name)}
-                        />
-                      )}
-                      {item.designation && (
-                        <p set:html={markdownify(item.designation)} />
-                      )}
-                    </div>
-                  </div>
+
+      <div class="col-12 pt-16" data-aos="fade-up-sm" data-aos-delay="150">
+        <div class="grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+          <div class="space-y-8 rounded-3xl border border-border/60 bg-white p-8 shadow-sm md:p-10">
+            <p class="text-sm font-semibold uppercase tracking-[0.08em] text-tertiary">
+              Supporting quote
+            </p>
+            <p class="text-2xl font-semibold leading-snug text-primary md:text-3xl">
+              “What gets scheduled gets done. What gets tracked gets optimized.”
+            </p>
+            <div class="space-y-4 rounded-2xl border border-border/60 bg-light px-5 py-5">
+              <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">
+                <span>Traditional Method</span>
+                <span>Gestalty</span>
+              </div>
+              <div class="grid gap-4 text-sm text-primary/85 sm:grid-cols-2">
+                <div class="space-y-2 rounded-xl border border-border/60 bg-white px-4 py-3 shadow-xs">
+                  <p class="text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">
+                    Traditional Method
+                  </p>
+                  <p>“I studied 8 hours” → 8% real progress.</p>
+                  <p>Focus on quantity.</p>
+                </div>
+                <div class="space-y-2 rounded-xl border border-border/60 bg-white px-4 py-3 shadow-xs">
+                  <p class="text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">
+                    Gestalty
+                  </p>
+                  <p>8 hours in balanced knowledge acquisition → 68% progress.</p>
+                  <p>Focus on quality, retention, and application.</p>
                 </div>
               </div>
-            ))
-          }
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="space-y-3 rounded-2xl border border-border/60 bg-light px-5 py-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">
+                  Why it works
+                </p>
+                <ul class="space-y-2 text-sm text-primary/85">
+                  <li>Balanced inputs → stronger recall.</li>
+                  <li>Short feedback loops → faster correction.</li>
+                  <li>Application-first → durable confidence.</li>
+                </ul>
+              </div>
+              <div class="space-y-3 rounded-2xl border border-border/60 bg-light px-5 py-4">
+                <p class="text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">
+                  Micro commitments
+                </p>
+                <ul class="space-y-2 text-sm text-primary/85">
+                  <li>15-minute review anchors daily.</li>
+                  <li>One measurable outcome per block.</li>
+                  <li>Weekly reflection + reuse checklist.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative overflow-hidden rounded-3xl border border-border/60 bg-light shadow-sm">
+            <div class="aspect-[5/6]">
+              <ImageMod
+                class="h-full w-full object-cover"
+                src="/images/ten.webp"
+                alt="Calm workspace with notes and schedule"
+              />
+            </div>
+            <div class="absolute bottom-4 left-4 right-4 flex flex-col gap-2 rounded-2xl bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">
+                Snapshot
+              </p>
+              <p class="text-sm text-primary/80">
+                Consistent practice blocks, reflection notes, and clear next steps.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>

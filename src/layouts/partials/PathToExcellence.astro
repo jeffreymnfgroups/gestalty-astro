@@ -499,55 +499,96 @@ const navItems = [
 </style>
 
 <script is:inline>
-  (function() {
-    const buttons = Array.from(document.querySelectorAll(".gx-nav-item"));
-    const cards = Array.from(document.querySelectorAll(".gx-feature-card"));
+  (() => {
+    let cleanup = () => {};
 
-    if (!buttons.length || !cards.length) {
-      return;
+    const init = () => {
+      const buttons = Array.from(document.querySelectorAll(".gx-nav-item"));
+      const cards = Array.from(document.querySelectorAll(".gx-feature-card"));
+
+      if (!buttons.length || !cards.length) {
+        return () => {};
+      }
+
+      const clickHandlers = new Map();
+      const keyHandlers = new Map();
+
+      function setActive(nextBtn) {
+        const area = nextBtn.getAttribute("data-area") || "";
+
+        buttons.forEach((btn) => {
+          const isActive = btn === nextBtn;
+          btn.setAttribute("aria-selected", isActive ? "true" : "false");
+          btn.setAttribute("tabindex", isActive ? "0" : "-1");
+        });
+
+        cards.forEach((card) => {
+          if (card.getAttribute("data-area") === area) {
+            card.style.display = "flex";
+            card.style.opacity = "1";
+          } else {
+            card.style.display = "none";
+            card.style.opacity = "0";
+          }
+        });
+
+        nextBtn.focus({ preventScroll: true });
+      }
+
+      buttons.forEach((btn, index) => {
+        const handleClick = () => setActive(btn);
+        const handleKeydown = (e) => {
+          const currentIndex = index;
+          if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+            e.preventDefault();
+            const next = buttons[(currentIndex + 1) % buttons.length];
+            setActive(next);
+          }
+          if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+            e.preventDefault();
+            const prev = buttons[(currentIndex - 1 + buttons.length) % buttons.length];
+            setActive(prev);
+          }
+        };
+
+        clickHandlers.set(btn, handleClick);
+        keyHandlers.set(btn, handleKeydown);
+
+        btn.addEventListener("click", handleClick);
+        btn.addEventListener("keydown", handleKeydown);
+      });
+
+      setActive(buttons[0]);
+
+      return () => {
+        buttons.forEach((btn) => {
+          const clickHandler = clickHandlers.get(btn);
+          const keyHandler = keyHandlers.get(btn);
+          if (clickHandler) btn.removeEventListener("click", clickHandler);
+          if (keyHandler) btn.removeEventListener("keydown", keyHandler);
+        });
+      };
+    };
+
+    const setup = () => {
+      cleanup();
+      cleanup = init();
+    };
+
+    const destroy = () => {
+      cleanup();
+    };
+
+    const ready = () => {
+      setup();
+      document.addEventListener("astro:page-load", setup);
+      document.addEventListener("astro:before-swap", destroy);
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", ready, { once: true });
+    } else {
+      ready();
     }
-
-    function setActive(nextBtn) {
-      const area = nextBtn.getAttribute("data-area") || "";
-      const index = parseInt(nextBtn.getAttribute("data-tab-index") || "0");
-
-      buttons.forEach((btn) => {
-        const isActive = btn === nextBtn;
-        btn.setAttribute("aria-selected", isActive ? "true" : "false");
-        btn.setAttribute("tabindex", isActive ? "0" : "-1");
-      });
-
-      // Hide all cards, then show only the selected one
-      cards.forEach(card => {
-        if (card.getAttribute("data-area") === area) {
-          card.style.display = "flex";
-          card.style.opacity = "1";
-        } else {
-          card.style.display = "none";
-          card.style.opacity = "0";
-        }
-      });
-
-      nextBtn.focus({ preventScroll: true });
-    }
-
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => setActive(btn));
-      btn.addEventListener("keydown", (e) => {
-        const currentIndex = buttons.indexOf(btn);
-        if (e.key === "ArrowDown" || e.key === "ArrowRight") {
-          e.preventDefault();
-          const next = buttons[(currentIndex + 1) % buttons.length];
-          setActive(next);
-        }
-        if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-          e.preventDefault();
-          const prev = buttons[(currentIndex - 1 + buttons.length) % buttons.length];
-          setActive(prev);
-        }
-      });
-    });
-
-    setActive(buttons[0]);
   })();
 </script>

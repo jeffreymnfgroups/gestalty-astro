@@ -689,90 +689,101 @@ const cardIcons = [
 <script is:inline>
   (function() {
     'use strict';
-    function init3DCards() {
-      var cardContainers = document.querySelectorAll('.ps-card-container');
-      
-      cardContainers.forEach(function(container) {
-        var cardEl = container.querySelector('.ps-card');
-        if (!cardEl || !(cardEl instanceof HTMLElement)) return;
-        
-        var card = cardEl;
-        var cardItems = container.querySelectorAll('.ps-card-item');
-        var isMouseEntered = false;
+    let cleanup = () => {};
 
-        function handleMouseMove(e) {
-          var rect = card.getBoundingClientRect();
-          var x = e.clientX - rect.left;
-          var y = e.clientY - rect.top;
-          var centerX = rect.width / 2;
-          var centerY = rect.height / 2;
-          var rotateX = (y - centerY) / 25;
-          var rotateY = (centerX - x) / 25;
+    function init3DCards() {
+      const cardContainers = document.querySelectorAll('.ps-card-container');
+      const removers = [];
+
+      cardContainers.forEach((container) => {
+        const cardEl = container.querySelector('.ps-card');
+        if (!cardEl || !(cardEl instanceof HTMLElement)) return;
+
+        const card = cardEl;
+        const cardItems = container.querySelectorAll('.ps-card-item');
+        let isMouseEntered = false;
+
+        const handleMouseMove = (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = (y - centerY) / 25;
+          const rotateY = (centerX - x) / 25;
 
           card.style.transform = 'rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
 
-          cardItems.forEach(function(item) {
+          cardItems.forEach((item) => {
             if (!(item instanceof HTMLElement)) return;
-            var translateZ = item.getAttribute('data-translate-z');
+            const translateZ = item.getAttribute('data-translate-z');
             if (translateZ && isMouseEntered) {
-              var zValue = parseInt(translateZ, 10);
+              const zValue = parseInt(translateZ, 10);
               item.style.transform = 'translateZ(' + zValue + 'px)';
             }
           });
-        }
+        };
 
-        function handleMouseEnter() {
+        const handleMouseEnter = () => {
           isMouseEntered = true;
-        }
+        };
 
-        function handleMouseLeave() {
+        const handleMouseLeave = () => {
           isMouseEntered = false;
           card.style.transform = 'rotateX(0deg) rotateY(0deg)';
-          cardItems.forEach(function(item) {
+          cardItems.forEach((item) => {
             if (item instanceof HTMLElement) {
               item.style.transform = 'translateZ(0px)';
             }
           });
-        }
+        };
 
         container.addEventListener('mousemove', handleMouseMove);
         container.addEventListener('mouseenter', handleMouseEnter);
         container.addEventListener('mouseleave', handleMouseLeave);
+
+        removers.push(() => {
+          container.removeEventListener('mousemove', handleMouseMove);
+          container.removeEventListener('mouseenter', handleMouseEnter);
+          container.removeEventListener('mouseleave', handleMouseLeave);
+        });
       });
+
+      return () => removers.forEach((fn) => fn());
     }
 
     function initDragScroll() {
-      var grid = document.getElementById('ps-cards-grid');
-      if (!grid) return;
+      const grid = document.getElementById('ps-cards-grid');
+      if (!grid) return () => {};
 
-      var isDown = false;
-      var startX = 0;
-      var scrollLeft = 0;
+      let isDown = false;
+      let startX = 0;
+      let scrollLeft = 0;
 
-      function getPageX(e) {
+      const getPageX = (e) => {
         if (e.touches && e.touches.length) return e.touches[0].pageX;
         return e.pageX;
-      }
+      };
 
-      function handleDown(e) {
+      const handleDown = (e) => {
         isDown = true;
         startX = getPageX(e);
         scrollLeft = grid.scrollLeft;
         grid.classList.add('ps-dragging');
-      }
+      };
 
-      function handleMove(e) {
+      const handleMove = (e) => {
         if (!isDown) return;
-        var x = getPageX(e);
-        var walk = x - startX;
+        const x = getPageX(e);
+        const walk = x - startX;
         grid.scrollLeft = scrollLeft - walk;
         if (e.cancelable !== false) e.preventDefault();
-      }
+      };
 
-      function handleUp() {
+      const handleUp = () => {
         isDown = false;
         grid.classList.remove('ps-dragging');
-      }
+      };
 
       grid.addEventListener('mousedown', handleDown);
       grid.addEventListener('touchstart', handleDown, { passive: true });
@@ -781,56 +792,87 @@ const cardIcons = [
       window.addEventListener('mouseup', handleUp);
       window.addEventListener('touchend', handleUp);
       window.addEventListener('touchcancel', handleUp);
+
+      return () => {
+        grid.removeEventListener('mousedown', handleDown);
+        grid.removeEventListener('touchstart', handleDown);
+        window.removeEventListener('mousemove', handleMove);
+        window.removeEventListener('touchmove', handleMove);
+        window.removeEventListener('mouseup', handleUp);
+        window.removeEventListener('touchend', handleUp);
+        window.removeEventListener('touchcancel', handleUp);
+      };
     }
 
     function initNavButtons() {
-      var grid = document.getElementById('ps-cards-grid');
-      var prevBtn = document.querySelector('.ps-nav-btn--prev');
-      var nextBtn = document.querySelector('.ps-nav-btn--next');
-      if (!grid || !prevBtn || !nextBtn) return;
+      const grid = document.getElementById('ps-cards-grid');
+      const prevBtn = document.querySelector('.ps-nav-btn--prev');
+      const nextBtn = document.querySelector('.ps-nav-btn--next');
+      if (!grid || !prevBtn || !nextBtn) return () => {};
 
-      var defaultGap = 24; // 1.5rem fallback
+      const defaultGap = 24;
 
-      function getStep() {
-        var card = grid.querySelector('.ps-card-container');
+      const getStep = () => {
+        const card = grid.querySelector('.ps-card-container');
         if (!card) return 320;
-        var style = window.getComputedStyle(grid);
-        var gap = parseFloat(style.columnGap || style.gap || defaultGap);
+        const style = window.getComputedStyle(grid);
+        const gap = parseFloat(style.columnGap || style.gap || defaultGap);
         return card.getBoundingClientRect().width + gap;
-      }
+      };
 
-      function updateDisabled() {
-        var maxScroll = grid.scrollWidth - grid.clientWidth - 2;
+      const updateDisabled = () => {
+        const maxScroll = grid.scrollWidth - grid.clientWidth - 2;
         prevBtn.disabled = grid.scrollLeft <= 0;
         nextBtn.disabled = grid.scrollLeft >= maxScroll;
-      }
+      };
 
-      function scrollByStep(direction) {
-        var step = getStep();
+      const scrollByStep = (direction) => {
+        const step = getStep();
         grid.scrollBy({ left: direction * step, behavior: 'smooth' });
-        setTimeout(updateDisabled, 260);
-      }
+        window.setTimeout(updateDisabled, 260);
+      };
 
-      prevBtn.addEventListener('click', function() {
-        scrollByStep(-1);
-      });
+      const handlePrev = () => scrollByStep(-1);
+      const handleNext = () => scrollByStep(1);
 
-      nextBtn.addEventListener('click', function() {
-        scrollByStep(1);
-      });
-
+      prevBtn.addEventListener('click', handlePrev);
+      nextBtn.addEventListener('click', handleNext);
       grid.addEventListener('scroll', updateDisabled);
       updateDisabled();
+
+      return () => {
+        prevBtn.removeEventListener('click', handlePrev);
+        nextBtn.removeEventListener('click', handleNext);
+        grid.removeEventListener('scroll', updateDisabled);
+      };
     }
 
+    const initAll = () => {
+      const cleaners = [init3DCards(), initDragScroll(), initNavButtons()];
+      return () => cleaners.forEach((fn) => {
+        if (typeof fn === 'function') fn();
+      });
+    };
+
+    const setup = () => {
+      cleanup();
+      cleanup = initAll();
+    };
+
+    const destroy = () => {
+      cleanup();
+    };
+
+    const ready = () => {
+      setup();
+      document.addEventListener('astro:page-load', setup);
+      document.addEventListener('astro:before-swap', destroy);
+    };
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init3DCards);
-      document.addEventListener('DOMContentLoaded', initDragScroll);
-      document.addEventListener('DOMContentLoaded', initNavButtons);
+      document.addEventListener('DOMContentLoaded', ready, { once: true });
     } else {
-      init3DCards();
-      initDragScroll();
-      initNavButtons();
+      ready();
     }
   })();
 </script>
