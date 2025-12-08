@@ -3,91 +3,637 @@ import { markdownify } from "@/lib/utils/textConverter";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
 
-const { title, subtitle, phases, impact_title, impact_list } = (
+const { title, subtitle, phases } = (
   (await getEntry(
     "companyEvolutionSection",
     "company-evolution"
   )) as CollectionEntry<"companyEvolutionSection">
 ).data;
+
+// Open-source images from Unsplash
+const images = [
+  "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=800&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1200&h=800&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&h=800&fit=crop&q=80",
+];
+
+// Map phases to tab data
+const tabData = phases?.map((phase, index) => ({
+  title: phase.title || "",
+  description: phase.description || "",
+  duration: phase.duration || "",
+  list: phase.list || [],
+  image: images[index] || images[0],
+})) || [];
 ---
 
 <section class="section bg-light">
   <div class="container">
-    <div class="row">
-      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        {
-          subtitle && (
-            <p
-              class="mb-2 font-medium text-tertiary"
-              set:html={markdownify(subtitle)}
-            />
-          )
-        }
-        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
-      </div>
-      <div class="col-12 pt-16">
-        <div class="row g-4 justify-center">
-          {
-            phases?.map((phase, index) => (
-              <div
-                class="md:col-6"
-                data-aos="fade-up-sm"
-                data-aos-delay={index * 100}>
-                <div class="min-h-full rounded-xl bg-white p-8 md:rounded-3xl">
-                  {phase.title && (
-                    <h3 class="h5 mb-2" set:html={markdownify(phase.title)} />
+    <div class="tab-layout" data-tabs="wrapper">
+      <div class="row g-4 align-items-center">
+        <!-- Left Column: Content -->
+        <div class="col-12 lg:col-6">
+          <div class="tab-content-wrapper">
+            {subtitle && (
+              <p
+                class="mb-2 font-medium text-tertiary"
+                set:html={markdownify(subtitle)}
+              />
+            )}
+            {title && (
+              <h2 class="tab-layout-heading mb-6" set:html={markdownify(title)} />
+            )}
+            
+            <div data-flip-button="wrap" data-tabs="nav" class="filter-bar mb-8">
+              {tabData.map((tab, index) => (
+                <button
+                  data-tabs="button"
+                  data-flip-button="button"
+                  class={`filter-button ${index === 0 ? "active" : ""}`}>
+                  <div class="filter-button__p">
+                    {tab.title.split("—")[0]?.trim() || `Phase ${index + 1}`}
+                  </div>
+                  {index === 0 && (
+                    <div data-flip-button="bg" class="tab-button__bg"></div>
                   )}
-                  {phase.duration && (
-                    <p class="mb-4 font-medium text-tertiary" set:html={markdownify(phase.duration)} />
+                </button>
+              ))}
+            </div>
+
+            <div data-tabs="content-wrap" class="tab-content-wrap">
+              {tabData.map((tab, index) => (
+                <div
+                  data-tabs="content-item"
+                  class={`tab-content-item ${index === 0 ? "active" : ""}`}>
+                  <h3 data-tabs-fade="" class="tab-content__heading mb-3">
+                    {tab.title}
+                  </h3>
+                  {tab.duration && (
+                    <p data-tabs-fade="" class="content-p opacity--80 mb-3">
+                      {tab.duration}
+                    </p>
                   )}
-                  {phase.description && (
-                    <p class="mb-4" set:html={markdownify(phase.description)} />
-                  )}
-                  {phase.list && phase.list.length > 0 && (
-                    <ul class="space-y-2">
-                      {phase.list.map((item) => (
-                        <li class="flex items-start gap-2">
-                          <span class="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-tertiary" />
-                          <span set:html={markdownify(item)} />
-                        </li>
+                  <p data-tabs-fade="" class="content-p opacity--80 mb-4">
+                    {tab.description}
+                  </p>
+                  {tab.list && tab.list.length > 0 && (
+                    <ul data-tabs-fade="" class="tab-content-list">
+                      {tab.list.map((item) => (
+                        <li set:html={markdownify(item)} />
                       ))}
                     </ul>
                   )}
                 </div>
-              </div>
-            ))
-          }
-        </div>
-        {
-          impact_title && impact_list && (
-            <div class="row pt-16">
-              <div class="mx-auto lg:col-10" data-aos="fade-up-sm" data-aos-delay="200">
-                <div class="rounded-xl bg-tertiary p-8 text-text-light md:rounded-3xl md:p-10">
-                  <h3 class="h4 mb-6 text-center text-inherit" set:html={markdownify(impact_title)} />
-                  <ul class="space-y-3">
-                    {impact_list.map((item) => (
-                      <li class="flex items-start gap-3">
-                        <svg
-                          class="mt-1 h-5 w-5 flex-shrink-0"
-                          fill="currentColor"
-                          viewBox="0 0 20 20">
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <span class="text-lg/[inherit] text-inherit" set:html={markdownify(item)} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+              ))}
             </div>
-          )
-        }
+
+            <a href="/contact/" class="tab-content__button mt-6">
+              <p class="content-p mb-0">Get Started</p>
+              <div class="content-button__bg"></div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column: Image -->
+        <div class="col-12 lg:col-6">
+          <div data-tabs="visual-wrap" class="tab-visual-wrap">
+            {tabData.map((tab, index) => (
+              <div
+                data-tabs="visual-item"
+                class={`tab-visual-item ${index === 0 ? "active" : ""}`}>
+                <img
+                  src={tab.image}
+                  alt={tab.title}
+                  loading="lazy"
+                  class="tab-image"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  .tab-layout {
+    position: relative;
+  }
+
+  .tab-content-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+
+  .tab-layout-heading {
+    font-size: clamp(2rem, 4vw, 3.5em);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-text-dark);
+  }
+
+  .filter-bar {
+    background-color: rgba(29, 29, 29, 0.06);
+    border: 1px solid rgba(29, 29, 29, 0.08);
+    border-radius: 0.5em;
+    padding: 0.5em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    width: 100%;
+  }
+
+  .filter-button {
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.875em 1.25em;
+    transition: border-color 0.2s;
+    position: relative;
+    font-size: 0.95em;
+    cursor: pointer;
+    white-space: nowrap;
+    flex: 1;
+    min-width: fit-content;
+  }
+
+  .filter-button.active {
+    border-color: rgba(29, 29, 29, 0.3);
+    border-radius: 0.25em;
+  }
+
+  .filter-button__p {
+    z-index: 1;
+    font-size: 1em;
+    position: relative;
+    color: var(--color-text-dark);
+    font-weight: 500;
+  }
+
+  .tab-button__bg {
+    z-index: 0;
+    background-color: rgba(251, 193, 13, 0.15);
+    border: 1px solid rgba(251, 193, 13, 0.2);
+    border-radius: 0.25em;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0%;
+  }
+
+  .tab-content-wrap {
+    width: 100%;
+    position: relative;
+    min-height: 300px;
+  }
+
+  .tab-content-item {
+    z-index: 1;
+    display: flex;
+    flex-flow: column;
+    gap: 0;
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+
+  .tab-content-item.active {
+    visibility: visible;
+    opacity: 1;
+    position: absolute;
+    pointer-events: auto;
+  }
+
+  .tab-content__heading {
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem 0;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-text-dark);
+  }
+
+  .content-p {
+    margin: 0;
+    font-size: 1.125em;
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+
+  .opacity--80 {
+    opacity: 0.8;
+  }
+
+  .tab-content-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+  }
+
+  .tab-content-list li {
+    color: var(--color-text);
+    font-size: 1em;
+    line-height: 1.6;
+    padding-left: 1.5em;
+    position: relative;
+  }
+
+  .tab-content-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--color-secondary);
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  .tab-content__button {
+    color: var(--color-text-dark);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 3.5em;
+    padding: 0.875em 2em;
+    text-decoration: none;
+    position: relative;
+    font-weight: 500;
+    width: auto;
+    margin-top: 1.5rem;
+    z-index: 10;
+    overflow: hidden;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .tab-content__button .content-p {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    font-size: 1.125em;
+    font-weight: 500;
+  }
+
+  .content-button__bg {
+    z-index: 1;
+    background-color: var(--color-secondary);
+    border-radius: 0.25em;
+    position: absolute;
+    inset: 0%;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .tab-content__button:hover .content-button__bg {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+
+  .tab-content__button:active .content-button__bg {
+    transform: scale(0.98);
+  }
+
+  .tab-visual-wrap {
+    border-radius: 0.5em;
+    width: 100%;
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-light);
+  }
+
+  .tab-visual-item {
+    visibility: hidden;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+
+  .tab-visual-item.active {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .tab-image {
+    object-fit: cover;
+    border-radius: 0.5em;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .tab-visual-wrap {
+      height: 600px;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .tab-content-wrap {
+      min-height: 250px;
+    }
+
+    .tab-visual-wrap {
+      height: 400px;
+      margin-top: 2rem;
+    }
+
+    .filter-button {
+      font-size: 0.875em;
+      padding: 0.75em 1em;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .tab-layout-heading {
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+    }
+
+    .tab-content-wrap {
+      min-height: 200px;
+    }
+
+    .tab-visual-wrap {
+      height: 300px;
+    }
+
+    .content-p {
+      font-size: 1em;
+    }
+
+    .tab-content__heading {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { Flip } from "gsap/Flip";
+  import { CustomEase } from "gsap/CustomEase";
+
+  gsap.registerPlugin(Flip, CustomEase);
+
+  CustomEase.create("osmo-ease", "0.625, 0.05, 0, 1");
+
+  gsap.defaults({
+    ease: "osmo-ease",
+    duration: 0.8,
+  });
+
+  function initFlipButtons() {
+    let wrappers = document.querySelectorAll('[data-flip-button="wrap"]');
+
+    wrappers.forEach((wrapper) => {
+      let buttons = wrapper.querySelectorAll('[data-flip-button="button"]');
+      let bg = wrapper.querySelector('[data-flip-button="bg"]') as HTMLElement;
+
+      if (!bg) return;
+
+      buttons.forEach((button) => {
+        button.addEventListener("mouseenter", () => {
+          const state = Flip.getState(bg);
+          (button as HTMLElement).appendChild(bg);
+          Flip.from(state, {
+            duration: 0.4,
+          });
+        });
+
+        button.addEventListener("focus", () => {
+          const state = Flip.getState(bg);
+          (button as HTMLElement).appendChild(bg);
+          Flip.from(state, {
+            duration: 0.4,
+          });
+        });
+
+        button.addEventListener("mouseleave", () => {
+          const state = Flip.getState(bg);
+          const activeLink = wrapper.querySelector(".active");
+          if (activeLink) {
+            activeLink.appendChild(bg);
+            Flip.from(state, {
+              duration: 0.4,
+            });
+          }
+        });
+
+        button.addEventListener("blur", () => {
+          const state = Flip.getState(bg);
+          const activeLink = wrapper.querySelector(".active");
+          if (activeLink) {
+            activeLink.appendChild(bg);
+            Flip.from(state, {
+              duration: 0.4,
+            });
+          }
+        });
+      });
+    });
+  }
+
+  // Store resize handlers for cleanup
+  const resizeHandlers: Array<() => void> = [];
+
+  function initTabSystem() {
+    let wrappers = document.querySelectorAll('[data-tabs="wrapper"]');
+
+    wrappers.forEach((wrapper) => {
+      let nav = wrapper.querySelector('[data-tabs="nav"]');
+      if (!nav) return;
+
+      let buttons = nav.querySelectorAll('[data-tabs="button"]');
+      let contentWrap = wrapper.querySelector('[data-tabs="content-wrap"]');
+      if (!contentWrap) return;
+
+      let contentItems = contentWrap.querySelectorAll('[data-tabs="content-item"]');
+      let visualWrap = wrapper.querySelector('[data-tabs="visual-wrap"]');
+      if (!visualWrap) return;
+
+      let visualItems = visualWrap.querySelectorAll('[data-tabs="visual-item"]');
+
+      let activeButton = buttons[0];
+      let activeContent = contentItems[0];
+      let activeVisual = visualItems[0];
+      let isAnimating = false;
+
+      // Measure content height when it's visible
+      function measureContentHeight(element: Element): number {
+        const el = element as HTMLElement;
+        const originalPosition = el.style.position;
+        const originalVisibility = el.style.visibility;
+        const originalOpacity = el.style.opacity;
+        
+        // Temporarily make visible and relative to measure
+        el.style.position = 'relative';
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+        const height = el.offsetHeight;
+        
+        // Restore original styles
+        el.style.position = originalPosition;
+        el.style.visibility = originalVisibility;
+        el.style.opacity = originalOpacity;
+        
+        return height;
+      }
+
+      // Set initial height
+      function updateContentHeight() {
+        if (activeContent) {
+          const height = measureContentHeight(activeContent);
+          (contentWrap as HTMLElement).style.minHeight = `${height}px`;
+        }
+      }
+
+      function switchTab(index: number, initial = false) {
+        if (
+          !initial &&
+          (isAnimating || buttons[index] === activeButton)
+        )
+          return;
+
+        isAnimating = true;
+
+        const outgoingContent = activeContent;
+        const incomingContent = contentItems[index];
+        const outgoingVisual = activeVisual;
+        const incomingVisual = visualItems[index];
+
+        if (!incomingContent || !incomingVisual) {
+          isAnimating = false;
+          return;
+        }
+
+        let outgoingLines =
+          outgoingContent?.querySelectorAll("[data-tabs-fade]") || [];
+        let incomingLines = incomingContent.querySelectorAll("[data-tabs-fade]");
+
+        // Measure both contents to get max height for smooth transition
+        let maxHeight = measureContentHeight(incomingContent);
+        if (outgoingContent && !initial) {
+          maxHeight = Math.max(maxHeight, measureContentHeight(outgoingContent));
+        }
+
+        // Set height to max to prevent shifting during animation
+        (contentWrap as HTMLElement).style.minHeight = `${maxHeight}px`;
+
+        const timeline = gsap.timeline({
+          defaults: {
+            ease: "power3.inOut",
+          },
+          onComplete: () => {
+            if (!initial && outgoingContent) {
+              outgoingContent.classList.remove("active");
+            }
+            if (outgoingVisual) {
+              outgoingVisual.classList.remove("active");
+            }
+            activeContent = incomingContent;
+            activeVisual = incomingVisual;
+            isAnimating = false;
+            // Update to actual height after animation completes
+            const finalHeight = measureContentHeight(incomingContent);
+            (contentWrap as HTMLElement).style.minHeight = `${finalHeight}px`;
+          },
+        });
+
+        // Set incoming content to active immediately but invisible
+        incomingContent.classList.add("active");
+        incomingVisual.classList.add("active");
+
+        if (!initial && outgoingContent) {
+          // Smooth crossfade - both visible during transition
+          timeline
+            .to(outgoingLines, { y: -10, autoAlpha: 0, duration: 0.35, stagger: 0.02 }, 0)
+            .to(outgoingContent, { autoAlpha: 0, duration: 0.35 }, 0)
+            .to(outgoingVisual, { autoAlpha: 0, xPercent: 4, duration: 0.45 }, 0)
+            .fromTo(
+              incomingContent,
+              { autoAlpha: 0, y: 10 },
+              { autoAlpha: 1, y: 0, duration: 0.35 },
+              0.1
+            )
+            .fromTo(
+              incomingLines,
+              { y: 10, autoAlpha: 0 },
+              { y: 0, autoAlpha: 1, stagger: 0.02, duration: 0.35 },
+              0.15
+            )
+            .fromTo(
+              incomingVisual,
+              { autoAlpha: 0, xPercent: 4 },
+              { autoAlpha: 1, xPercent: 0, duration: 0.45 },
+              0.15
+            );
+        } else {
+          // Initial load - just show content
+          gsap.set(incomingContent, { autoAlpha: 1, y: 0 });
+          gsap.set(incomingLines, { autoAlpha: 1, y: 0 });
+          gsap.set(incomingVisual, { autoAlpha: 1, xPercent: 0 });
+          updateContentHeight();
+          isAnimating = false;
+        }
+
+        activeButton?.classList.remove("active");
+        buttons[index]?.classList.add("active");
+        activeButton = buttons[index];
+      }
+
+      // Initialize first tab
+      switchTab(0, true);
+
+      buttons.forEach((button, i) => {
+        button.addEventListener("click", () => switchTab(i));
+      });
+
+      // Update height on resize
+      resizeHandlers.push(updateContentHeight);
+      window.addEventListener("resize", updateContentHeight);
+    });
+  }
+
+  function cleanup() {
+    // Remove resize listeners
+    resizeHandlers.forEach(handler => {
+      window.removeEventListener("resize", handler);
+    });
+    resizeHandlers.length = 0;
+  }
+
+  function initAll() {
+    initTabSystem();
+    initFlipButtons();
+  }
+
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+
+  // Re-initialize on page navigation (Astro transitions)
+  document.addEventListener("astro:page-load", () => {
+    cleanup();
+    initAll();
+  });
+</script>
 
