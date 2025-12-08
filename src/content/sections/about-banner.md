@@ -3,8 +3,8 @@ subtitle: About Us
 title: Gestalty&#58; The Precision-Engineered Learning Solution for Competitive Exam Mastery
 description: Built for Learners, Backed by Science
 
-left_image: /images/about-1.jpg
-right_image: /images/about-2.jpg
+left_image: /images/leftside.webp
+right_image: /images/rightside.webp
 
 quote:
   avatar: "/images/ceo-avatar.png"
