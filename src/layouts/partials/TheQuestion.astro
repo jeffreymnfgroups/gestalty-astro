@@ -11,47 +11,87 @@ const { title, subtitle, questions, discovery_title, discovery_content } = (
 ).data;
 ---
 
-<section class="section bg-light">
-  <div class="container">
-    <div class="row">
-      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        <!-- {
-          subtitle && (
-            <p
-              class="mb-2 font-medium text-tertiary"
-              set:html={markdownify(subtitle)}
-            />
-          )
-        } -->
-        {title && <h2 class="mb-12" set:html={markdownify(title)} />}
-      </div>
-      <div class="col-12">
-        <div class="row g-4 justify-center">
+<section class="section bg-light py-7 lg:py-10 overflow-hidden relative z-10">
+  <!-- Background gradient blur -->
+  <div class="absolute inset-0 -z-10 overflow-hidden blur-3xl opacity-20 pointer-events-none" style="transform:translateZ(0) translate3d(0,0,0);">
+    <svg class="w-full h-full absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-125" viewBox="0 0 1425 1119" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="puzzle-gradient" cx="712.5" cy="559.5" gradientUnits="userSpaceOnUse" r="640.5843">
+          <stop offset="0" stop-color="#fbc10d"/>
+          <stop offset=".2705" stop-color="#fbc10d"/>
+          <stop offset=".4613" stop-color="#fbc10d"/>
+          <stop offset=".6276" stop-color="#fbc10d"/>
+          <stop offset=".7799" stop-color="#fbc10d"/>
+          <stop offset=".9212" stop-color="#fbc10d"/>
+          <stop offset="1" stop-color="#fbc10d"/>
+        </radialGradient>
+      </defs>
+      <path d="m76.6 98c102.5-76.8 532.4-197 253.5 48.8s251.7 32.8 343.7 81.6-69.5 382.7-226.3 342.4-204.7-249.6-340-143.6-139.9-247.6-30.9-329.2zm983.4 868.8c118.6-107.8 166.1-217.7 314.9-310.3 148.8-92.7-73.3-140.1-155.3-60.3-82 79.7-166.8-10.9-256.6 142.2-73.3 125-21.6 336.2 97 228.4zm-899.1-142.6c23.1-38.3 225.3 16.2 235.8 91.7 6.7 48.7-69.5 82.1-57.6 136.3 10.2 46.4 77.6 73.3 83.8 65.5 14.7-18.2-293.7-241-262-293.5z" fill="url(#puzzle-gradient)"/>
+    </svg>
+  </div>
+
+  <div class="container relative z-10">
+    <div class="row g-5 lg:g-7 items-center">
+      <!-- Left Column: Content -->
+      <div class="lg:col-6 flex flex-col justify-center">
+        <!-- {subtitle && (
+          <p
+            class="mb-2 font-medium text-tertiary text-sm uppercase tracking-wider"
+            set:html={markdownify(subtitle)}
+            data-aos="fade-up-sm"
+          />
+        )} -->
+        
+        {title && (
+          <h2 
+            class="mb-4 text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight leading-tight" 
+            set:html={markdownify(title)}
+            data-aos="fade-up-sm"
+            data-aos-delay="100"
+          />
+        )}
+
+        <div class="space-y-3 mb-5">
           {
             questions?.map((question, index) => (
               <div
-                class="md:col-6"
+                class="rounded-lg bg-white p-4 md:p-5 shadow-sm border border-border/50"
                 data-aos="fade-up-sm"
-                data-aos-delay={index * 100}>
-                <div class="rounded-xl bg-white p-8 text-center md:rounded-3xl md:p-12">
-                  <h3 class="h4 mb-0" set:html={markdownify(question)} />
-                </div>
+                data-aos-delay={200 + index * 100}>
+                <h3 class="text-lg md:text-xl font-medium mb-0 text-text-dark leading-snug" set:html={markdownify(question)} />
               </div>
             ))
           }
         </div>
-        <!-- {
-          discovery_title && discovery_content && (
-            <div class="row pt-16">
-              <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm" data-aos-delay="200">
-                <p class="mb-3 font-medium text-tertiary" set:html={markdownify(discovery_title)} />
-                <h3 class="h3" set:html={markdownify(discovery_content)} />
-              </div>
-            </div>
-          )
-        } -->
+
+        <p class="text-text mb-3 text-base leading-relaxed" data-aos="fade-up-sm" data-aos-delay="400">
+          These questions became our mission.
+        </p>
+
+        {discovery_title && discovery_content && (
+          <div class="mt-4 pt-4 border-t border-border/50" data-aos="fade-up-sm" data-aos-delay="500">
+            <p class="mb-2 font-medium text-tertiary text-sm uppercase tracking-wider" set:html={markdownify(discovery_title)} />
+            <h3 class="text-xl font-medium text-text-dark italic" set:html={markdownify(discovery_content)} />
+          </div>
+        )}
+
+        <p class="text-text mt-4 text-base leading-relaxed" data-aos="fade-up-sm" data-aos-delay="600">
+          We didn't just set out to create another study method. We set out to redesign the learner's journey from the ground up—from identifying a foundational crisis in exam preparation to crafting a robust, neuroscience-backed system.
+        </p>
+      </div>
+
+      <!-- Right Column: Image -->
+      <div class="lg:col-6 flex flex-col justify-center">
+        <div class="w-full relative mx-auto" data-aos="fade-up-sm" data-aos-delay="300">
+          <img 
+            src="/images/banner-hero.png" 
+            alt="Gestalty Mission" 
+            class="w-full h-auto rounded-lg object-cover"
+          />
+        </div>
       </div>
     </div>
   </div>
 </section>
+
 
