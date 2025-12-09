@@ -19,6 +19,9 @@ list:
   - icon: "/images/icons/svg/encryption.svg"
     title: Empowerment Over Pressure
     description: We design systems that reduce cognitive burden, build confidence, and support long-term growth.
+  - icon: "/images/icons/svg/time.svg"
+    title: Innovation Over Tradition
+    description: We continuously evolve our methods, embracing cutting-edge technology and research to deliver the best learning experience.
 
 stats:
   - label: Learning Behaviors Tracked
