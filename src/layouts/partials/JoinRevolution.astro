@@ -15,14 +15,14 @@ const { title, subtitle, description, list } = (
   <div class="container">
     <div class="row">
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        {
+        <!-- {
           subtitle && (
             <p
               class="mb-2 font-medium text-tertiary"
               set:html={markdownify(subtitle)}
             />
           )
-        }
+        } -->
         {title && <h2 class="mb-6" set:html={markdownify(title)} />}
         {
           description && (

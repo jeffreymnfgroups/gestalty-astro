@@ -20,33 +20,26 @@ const {
 ).data;
 ---
 
-<section class="section">
-  <div class="container">
+<section class="section py-16 md:py-20">
+  <div class="container max-w-6xl mx-auto px-4">
     <div class="row">
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        {
-          subtitle && (
-            <p
-              class="mb-2 font-medium text-tertiary"
-              set:html={markdownify(subtitle)}
-            />
-          )
-        }
         {title && <h2 class="mb-6" set:html={markdownify(title)} />}
         {
           description && (
-            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
+            <p class="text-lg max-w-2xl mx-auto" set:html={markdownify(description)} />
           )
         }
       </div>
-      <div class="col-12 pt-16">
+      <div class="col-12 pt-12 md:pt-16">
         {
           framework_title && framework_content && (
-            <div class="row">
-              <div class="mx-auto lg:col-10" data-aos="fade-up-sm">
-                <div class="rounded-xl bg-light p-8 md:rounded-3xl md:p-12">
-                  <h3 class="h4 mb-4" set:html={markdownify(framework_title)} />
-                  <p class="text-lg/[inherit] mb-0" set:html={markdownify(framework_content)} />
+            <div class="row mb-12 md:mb-16">
+              <div class="mx-auto lg:col-12" data-aos="fade-up-sm">
+                <div class="relative border-l-4 border-tertiary bg-light p-6 md:p-8 shadow-sm">
+                  <div class="absolute -left-2.5 top-6 w-5 h-5 bg-tertiary transform rotate-45"></div>
+                  <h3 class="text-xl md:text-2xl font-semibold mb-3 text-tertiary" set:html={markdownify(framework_title)} />
+                  <p class="text-base leading-relaxed mb-0 text-gray-700" set:html={markdownify(framework_content)} />
                 </div>
               </div>
             </div>
@@ -54,26 +47,31 @@ const {
         }
         {
           transformation_title && transformations && (
-            <div class="row pt-16">
-              <div class="mx-auto lg:col-10" data-aos="fade-up-sm" data-aos-delay="100">
+            <div class="row mb-12 md:mb-16">
+              <div class="mx-auto lg:col-12" data-aos="fade-up-sm" data-aos-delay="100">
                 <h3 class="h4 mb-8 text-center" set:html={markdownify(transformation_title)} />
-                <div class="overflow-x-auto">
-                  <table class="w-full min-w-[500px] rounded-xl bg-light overflow-hidden">
-                    <thead class="bg-tertiary text-text-light">
-                      <tr>
-                        <th class="px-6 py-4 text-left font-semibold">Transformation</th>
-                        <th class="px-6 py-4 text-left font-semibold">Impact</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {transformations.map((item, index) => (
-                        <tr class={index % 2 === 0 ? "bg-white" : ""}>
-                          <td class="px-6 py-4" set:html={markdownify(item.transformation)} />
-                          <td class="px-6 py-4" set:html={markdownify(item.impact)} />
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div class="grid md:grid-cols-3 gap-6">
+                  {transformations.map((item, index) => (
+                    <div class="group relative bg-light border-2 border-gray-200 hover:border-tertiary hover:shadow-lg transition-all duration-300 p-6 h-full flex flex-col">
+                      <div class="absolute top-0 left-0 w-1 h-full bg-tertiary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-tertiary text-white rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">
+                          {index + 1}
+                        </div>
+                        <div class="h-px flex-1 bg-gray-200"></div>
+                      </div>
+                      <div class="flex-1 space-y-4">
+                        <div>
+                          <div class="text-xs uppercase tracking-widest text-tertiary font-bold mb-2 opacity-75">Transformation</div>
+                          <div class="font-bold text-lg leading-snug" set:html={markdownify(item.transformation)} />
+                        </div>
+                        <div class="pt-3 border-t border-light">
+                          <div class="text-xs uppercase tracking-widest text-gray-500 font-bold mb-2 opacity-75">Impact</div>
+                          <div class="text-base leading-relaxed text-gray-700" set:html={markdownify(item.impact)} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -81,10 +79,16 @@ const {
         }
         {
           beyond_content && (
-            <div class="row pt-16">
-              <div class="mx-auto lg:col-10" data-aos="fade-up-sm" data-aos-delay="200">
-                <div class="rounded-xl bg-tertiary p-8 text-center text-text-light md:rounded-3xl md:p-12">
-                  <p class="text-lg/[inherit] mb-0 text-inherit" set:html={markdownify(beyond_content)} />
+            <div class="row">
+              <div class="mx-auto lg:col-12" data-aos="fade-up-sm" data-aos-delay="200">
+                <div class="relative bg-tertiary p-8 md:p-12 text-center text-text-light overflow-hidden">
+                  <div class="absolute top-0 left-0 w-24 h-24 bg-white opacity-5 transform -translate-x-12 -translate-y-12 rotate-45"></div>
+                  <div class="absolute bottom-0 right-0 w-24 h-24 bg-white opacity-5 transform translate-x-12 translate-y-12 rotate-45"></div>
+                  <div class="relative z-10">
+                    <div class="w-12 h-0.5 bg-text-light mx-auto mb-5"></div>
+                    <p class="text-lg md:text-xl leading-relaxed mb-5 text-inherit" set:html={markdownify(beyond_content)} />
+                    <div class="w-12 h-0.5 bg-text-light mx-auto"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -94,4 +98,3 @@ const {
     </div>
   </div>
 </section>
-
