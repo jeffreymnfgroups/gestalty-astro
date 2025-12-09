@@ -73,9 +73,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, opacity 0.3s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: visible;
+    opacity: 0;
   }
 
   .scroll-to-top-btn:hover {
@@ -137,14 +138,14 @@
 
 <script>
   (function () {
-    const button = document.getElementById("scroll-to-top");
-    if (!button) return;
-
+    let button: HTMLElement | null = null;
     let lenisInstance: any = null;
     let isScrolling = false;
     let scrollTimeout: number | null = null;
     let rafId: number | null = null;
     let lastProgress = 0;
+    let scrollHandler: (() => void) | null = null;
+    let clickHandler: (() => void) | null = null;
 
     // Try to get Lenis instance - check multiple possible locations
     function getLenisInstance() {
@@ -165,7 +166,7 @@
     }
 
     function scrollToTop() {
-      if (isScrolling) return;
+      if (isScrolling || !button) return;
       isScrolling = true;
 
       // Try to get Lenis instance
@@ -252,30 +253,59 @@
       });
     }
 
-    // Initialize
-    if (button) {
-      button.addEventListener("click", scrollToTop);
-      
-      // Listen to scroll events (works with both native and Lenis)
-      window.addEventListener("scroll", handleScroll, { passive: true });
-      document.addEventListener("scroll", handleScroll, { passive: true });
-      
-      // Also listen to Lenis scroll events if available
-      document.addEventListener("lenis:scroll", handleScroll, { passive: true });
+    function initialize() {
+      // Get fresh button reference
+      button = document.getElementById("scroll-to-top");
+      if (!button) return;
 
-      // Initial check
-      updateScrollProgress();
+      // Remove old listeners if they exist
+      if (clickHandler) {
+        button.removeEventListener("click", clickHandler);
+      }
+      if (scrollHandler) {
+        window.removeEventListener("scroll", scrollHandler, { passive: true } as any);
+        document.removeEventListener("scroll", scrollHandler, { passive: true } as any);
+        document.removeEventListener("lenis:scroll", scrollHandler, { passive: true } as any);
+      }
 
-      // Handle Astro page transitions
-      document.addEventListener("astro:page-load", () => {
-        lenisInstance = null; // Reset Lenis instance
-        lastProgress = 0; // Reset progress
-        if (rafId !== null) {
-          cancelAnimationFrame(rafId);
-          rafId = null;
-        }
+      // Create new handlers
+      clickHandler = scrollToTop;
+      scrollHandler = handleScroll;
+
+      // Attach event listeners
+      button.addEventListener("click", clickHandler);
+      window.addEventListener("scroll", scrollHandler, { passive: true });
+      document.addEventListener("scroll", scrollHandler, { passive: true });
+      document.addEventListener("lenis:scroll", scrollHandler, { passive: true });
+
+      // Reset state
+      lenisInstance = null;
+      lastProgress = 0;
+      isScrolling = false;
+
+      // Cancel any pending animation frame
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+
+      // Initial check with a small delay to ensure DOM is ready
+      setTimeout(() => {
         updateScrollProgress();
-      });
+      }, 100);
     }
+
+    // Initialize on load
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initialize);
+    } else {
+      initialize();
+    }
+
+    // Handle Astro page transitions
+    document.addEventListener("astro:page-load", () => {
+      // Re-initialize on page load to get fresh button reference
+      initialize();
+    });
   })();
 </script>
