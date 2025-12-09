@@ -30,7 +30,7 @@ const cardConfig = [
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
-    padding: 1.25em;
+    padding: 1em;
     width: 100%;
     max-width: 100%;
     position: relative;
@@ -100,37 +100,37 @@ const cardConfig = [
   .values-card__title {
     font-family: "Clash Grotesk", sans-serif;
     font-weight: 700;
-    font-size: 2.5em;
+    font-size: 2em;
     margin: 0 0 0.25em;
     color: white;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 
   .values-card__description {
     font-family: "Satoshi", sans-serif;
     font-weight: 300;
     font-size: 1.5em;
-    line-height: 1.3;
-    margin-bottom: 1.6em;
+    line-height: 1.4;
+    margin-bottom: 0.5em;
     color: white;
     opacity: 0.95;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 
   .values-card-grid {
     display: grid;
-    gap: 0.5em;
-    padding: 0.75em;
+    gap: 0.375em;
+    padding: 0.5em;
     max-width: 100%;
   }
 
@@ -188,7 +188,7 @@ const cardConfig = [
           )
         }
       </div>
-      <div class="col-12 pt-20">
+      <div class="col-12 pt-8">
         <svg width="0" height="0" display="none" style="display: none;">
           {/* backgrounds */}
           <symbol id="circles-corner" viewBox="0 0 316 316">
@@ -449,7 +449,7 @@ const cardConfig = [
             })
           }
         </div>
-        <div class="row g-4 justify-center pt-16">
+        <div class="row g-4 justify-center pt-8">
           {
             stats?.map((item, index) => (
               <div
