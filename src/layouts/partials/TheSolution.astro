@@ -20,7 +20,7 @@ const {
 ).data;
 ---
 
-<section class="section py-16 md:py-20">
+<section class="section py-12 md:py-16">
   <div class="container max-w-6xl mx-auto px-4">
     <div class="row">
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
@@ -31,12 +31,12 @@ const {
           )
         }
       </div>
-      <div class="col-12 pt-12 md:pt-16">
+      <div class="col-12 pt-10 md:pt-12">
         {
           framework_title && framework_content && (
-            <div class="row mb-12 md:mb-16">
+            <div class="row mb-10 md:mb-12">
               <div class="mx-auto lg:col-12" data-aos="fade-up-sm">
-                <div class="relative border-l-4 border-tertiary bg-light p-6 md:p-8 shadow-sm">
+                <div class="relative border-l-4 border-tertiary bg-light p-6 md:p-7 shadow-sm">
                   <div class="absolute -left-2.5 top-6 w-5 h-5 bg-tertiary transform rotate-45"></div>
                   <h3 class="text-xl md:text-2xl font-semibold mb-3 text-tertiary" set:html={markdownify(framework_title)} />
                   <p class="text-base leading-relaxed mb-0 text-gray-700" set:html={markdownify(framework_content)} />
@@ -47,12 +47,12 @@ const {
         }
         {
           transformation_title && transformations && (
-            <div class="row mb-12 md:mb-16">
+            <div class="row mb-10 md:mb-12">
               <div class="mx-auto lg:col-12" data-aos="fade-up-sm" data-aos-delay="100">
                 <h3 class="h4 mb-8 text-center" set:html={markdownify(transformation_title)} />
-                <div class="grid md:grid-cols-3 gap-6">
+                <div class="grid md:grid-cols-3 gap-5">
                   {transformations.map((item, index) => (
-                    <div class="group relative bg-light border-2 border-gray-200 hover:border-tertiary hover:shadow-lg transition-all duration-300 p-6 h-full flex flex-col">
+                    <div class="group relative bg-light border-2 border-gray-200 hover:border-tertiary hover:shadow-lg transition-all duration-300 p-5 h-full flex flex-col">
                       <div class="absolute top-0 left-0 w-1 h-full bg-tertiary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div class="flex items-center gap-3 mb-4">
                         <div class="w-12 h-12 bg-tertiary text-white rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">
@@ -84,7 +84,7 @@ const {
           beyond_content && (
             <div class="row">
               <div class="mx-auto lg:col-12" data-aos="fade-up-sm" data-aos-delay="200">
-                <div class="relative bg-tertiary p-8 md:p-12 text-center text-text-light overflow-hidden">
+                <div class="relative bg-tertiary p-7 md:p-10 text-center text-text-light overflow-hidden">
                   <div class="absolute top-0 left-0 w-24 h-24 bg-white opacity-5 transform -translate-x-12 -translate-y-12 rotate-45"></div>
                   <div class="absolute bottom-0 right-0 w-24 h-24 bg-white opacity-5 transform translate-x-12 translate-y-12 rotate-45"></div>
                   <div class="relative z-10">

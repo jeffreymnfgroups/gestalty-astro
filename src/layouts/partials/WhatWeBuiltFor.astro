@@ -16,77 +16,105 @@ const {
     "what-we-built-for"
   )) as CollectionEntry<"whatWeBuiltForSection">
 ).data;
+
+// Use the local motivation image instead of the external placeholder
+const featureImage = "/images/motivation.webp";
 ---
 
-<section class="section bg-light">
-  <div class="container">
-    <div class="row">
-      <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        <!-- {
-          subtitle && (
-            <p
-              class="mb-2 font-medium text-tertiary"
-              set:html={markdownify(subtitle)}
+<section class="section bg-light relative overflow-hidden py-12 md:py-16">
+  <div class="container relative z-10">
+    
+    <div class="row items-center gap-y-8 lg:gap-y-0">
+      
+      <div class="col-12 lg:col-6" data-aos="fade-right">
+        <div class="relative">
+          {/* Decorative Yellow Line */}
+          
+          {title && (
+            <h2 
+              class="h2 mb-6 text-tertiary" 
+              set:html={markdownify(title)} 
             />
-          )
-        } -->
-        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
-        {
-          description && (
-            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
-          )
-        }
+          )}
+          
+          {description && (
+            <div 
+              class="text-lg leading-relaxed text-gray-600 md:text-xl" 
+              set:html={markdownify(description)} 
+            />
+          )}
+        </div>
       </div>
-      <div class="col-12 pt-16">
-        {
-          core_belief && (
-            <div class="row">
-              <div class="mx-auto lg:col-10" data-aos="fade-up-sm">
-                <div class="rounded-xl bg-tertiary p-8 text-center text-text-light md:rounded-3xl md:p-10">
-                  <h3 class="h4 mb-0 text-inherit" set:html={markdownify(core_belief)} />
-                </div>
-              </div>
-            </div>
-          )
-        }
-        {
-          list && (
-            <div class="row pt-12">
-              <div class="mx-auto lg:col-10" data-aos="fade-up-sm" data-aos-delay="100">
-                <div class="rounded-xl bg-white p-8 md:rounded-3xl md:p-12">
-                  <ul class="space-y-4">
-                    {list.map((item) => (
-                      <li class="flex items-start gap-3">
-                        <svg
-                          class="mt-1 h-5 w-5 flex-shrink-0 text-tertiary"
-                          fill="currentColor"
-                          viewBox="0 0 20 20">
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <span class="text-lg/[inherit]" set:html={markdownify(item)} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          )
-        }
-        {
-          what_makes_different && (
-            <div class="row pt-12">
-              <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm" data-aos-delay="200">
-                <p class="text-lg/[inherit] font-medium" set:html={markdownify(what_makes_different)} />
-              </div>
-            </div>
-          )
-        }
+
+      <div class="col-12 lg:col-6" data-aos="fade-left">
+        <div class="relative overflow-hidden rounded-2xl shadow-lg">
+           <img 
+            src={featureImage} 
+            alt="Office environment" 
+            class="h-full w-full object-cover grayscale-[20%] transition duration-500 hover:grayscale-0"
+            width={800}
+            height={600}
+          /> 
+        </div>
       </div>
     </div>
+
+    {core_belief && (
+      <div class="row mt-12 md:mt-16">
+        <div class="col-12" data-aos="fade-up">
+          <div class="relative overflow-hidden rounded-xl bg-tertiary p-7 md:p-10 text-center shadow-lg">
+            <svg class="absolute left-4 top-4 h-16 w-16 text-white opacity-10" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.896 14.913 16 16.017 16H19.017C19.569 16 20.017 15.552 20.017 15V9C20.017 8.448 19.569 8 19.017 8H15.017C14.465 8 14.017 8.448 14.017 9V11C14.017 11.552 13.569 12 13.017 12H12.017V5H22.017V15C22.017 18.314 19.331 21 16.017 21H14.017ZM5.01697 21L5.01697 18C5.01697 16.896 5.91297 16 7.01697 16H10.017C10.569 16 11.017 15.552 11.017 15V9C11.017 8.448 10.569 8 10.017 8H6.01697C5.46497 8 5.01697 8.448 5.01697 9V11C5.01697 11.552 4.56897 12 4.01697 12H3.01697V5H13.017V15C13.017 18.314 10.331 21 7.01697 21H5.01697Z"/></svg>
+            
+            <h3 
+              class="relative z-10 mx-auto max-w-4xl text-2xl font-medium leading-normal text-white md:text-3xl" 
+              set:html={markdownify(core_belief)} 
+            />
+            
+            <div class="mx-auto mt-6 h-1 w-24 bg-yellow-400"></div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {list && (
+      <div class="mt-12 md:mt-16">
+        <div class="rounded-3xl bg-white p-7 shadow-sm ring-1 ring-gray-100 md:p-10" data-aos="fade-up" data-aos-delay="100">
+          <div class="grid gap-x-10 gap-y-5 md:grid-cols-2">
+            {list.map((item) => (
+              <div class="flex items-start gap-4">
+                <div class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-tertiary/5 text-tertiary">
+                   {/* Yellow Checkmark */}
+                  <svg
+                    class="h-5 w-5 text-yellow-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="3"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span 
+                  class="text-lg font-medium text-gray-700" 
+                  set:html={markdownify(item)} 
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {what_makes_different && (
+      <div class="row mt-12">
+        <div class="mx-auto text-center lg:col-8" data-aos="fade-up" data-aos-delay="200">
+          <p 
+            class="text-lg font-semibold text-tertiary md:text-xl" 
+            set:html={markdownify(what_makes_different)} 
+          />
+        </div>
+      </div>
+    )}
+
   </div>
 </section>
-

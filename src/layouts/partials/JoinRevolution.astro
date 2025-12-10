@@ -11,54 +11,63 @@ const { title, subtitle, description, list } = (
 ).data;
 ---
 
-<section class="section bg-light">
+<section class="section bg-slate-50">
   <div class="container">
     <div class="row">
       <div class="mx-auto text-center lg:col-10" data-aos="fade-up-sm">
-        <!-- {
-          subtitle && (
-            <p
-              class="mb-2 font-medium text-tertiary"
-              set:html={markdownify(subtitle)}
-            />
-          )
-        } -->
-        {title && <h2 class="mb-6" set:html={markdownify(title)} />}
-        {
-          description && (
-            <p class="text-lg/[inherit]" set:html={markdownify(description)} />
-          )
-        }
+        <!-- {subtitle && (
+          <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-amber-600" set:html={markdownify(subtitle)} />
+        )} -->
+        {title && (
+          <h2 class="mb-4 text-4xl md:text-5xl lg:text-5xl font-bold text-slate-900 tracking-tight" set:html={markdownify(title)} />
+        )}
+        {description && (
+          <p class="text-lg md:text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto" set:html={markdownify(description)} />
+        )}
       </div>
-      <div class="col-12 pt-12">
-        {
-          list && (
-            <div class="row">
-              <div class="mx-auto lg:col-10" data-aos="fade-up-sm" data-aos-delay="100">
-                <div class="rounded-xl bg-white p-8 md:rounded-3xl md:p-12">
-                  <ul class="space-y-5">
-                    {list.map((item, index) => (
-                      <li class="flex items-start gap-4" data-aos="fade-up-sm" data-aos-delay={200 + index * 50}>
-                        <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-tertiary text-text-light">
-                          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fill-rule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clip-rule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                        <span class="text-lg/[inherit] font-medium" set:html={markdownify(item)} />
-                      </li>
-                    ))}
-                  </ul>
+
+      <div class="col-12 pt-10 md:pt-12">
+        {list && (
+          <div class="row">
+            <div class="mx-auto lg:col-10" data-aos="fade-up-sm" data-aos-delay="100">
+              <div class="rounded-2xl bg-white p-7 md:p-10 lg:p-11 border border-slate-200 shadow-sm">
+                <ul class="space-y-5">
+                  {list.map((item, index) => (
+                    <li 
+                      class="flex items-start gap-4 md:gap-5 group hover:translate-x-1 transition-transform duration-200"
+                      data-aos="fade-up-sm" 
+                      data-aos-delay={200 + index * 50}
+                    >
+                      <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-yellow-400">
+                        <svg class="h-4 w-4 text-slate-900" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <span 
+                        class="text-lg md:text-xl text-slate-700 leading-relaxed pt-0.5 font-medium" 
+                        set:html={markdownify(item)} 
+                      />
+                    </li>
+                  ))}
+                </ul>
+
+                <div class="mt-10 pt-8 border-t border-slate-200 text-center" data-aos="fade-up-sm" data-aos-delay={200 + (list?.length || 0) * 50 + 100}>
+                  <button class="inline-flex items-center gap-2 px-8 py-4 text-base font-semibold text-slate-900 bg-yellow-400 rounded-full hover:bg-yellow-500 transition-colors duration-200">
+                    Join the Revolution
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>
-          )
-        }
+          </div>
+        )}
       </div>
     </div>
   </div>
 </section>
-

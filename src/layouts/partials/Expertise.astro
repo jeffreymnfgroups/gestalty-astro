@@ -23,11 +23,11 @@ const fontSecondary = theme.fonts.font_family.secondary; // Clash Grotesk
 
 // Generate placeholder images for each item
 const placeholderImages = [
-  { preview: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=600&fit=crop", main: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=800&fit=crop" },
-  { preview: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=600&fit=crop", main: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=800&fit=crop" },
-  { preview: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop", main: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=800&fit=crop" },
-  { preview: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=600&fit=crop", main: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&h=800&fit=crop" },
+  { preview: "https://images.unsplash.com/photo-1617791160536-598cf32026fb?w=400&h=600&fit=crop", main: "https://images.unsplash.com/photo-1617791160536-598cf32026fb?w=1200&h=800&fit=crop" },
+  { preview: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=600&fit=crop", main: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&h=800&fit=crop" },
   { preview: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=600&fit=crop", main: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&h=800&fit=crop" },
+  { preview: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&h=600&fit=crop", main: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&h=800&fit=crop" },
+  { preview: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=600&fit=crop", main: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&h=800&fit=crop" },
 ];
 ---
 
@@ -305,7 +305,14 @@ const placeholderImages = [
   <ul class="expertise-accordion">
     {
       list?.map((item, index) => {
-        const images = placeholderImages[index % placeholderImages.length];
+        const itemWithImage = item as { title?: string; description?: string; image?: string };
+        const baseImage = itemWithImage.image?.trim();
+        const images = baseImage
+          ? {
+              preview: `${baseImage}${baseImage.includes('?') ? '&' : '?'}w=400&h=600&fit=crop`,
+              main: `${baseImage}${baseImage.includes('?') ? '&' : '?'}w=1200&h=800&fit=crop`,
+            }
+          : placeholderImages[index % placeholderImages.length];
         const isActive = index === 1; // Second item active by default
         return (
           <li
